@@ -8,7 +8,7 @@ how to use the repo with RStudio:
 4) select the 'Git' tab in the environment window
 5) **pull** the latest repo version by clicking the **down arrow**
 
-6) after making changes to a file, remember to** save it**
+6) after making changes to a file, remember to **save it**
 7) once saved, the file you're working on should appear the evironment window with a blue icon with a white 'M' inside (M for Modified)
 8) select the checkbox on the left of this file name to select it
 9) **select 'commit'**
