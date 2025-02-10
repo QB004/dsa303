@@ -16,3 +16,5 @@ how to use the repo with RStudio:
 11) after commit is successful, click the **up arrow** (push) to send changes to the public repo
 
 good practice to 'pull' the repo before working to make sure you have the latest version to work on
+
+# dsa303
