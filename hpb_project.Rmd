@@ -1,0 +1,124 @@
+# Loading the data
+
+Change the file paths accordingly
+
+```{r}
+# Loading libraries to work with spatial data
+library(sf); library(spData); library(tmap); library(tidyverse)
+
+# Loading subzone boundary data for Singapore boundary map
+sg_pa <- 
+  st_read("MasterPlan2014SubzoneBoundaryWebSHP")
+
+# Saving CRS provided by SG boundary map
+sg_crs <- st_crs(sg_pa) # no epsg given, so we use proj4string instead
+
+# Loading cleaned obesity data from HPB and giving spatial awareness
+obesity_data <- 
+  # null values converted from #N/A to NA
+  read.csv("obesity.csv", na.strings = "#N/A") %>% 
+  st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
+  st_transform(crs = sg_crs)
+
+# Loading cleaned HMSP data from HPB and giving spatial awareness
+hmsp_data_sf <- 
+  read.csv("hmsp_tier_pri_sec.csv") %>% 
+  st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
+  st_transform(crs = sg_crs)
+
+# Checking that all CRS are matching before we join the data
+isTRUE(all.equal(st_crs(sg_pa), st_crs(obesity_data), st_crs(hmsp_data_sf))) # CRS must match in order for data to be plotted correctly
+```
+
+# Transforming data to be usable for analysis
+
+```{r}
+obesity_data_sf <- obesity_data %>% 
+  pivot_longer(
+    # pivot_longer to separate obesity data columns into a tidy format
+    cols = starts_with("X"),
+    names_to = c("YEAR", "CATEGORY"),
+    names_prefix = "X",
+    names_sep = "_",
+    names_transform = list(YEAR = as.integer),
+    values_to = "COUNT"
+    ) %>% 
+  mutate(
+    # Transform obesity count and school enrolment into an obesity prevalence figure
+    PREVALENCE = COUNT / ENROLMENT
+    )
+```
+
+# Joining data with CCA dataset
+
+```{r}
+# Loading school co-curricular activities data
+school_ccas <- 
+  read.csv("CocurricularactivitiesCCAs.csv") %>% 
+  group_by(school_name) %>% 
+  summarise(
+    total = n(),
+    physical_sports_count = sum(cca_grouping_desc == "PHYSICAL SPORTS"),
+    percentage_physical_sports = (physical_sports_count / total)
+  ) %>% 
+  select(school_name, percentage_physical_sports)
+
+obesity_joined_sports_data <- 
+  obesity_data_sf %>% left_join(school_ccas, by = join_by(SCHOOL == school_name))
+```
+
+# Exploratory data analysis
+
+```{r}
+tm_shape(sg_pa) + tm_borders() +
+  tm_shape(hmsp_data_sf) +
+  tm_symbols(size = 0.3, fill = "TIER", 
+             fill.scale = tm_scale(values = "brewer.set1"), 
+             fill.legend = tm_legend(title = "HMSP Tiers"))
+
+tm_shape(sg_pa) + tm_fill() + tm_borders() +
+  tm_shape(hmsp_data_sf) +
+  tm_symbols(size = 0.3, fill = "ZONE", 
+             fill.scale = tm_scale(values = "brewer.set1"), 
+             fill.legend = tm_legend(title = "School zones"))
+
+tm_shape(sg_pa) + tm_fill() + tm_borders() +
+  tm_shape(hmsp_data_sf) +
+  tm_symbols(size = 0.3, fill = "CLUSTER", 
+             fill.scale = tm_scale(values = "brewer.set1"), 
+             fill.legend = tm_legend(title = "School clusters")) +
+  tm_facets_wrap(by = "ZONE")
+```
+
+```{r}
+obesity_map <- 
+  # tm_shape(sg_pa) + tm_fill() + tm_borders() +
+  obesity_data_sf %>% 
+  filter(
+    YEAR == 2023,
+    CATEGORY == "OSO"
+    ) %>% 
+  tm_shape() +
+  tm_symbols(
+    size = 0.5,
+    fill = "PREVALENCE", 
+    # a green-red diverging scale to indicate severity of overweight prevalence
+    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence by school",
+      orientation = "landscape"
+      )
+    )
+
+print(obesity_map)
+```
+
+# Useful stuff
+
+```{r}
+tmap_mode("view")
+tmap_mode("plot")
+# tmap_save(tmap_object, 'xx.jpg') # for saving maps as images
+cols4all::c4a_gui() # colour scales
+RColorBrewer::display.brewer.all()
+```
