@@ -1,34 +1,35 @@
 # Loading the data
-nina is mess
-ing it up
 Change the file paths accordingly
 
 ```{r}
 # Loading libraries to work with spatial data
-library(sf); library(spData); library(tmap); library(tidyverse)
+library(tidyverse); library(sf); library(tmap); library(aspace)
 
 # Loading subzone boundary data for Singapore boundary map
 sg_pa <- 
-  st_read("MasterPlan2014SubzoneBoundaryWebSHP")
+  st_read("MasterPlan2014SubzoneBoundaryWebSHP") %>% 
+  st_make_valid()
 
 # Saving CRS provided by SG boundary map
-sg_crs <- st_crs(sg_pa) # no epsg given, so we use proj4string instead
+sg_crs <- st_crs(sg_pa)
 
 # Loading cleaned obesity data from HPB and giving spatial awareness
 obesity_data <- 
-  # null values converted from #N/A to NA
+  # "#N/A" values converted to "NA" for R to be able to read it
   read.csv("obesity.csv", na.strings = "#N/A") %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
-  st_transform(crs = sg_crs)
+  st_transform(crs = sg_crs) %>% 
+  st_make_valid()
 
 # Loading cleaned HMSP data from HPB and giving spatial awareness
 hmsp_data_sf <- 
   read.csv("hmsp_tier_pri_sec.csv") %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
-  st_transform(crs = sg_crs)
+  st_transform(crs = sg_crs) %>% 
+  st_make_valid()
 
 # Checking that all CRS are matching before we join the data
-isTRUE(all.equal(st_crs(sg_pa), st_crs(obesity_data), st_crs(hmsp_data_sf))) # CRS must match in order for data to be plotted correctly
+isTRUE(all.equal(st_crs(sg_pa), st_crs(obesity_data), st_crs(hmsp_data_sf)))
 ```
 
 # Transforming data to be usable for analysis
@@ -68,9 +69,10 @@ obesity_joined_sports_data <-
   obesity_data_sf %>% left_join(school_ccas, by = join_by(SCHOOL == school_name))
 ```
 
-# Exploratory data analysis
+# Exploratory data analysis (by Prof)
 
 ```{r}
+tmap_mode("view")
 tm_shape(sg_pa) + tm_borders() +
   tm_shape(hmsp_data_sf) +
   tm_symbols(size = 0.3, fill = "TIER", 
@@ -91,7 +93,9 @@ tm_shape(sg_pa) + tm_fill() + tm_borders() +
   tm_facets_wrap(by = "ZONE")
 ```
 
+# Obesity profile in Singapore (Colin)
 ```{r}
+tmap_mode("view")
 obesity_map <- 
   # tm_shape(sg_pa) + tm_fill() + tm_borders() +
   obesity_data_sf %>% 
@@ -114,7 +118,22 @@ obesity_map <-
 print(obesity_map)
 ```
 
-# Useful stuff
+# Income distribution (Lucas)
+```{r}
+
+```
+
+# Food and Nutrition (Nina)
+```{r}
+
+```
+
+# Physical activity (Qasim)
+```{r}
+
+```
+
+# Other Useful stuff
 
 ```{r}
 tmap_mode("view")
