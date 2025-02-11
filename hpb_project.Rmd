@@ -1,17 +1,20 @@
-# Loading the data
+# Data loading, cleaning and transformation
+
+## Loading the data
+
 Change the file paths accordingly
 
 ```{r}
 # Loading libraries to work with spatial data
 library(tidyverse); library(sf); library(tmap); library(aspace)
 
-# Loading subzone boundary data for Singapore boundary map
-sg_pa <- 
-  st_read("MasterPlan2014SubzoneBoundaryWebSHP") %>% 
+# Loading Singapore URA subzone boundary data
+sg_ura_boundaries <- 
+  st_read("MasterPlan2014SubzoneBoundaryWebSHP/MP14_SUBZONE_WEB_PL.shp") %>% 
   st_make_valid()
 
 # Saving CRS provided by SG boundary map
-sg_crs <- st_crs(sg_pa)
+sg_crs <- st_crs(sg_ura_boundaries)
 
 # Loading cleaned obesity data from HPB and giving spatial awareness
 obesity_data <- 
@@ -28,11 +31,11 @@ hmsp_data_sf <-
   st_transform(crs = sg_crs) %>% 
   st_make_valid()
 
-# Checking that all CRS are matching before we join the data
-isTRUE(all.equal(st_crs(sg_pa), st_crs(obesity_data), st_crs(hmsp_data_sf)))
+# Checking that all CRS are matching
+isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_data_sf)))
 ```
 
-# Transforming data to be usable for analysis
+## Transforming data to be usable for analysis
 
 ```{r}
 obesity_data_sf <- obesity_data %>% 
@@ -51,7 +54,97 @@ obesity_data_sf <- obesity_data %>%
     )
 ```
 
-# Joining data with CCA dataset
+# Exploratory data analysis (by Prof)
+
+```{r}
+tmap_mode("view")
+tm_shape(sg_ura_boundaries) + tm_borders() +
+  tm_shape(hmsp_data_sf) +
+  tm_symbols(size = 0.3, fill = "TIER", 
+             fill.scale = tm_scale(values = "brewer.set1"), 
+             fill.legend = tm_legend(title = "HMSP Tiers"))
+
+tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
+  tm_shape(hmsp_data_sf) +
+  tm_symbols(size = 0.3, fill = "ZONE", 
+             fill.scale = tm_scale(values = "brewer.set1"), 
+             fill.legend = tm_legend(title = "School zones"))
+
+tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
+  tm_shape(hmsp_data_sf) +
+  tm_symbols(size = 0.3, fill = "CLUSTER", 
+             fill.scale = tm_scale(values = "brewer.set1"), 
+             fill.legend = tm_legend(title = "School clusters")) +
+  tm_facets_wrap(by = "ZONE")
+```
+
+# Obesity profile in Singapore (Colin)
+
+## Singapore maps
+
+```{r}
+tmap_mode("view")
+
+# Singapore region map
+sg_region_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
+  col = "grey", fill = "REGION_N", fill_alpha = 0.25, 
+  fill.legend = tm_legend(title = "Region")
+    )
+
+# Singapore planning area map
+sg_planning_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
+  col = "grey", fill = "PLN_AREA_N", fill_alpha = 0.25, 
+  fill.legend = tm_legend_hide()
+  )
+
+sg_subzone_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
+  col = "grey", fill = "SUBZONE_N", fill_alpha = 0.25, 
+  fill.legend = tm_legend_hide()
+  )
+```
+
+## Obesity maps
+
+```{r}
+# for now, filter for 2023 data and overweight and severely overweight
+obesity_filtered <- obesity_data_sf %>% 
+  filter(YEAR == 2023, CATEGORY == "OSO")
+
+# Overview of overweight prevalence levels in schools
+sg_region_map +
+  tm_shape(obesity_filtered) +
+  tm_symbols(
+    size = 0.5,
+    fill = "PREVALENCE", 
+    # a green-red diverging scale to indicate severity of overweight prevalence
+    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence by school",
+      orientation = "landscape", 
+      item.height	= 0.5, item.width = 2.1
+      )
+    )
+
+# Layer by primary and secondary schools
+
+# Aggregate overweight count by 1. URA subzone, 2. URA planning area, 3. URA region, 4. MOE school zone, 5. MOE school cluster. Display the overweight prevalence level
+
+# Try visualising obesity data in a chloropleth map
+```
+
+# Income distribution (Lucas)
+
+```{r}
+
+```
+
+# Food and Nutrition (Nina)
+
+```{r}
+
+```
+
+# Physical activity (Qasim)
 
 ```{r}
 # Loading school co-curricular activities data
@@ -67,70 +160,6 @@ school_ccas <-
 
 obesity_joined_sports_data <- 
   obesity_data_sf %>% left_join(school_ccas, by = join_by(SCHOOL == school_name))
-```
-
-# Exploratory data analysis (by Prof)
-
-```{r}
-tmap_mode("view")
-tm_shape(sg_pa) + tm_borders() +
-  tm_shape(hmsp_data_sf) +
-  tm_symbols(size = 0.3, fill = "TIER", 
-             fill.scale = tm_scale(values = "brewer.set1"), 
-             fill.legend = tm_legend(title = "HMSP Tiers"))
-
-tm_shape(sg_pa) + tm_fill() + tm_borders() +
-  tm_shape(hmsp_data_sf) +
-  tm_symbols(size = 0.3, fill = "ZONE", 
-             fill.scale = tm_scale(values = "brewer.set1"), 
-             fill.legend = tm_legend(title = "School zones"))
-
-tm_shape(sg_pa) + tm_fill() + tm_borders() +
-  tm_shape(hmsp_data_sf) +
-  tm_symbols(size = 0.3, fill = "CLUSTER", 
-             fill.scale = tm_scale(values = "brewer.set1"), 
-             fill.legend = tm_legend(title = "School clusters")) +
-  tm_facets_wrap(by = "ZONE")
-```
-
-# Obesity profile in Singapore (Colin)
-```{r}
-tmap_mode("view")
-obesity_map <- 
-  # tm_shape(sg_pa) + tm_fill() + tm_borders() +
-  obesity_data_sf %>% 
-  filter(
-    YEAR == 2023,
-    CATEGORY == "OSO"
-    ) %>% 
-  tm_shape() +
-  tm_symbols(
-    size = 0.5,
-    fill = "PREVALENCE", 
-    # a green-red diverging scale to indicate severity of overweight prevalence
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
-    fill.legend = tm_legend(
-      title = "Overweight prevalence by school",
-      orientation = "landscape"
-      )
-    )
-
-print(obesity_map)
-```
-
-# Income distribution (Lucas)
-```{r}
-
-```
-
-# Food and Nutrition (Nina)
-```{r}
-
-```
-
-# Physical activity (Qasim)
-```{r}
-
 ```
 
 # Other Useful stuff
