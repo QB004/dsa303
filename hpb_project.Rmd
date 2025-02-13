@@ -60,13 +60,13 @@ obesity_data_sf <- obesity_data %>%
 tmap_mode("view")
 tm_shape(sg_ura_boundaries) + tm_borders() +
   tm_shape(hmsp_data_sf) +
-  tm_symbols(size = 0.3, fill = "TIER", 
+  tm_symbols(size = 0.4, fill = "TIER", 
              fill.scale = tm_scale(values = "brewer.set1"), 
              fill.legend = tm_legend(title = "HMSP Tiers"))
 
 tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
   tm_shape(hmsp_data_sf) +
-  tm_symbols(size = 0.3, fill = "ZONE", 
+  tm_symbols(size = 0.4, fill = "ZONE", 
              fill.scale = tm_scale(values = "brewer.set1"), 
              fill.legend = tm_legend(title = "School zones"))
 
@@ -89,7 +89,7 @@ tmap_mode("view")
 sg_region_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
   col = "grey", fill = "REGION_N", fill_alpha = 0.25, 
   fill.legend = tm_legend(title = "Region")
-    )
+  )
 
 # Singapore planning area map
 sg_planning_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
@@ -110,22 +110,46 @@ sg_subzone_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
 obesity_filtered <- obesity_data_sf %>% 
   filter(YEAR == 2023, CATEGORY == "OSO")
 
-# Overview of overweight prevalence levels in schools
+# Overview of overweight prevalence levels in primary and secondary schools
+obesity_pri_sch <- obesity_filtered %>% filter(LEVEL == "PRIMARY")
+obesity_sec_sch <- obesity_filtered %>% filter(LEVEL == "SECONDARY")
+
 sg_region_map +
+  sg_planning_map +
+  sg_subzone_map +
   tm_shape(obesity_filtered) +
   tm_symbols(
     size = 0.5,
+    shape = "LEVEL",
+    shape.scale = tm_scale(ticks = c(0,1)),
+    shape.legend = tm_legend(
+      
+    ), 
+    fill = "PREVALENCE", 
+    # a green-red diverging scale to indicate severity of overweight prevalence
+    fill.scale = tm_scale_continuous(
+      values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence by school",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height	= 0.5, item.width = 2.1
+      )
+    ) 
+  tm_shape(obesity_sec_sch) +
+  tm_symbols(
+    size = 1,
+    shape = 16,
     fill = "PREVALENCE", 
     # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
       orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
       item.height	= 0.5, item.width = 2.1
       )
     )
-
-# Layer by primary and secondary schools
 
 # Aggregate overweight count by 1. URA subzone, 2. URA planning area, 3. URA region, 4. MOE school zone, 5. MOE school cluster. Display the overweight prevalence level
 
@@ -135,7 +159,10 @@ sg_region_map +
 # Income distribution (Lucas)
 
 ```{r}
-
+census <- read.csv("census stats.csv") %>% 
+  mutate(PLN_AREA_N = toupper(PLN_AREA_N))
+combine_data <- left_join(sg_ura_boundaries, census)
+View(combine_data)
 ```
 
 # Food and Nutrition (Nina)
