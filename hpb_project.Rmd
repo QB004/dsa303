@@ -29,7 +29,7 @@ hmsp_data_sf <-
   read.csv("hmsp_tier_pri_sec.csv") %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
   st_transform(crs = sg_crs) %>% 
-  st_make_valid()
+  st_make_valid() 
 
 # Checking that all CRS are matching
 isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_data_sf)))
@@ -57,7 +57,7 @@ obesity_data_sf <- obesity_data %>%
 # Exploratory data analysis (by Prof)
 
 ```{r}
-tmap_mode("view")
+tmap_mode("plot")
 tm_shape(sg_ura_boundaries) + tm_borders() +
   tm_shape(hmsp_data_sf) +
   tm_symbols(size = 0.4, fill = "TIER", 
@@ -85,27 +85,43 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
 ```{r}
 tmap_mode("view")
 
-# Singapore region map
-sg_region_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
+# URA regions map
+ura_regions <- sg_ura_boundaries
+ura_region_map <- tm_shape(ura_regions) + tm_polygons(
   col = "grey", fill = "REGION_N", fill_alpha = 0.25, 
-  fill.legend = tm_legend(title = "Region")
-  )
+  fill.legend = tm_legend(title = "URA regions"))
 
-# Singapore planning area map
-sg_planning_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
+# URA planning areas map
+ura_planning_areas <- sg_ura_boundaries
+ura_planning_map <- tm_shape(ura_planning_areas) + tm_polygons(
   col = "grey", fill = "PLN_AREA_N", fill_alpha = 0.25, 
-  fill.legend = tm_legend_hide()
-  )
+  fill.legend = tm_legend_hide())
 
-sg_subzone_map <- tm_shape(sg_ura_boundaries) + tm_polygons(
+# URA subzones map
+ura_subzones <- sg_ura_boundaries
+ura_subzone_map <- tm_shape(ura_subzones) + tm_polygons(
   col = "grey", fill = "SUBZONE_N", fill_alpha = 0.25, 
-  fill.legend = tm_legend_hide()
-  )
+  fill.legend = tm_legend_hide())
+
+# MOE zones map
+moe_zones <- obesity_data %>% group_by(ZONE) %>% 
+  summarise(geometry = st_union(geometry)) %>% st_convex_hull()
+moe_zone_map <- tm_shape(moe_zones) + tm_polygons(
+  col = "grey", fill = "ZONE", fill_alpha = 0.25, 
+  fill.legend = tm_legend(title = "MOE School Zones"))
+
+# MOE clusters map
+moe_clusters <- obesity_data %>% group_by(CLUSTER) %>% 
+  summarise(geometry = st_union(geometry)) %>% st_convex_hull()
+moe_cluster_map <- tm_shape(moe_clusters) + tm_polygons(
+  col = "grey", fill = "CLUSTER", fill_alpha = 0.25, 
+  fill.legend = tm_legend(title = "MOE School Clusters"))
 ```
 
 ## Obesity maps
 
 ```{r}
+tmap_mode("view")
 # for now, filter for 2023 data and overweight and severely overweight
 obesity_filtered <- obesity_data_sf %>% 
   filter(YEAR == 2023, CATEGORY == "OSO")
@@ -114,17 +130,19 @@ obesity_filtered <- obesity_data_sf %>%
 obesity_pri_sch <- obesity_filtered %>% filter(LEVEL == "PRIMARY")
 obesity_sec_sch <- obesity_filtered %>% filter(LEVEL == "SECONDARY")
 
-sg_region_map +
-  sg_planning_map +
-  sg_subzone_map +
+ura_region_map +
+  ura_planning_map +
+  ura_subzone_map +
+  moe_zone_map +
+  moe_cluster_map +
   tm_shape(obesity_filtered) +
   tm_symbols(
     size = 0.5,
     shape = "LEVEL",
-    shape.scale = tm_scale(ticks = c(0,1)),
     shape.legend = tm_legend(
-      
-    ), 
+      position = c("BOTTOM", "CENTER"),
+      title = "Educational level"
+      ),
     fill = "PREVALENCE", 
     # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale_continuous(
@@ -133,21 +151,7 @@ sg_region_map +
       title = "Overweight prevalence by school",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
-      item.height	= 0.5, item.width = 2.1
-      )
-    ) 
-  tm_shape(obesity_sec_sch) +
-  tm_symbols(
-    size = 1,
-    shape = 16,
-    fill = "PREVALENCE", 
-    # a green-red diverging scale to indicate severity of overweight prevalence
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
-    fill.legend = tm_legend(
-      title = "Overweight prevalence by school",
-      orientation = "landscape", 
-      position = c("BOTTOM", "LEFT"),
-      item.height	= 0.5, item.width = 2.1
+      item.height = 0.5, item.width = 2.1
       )
     )
 
