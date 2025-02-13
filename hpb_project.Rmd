@@ -118,23 +118,18 @@ moe_cluster_map <- tm_shape(moe_clusters) + tm_polygons(
   fill.legend = tm_legend(title = "MOE School Clusters"))
 ```
 
-## Obesity maps
+## Obesity prevalence overview map
 
 ```{r}
 tmap_mode("view")
+
 # for now, filter for 2023 data and overweight and severely overweight
 obesity_filtered <- obesity_data_sf %>% 
   filter(YEAR == 2023, CATEGORY == "OSO")
 
-# Overview of overweight prevalence levels in primary and secondary schools
-obesity_pri_sch <- obesity_filtered %>% filter(LEVEL == "PRIMARY")
-obesity_sec_sch <- obesity_filtered %>% filter(LEVEL == "SECONDARY")
-
-ura_region_map +
-  ura_planning_map +
-  ura_subzone_map +
-  moe_zone_map +
-  moe_cluster_map +
+# Overview of overweight prevalence levels in Singapore schools
+ura_region_map + ura_planning_map + ura_subzone_map + 
+  moe_zone_map + moe_cluster_map +
   tm_shape(obesity_filtered) +
   tm_symbols(
     size = 0.5,
@@ -145,16 +140,156 @@ ura_region_map +
       ),
     fill = "PREVALENCE", 
     # a green-red diverging scale to indicate severity of overweight prevalence
-    fill.scale = tm_scale_continuous(
-      values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
-    )
+    ) +
+  tm_title("Overview of overweight prevalence in Singapore schools")
+```
 
+## Obesity prevalence by educational level
+
+### by Primary School
+```{r}
+tmap_mode("view")
+
+# filter out by educational level and remove NA values to calculate SDE
+obesity_pri_sch <- obesity_filtered %>% 
+  filter(PRI == 1, !is.na(PREVALENCE))
+
+# Mean centre, standard deviation distance, standard deviation ellipse
+pri_sch_mean <- calc_mnc(id = 1, points = st_coordinates(obesity_pri_sch))
+pri_sch_median <- calc_mdc(id = 2, points = st_coordinates(obesity_pri_sch))
+pri_sch_mean_median <- rbind(pri_sch_mean$LOCATIONS, pri_sch_median$LOCATIONS) %>% 
+  data.frame() %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs)
+pri_sch_mean_median$id = c("Spatial mean", "Spatial median")
+
+pri_sch_sdd <- calc_sdd(id = 3, points = st_coordinates(obesity_pri_sch))
+pri_sch_sdd_line <- pri_sch_sdd$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_pri_sch))
+pri_sch_sde_line <- pri_sch_sde$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_sch_sde_weighted <- calc_sde(
+  id = 5, calccentre = T, weighted = T, weights = obesity_pri_sch$PREVALENCE,
+  points = st_coordinates(obesity_pri_sch))
+pri_sch_sde_weghted_line <- pri_sch_sde_weighted$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_sch_map <- ura_region_map +
+  tm_shape(obesity_pri_sch) +
+  tm_symbols(
+    size = "PREVALENCE",
+    size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide(),
+    fill = "PREVALENCE", 
+    # a green-red diverging scale to indicate severity of overweight prevalence
+    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence by school",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) + 
+  tm_shape(pri_sch_sdd_line) + tm_lines(lwd = 2, lty = 1) + 
+  tm_shape(pri_sch_sde_line) + tm_lines(lwd = 2, lty = 3) +
+  tm_shape(pri_sch_sde_weghted_line) + tm_lines(col = "red", lwd = 2, lty = 3) +
+  tm_shape(pri_sch_mean_median) + tm_dots(
+    size = 0.5, shape = "id", fill = "white", 
+    shape.legend = tm_legend("Summary measures")
+    ) + 
+  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+  tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+  tm_title("Overweight prevalence in Primary Schools")
+
+print(pri_sch_map)
+```
+
+### by Secondary School
+```{r}
+tmap_mode("view")
+
+# filter out by educational level and remove NA values to calculate SDE
+obesity_sec_sch <- obesity_filtered %>% 
+  filter(SEC == 1, !is.na(PREVALENCE))
+
+# Mean centre, standard deviation distance, standard deviation ellipse
+sec_sch_mean <- calc_mnc(id = 1, points = st_coordinates(obesity_sec_sch))
+sec_sch_median <- calc_mdc(id = 2, points = st_coordinates(obesity_sec_sch))
+sec_sch_mean_median <- rbind(sec_sch_mean$LOCATIONS, sec_sch_median$LOCATIONS) %>% 
+  data.frame() %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs)
+sec_sch_mean_median$id = c("Spatial mean", "Spatial median")
+
+sec_sch_sdd <- calc_sdd(id = 3, points = st_coordinates(obesity_sec_sch))
+sec_sch_sdd_line <- sec_sch_sdd$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+sec_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_sec_sch))
+sec_sch_sde_line <- sec_sch_sde$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+sec_sch_sde_weighted <- calc_sde(
+  id = 5, calccentre = T, weighted = T, weights = obesity_sec_sch$PREVALENCE,
+  points = st_coordinates(obesity_sec_sch))
+sec_sch_sde_weghted_line <- sec_sch_sde_weighted$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+sec_sch_map <- ura_region_map +
+  tm_shape(obesity_sec_sch) +
+  tm_symbols(
+    size = "PREVALENCE",
+    size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide(),
+    fill = "PREVALENCE", 
+    # a green-red diverging scale to indicate severity of overweight prevalence
+    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence by school",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) + 
+  tm_shape(sec_sch_sdd_line) + tm_lines(lwd = 2, lty = 1) + 
+  tm_shape(sec_sch_sde_line) + tm_lines(lwd = 2, lty = 3) +
+  tm_shape(sec_sch_sde_weghted_line) + tm_lines(col = "red", lwd = 2, lty = 3) +
+  tm_shape(sec_sch_mean_median) + tm_dots(
+    size = 0.5, shape = "id", fill = "white", 
+    shape.legend = tm_legend("Summary measures")
+    ) + 
+  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+  tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+  tm_title("Overweight prevalence in Secondary Schools")
+
+print(sec_sch_map)
+
+# tmap_arrange(pri_sch_map, sec_sch_map, nrow = 1)
+```
+
+```{r}
 # Aggregate overweight count by 1. URA subzone, 2. URA planning area, 3. URA region, 4. MOE school zone, 5. MOE school cluster. Display the overweight prevalence level
 
 # Try visualising obesity data in a chloropleth map
