@@ -189,15 +189,90 @@ school_ccas <-
   ) %>% 
   select(school_name, percentage_physical_sports)
 
+
+#obesity_joined_sports_data <- 
+  #obesity_data_sf %>% left_join(school_ccas, by = join_by(SCHOOL == school_name))
+
+
+#2023 OSO school obesity data combined with 2024-25 school physical activity cca data
+#gives spatial awareness to physical activity cca by joining to obesity data set by school name
 obesity_joined_sports_data <- 
-  obesity_data_sf %>% left_join(school_ccas, by = join_by(SCHOOL == school_name))
+  obesity_filtered %>% left_join(school_ccas, by = join_by(SCHOOL == school_name))
+
+
+#Visualising physical sports participation by school
+#uses same visual style as obesity map for continuity
+#scale colour is reversed (green is high, red is low) to indicate higher physical sports participation
+sports_ccas_map <- tm_shape(obesity_joined_sports_data) +
+  tm_symbols(
+    size = 0.5,
+    shape = "LEVEL",
+    shape.legend = tm_legend(
+      position = c("BOTTOM", "RIGHT"),
+      title = "Educational level"
+      ),
+    fill = "percentage_physical_sports", 
+    fill.scale = tm_scale_continuous(
+      values = "brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Physical sports participation by school",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    )
+sports_ccas_map
+
+
+#same plot but displaying each education level separately
+school_level_sports_map <- tm_shape(obesity_joined_sports_data) +
+  tm_symbols(
+    size = 0.5,
+    shape = "LEVEL",
+    shape.legend = tm_legend(
+      position = c("BOTTOM", "RIGHT"),
+      title = "Educational level"
+      ),
+    fill = "percentage_physical_sports", 
+    fill.scale = tm_scale_continuous(
+      values = "brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Physical sports participation by school",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) + tm_facets_wrap(by = "LEVEL") #facet by education level
+
+school_level_sports_map
+
+
+tm_shape(obesity_joined_sports_data) +
+  tm_bubbles(
+    shape = "LEVEL",                
+    size = "PREVALENCE",   #(size.scale = "PREVALENCE" - size too big)    
+    col = "percentage_physical_sports",    
+    palette = "brewer.rd_yl_gn",               
+    border.col = "black",               
+    title.size = "Obesity Prevalence (%)",
+    title = "Physical Sports Participation (%)"
+  ) +
+  tm_layout(
+    title = "Obesity Prevalence vs Physical Sports Participation",
+    legend.outside = TRUE 
+  ) +tm_facets_wrap(by = "LEVEL") 
+
+#bivariate chloropleth for obesity prevalence and physical sports participation?
+
+
+
 ```
 
 # Other Useful stuff
 
 ```{r}
-tmap_mode("view")
-tmap_mode("plot")
+tmap_mode("view") #interactive map
+tmap_mode("plot") #static map
 # tmap_save(tmap_object, 'xx.jpg') # for saving maps as images
 cols4all::c4a_gui() # colour scales
 RColorBrewer::display.brewer.all()
