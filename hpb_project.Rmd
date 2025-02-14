@@ -113,7 +113,7 @@ moe_clusters <- obesity_data %>% group_by(CLUSTER) %>%
   summarise(geometry = st_union(geometry)) %>% st_convex_hull()
 moe_cluster_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
   col = "grey", fill = "CLUSTER", fill_alpha = 0.25, 
-  fill.legend = tm_legend(title = "MOE School Clusters"))
+  fill.legend = tm_legend_hide())
 ```
 
 ## Obesity prevalence overview map
@@ -301,17 +301,18 @@ obesity_ura_regions <- st_join(sg_ura_boundaries, obesity_data_sf) %>%
     )
 
 ura_region_map + obesity_ura_regions %>% 
-  tm_shape() +
+  tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGG",
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence by school",
+      title = "Overweight prevalence",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
-    )
+    ) +
+  tm_title("Overweight prevalence by URA regions")
 
 # Aggregating overweight counts by URA planning areas
 obesity_ura_planning_areas <- st_join(sg_ura_boundaries, obesity_data_sf) %>% 
@@ -323,17 +324,18 @@ obesity_ura_planning_areas <- st_join(sg_ura_boundaries, obesity_data_sf) %>%
     )
 
 ura_planning_area_map + obesity_ura_planning_areas %>% 
-  tm_shape() +
+  tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGG",
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence by school",
+      title = "Overweight prevalence",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
-    )
+    ) +
+  tm_title("Overweight prevalence by URA planning areas")
 
 # Aggregating overweight counts by URA subzones
 obesity_ura_subzones <- st_join(sg_ura_boundaries, obesity_data_sf) %>% 
@@ -345,22 +347,72 @@ obesity_ura_subzones <- st_join(sg_ura_boundaries, obesity_data_sf) %>%
     )
 
 ura_subzone_map + obesity_ura_subzones %>% 
-  tm_shape() +
+  tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGG",
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence by school",
+      title = "Overweight prevalence",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
-    )
+    ) +
+  tm_title("Overweight prevalence by URA subzones")
 
 # Aggregating overweight counts by MOE school zones
+obesity_moe_zones <- 
+  # we left_join instead of st_join due to overlapping boundaries
+  left_join(moe_zones, st_drop_geometry(obesity_data_sf)) %>% 
+  filter(YEAR == 2023, CATEGORY == "OSO") %>% 
+  group_by(ZONE) %>% 
+  summarise(
+    PREVALENCE_AGG = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
+    geometry = st_union(geometry)
+    )
+
+moe_zone_map +
+  tm_legend_hide() + 
+  obesity_moe_zones %>% 
+  tm_shape(name = "Overweight prevalence") +
+  tm_polygons(
+    fill = "PREVALENCE_AGG",
+    fill_alpha = 0.95,
+    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1,
+      show = T
+      )
+    ) +
+  tm_title("Overweight prevalence by MOE clusters")
 
 # Aggregating overweight counts by MOE clusters
+obesity_moe_clusters <- 
+  left_join(moe_clusters, st_drop_geometry(obesity_data_sf)) %>% 
+  filter(YEAR == 2023, CATEGORY == "OSO") %>% 
+  group_by(CLUSTER) %>% 
+  summarise(
+    PREVALENCE_AGG = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
+    geometry = st_union(geometry)
+    )
 
+moe_cluster_map + obesity_moe_clusters %>% 
+  tm_shape(name = "Overweight prevalence") +
+  tm_polygons(
+    fill = "PREVALENCE_AGG",
+    fill_alpha = 0.95,
+    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) +
+  tm_title("Overweight prevalence by MOE clusters")
 ```
 
 ```{r}
