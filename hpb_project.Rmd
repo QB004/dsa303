@@ -426,6 +426,7 @@ census <- read.csv("census stats.csv") %>%
   mutate(PLN_AREA_N = toupper(PLN_AREA_N))
 combine_data <- left_join(sg_ura_boundaries, census)
 View(combine_data)
+tedt
 ```
 
 # Food and Nutrition (Nina)
