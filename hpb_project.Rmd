@@ -439,31 +439,33 @@ tedt
 
 ```{r}
 # Loading school co-curricular activities data
-school_ccas <- 
+school_sports_ccas <- 
   read.csv("CocurricularactivitiesCCAs.csv") %>% 
   group_by(school_name) %>% 
   summarise(
     total = n(),
-    physical_sports_count = sum(cca_grouping_desc == "PHYSICAL SPORTS"),
-    percentage_physical_sports = (physical_sports_count / total)
-  ) %>% 
-  select(school_name, percentage_physical_sports)
-
-
-#obesity_joined_sports_data <- 
-  #obesity_data_sf %>% left_join(school_ccas, by = join_by(SCHOOL == school_name))
+    physical_sports_count = sum(cca_grouping_desc == "PHYSICAL SPORTS")) %>% 
+    select(school_name, physical_sports_count)
 
 
 #2023 OSO school obesity data combined with 2024-25 school physical activity cca data
 #gives spatial awareness to physical activity cca by joining to obesity data set by school name
-obesity_joined_sports_data <- 
-  obesity_filtered %>% left_join(school_ccas, by = join_by(SCHOOL == school_name))
+obesity_joined_school_sports_data <- 
+  obesity_filtered %>% 
+  left_join(school_sports_ccas, by = join_by(SCHOOL == school_name)) %>%
+  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100, #ratio of sports cca per 100 students
+         LEVEL = case_when(
+           LEVEL == "PRIMARY + SECONDARY" & PRI == 1 ~ "PRIMARY",
+           LEVEL == "PRIMARY + SECONDARY" & PRI == 0 ~ "SECONDARY",
+           TRUE ~ LEVEL
+         )
+        ) 
 
 
 #Visualising physical sports participation by school
 #uses same visual style as obesity map for continuity
 #scale colour is reversed (green is high, red is low) to indicate higher physical sports participation
-sports_ccas_map <- tm_shape(obesity_joined_sports_data) +
+sports_ccas_map <- tm_shape(obesity_joined_school_sports_data) +
   tm_symbols(
     size = 0.5,
     shape = "LEVEL",
@@ -471,11 +473,11 @@ sports_ccas_map <- tm_shape(obesity_joined_sports_data) +
       position = c("BOTTOM", "RIGHT"),
       title = "Educational level"
       ),
-    fill = "percentage_physical_sports", 
+    fill = "sports_cca_per_100", 
     fill.scale = tm_scale_continuous(
       values = "brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
-      title = "Physical sports participation by school",
+      title = "Ratio of Sports CCAs per 100 Students by School",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
@@ -485,19 +487,19 @@ sports_ccas_map
 
 
 #same plot but displaying each education level separately
-school_level_sports_map <- tm_shape(obesity_joined_sports_data) +
+school_level_sports_map <- tm_shape(obesity_joined_school_sports_data) +
   tm_symbols(
     size = 0.5,
     shape = "LEVEL",
     shape.legend = tm_legend(
       position = c("BOTTOM", "RIGHT"),
-      title = "Educational level"
+      title = "Educational level",
       ),
-    fill = "percentage_physical_sports", 
+    fill = "sports_cca_per_100", 
     fill.scale = tm_scale_continuous(
       values = "brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
-      title = "Physical sports participation by school",
+      title = "Ratio of Sports CCAs per 100 Students by School",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
@@ -507,18 +509,18 @@ school_level_sports_map <- tm_shape(obesity_joined_sports_data) +
 school_level_sports_map
 
 
-tm_shape(obesity_joined_sports_data) +
+tm_shape(obesity_joined_school_sports_data) +
   tm_bubbles(
     shape = "LEVEL",                
-    size = "PREVALENCE",   #(size.scale = "PREVALENCE" - size too big)    
-    col = "percentage_physical_sports",    
+    size = "sports_cca_per_100",   #(size.scale = "PREVALENCE" - size too big)    
+    col = "PREVALENCE",    
     palette = "brewer.rd_yl_gn",               
     border.col = "black",               
-    title.size = "Obesity Prevalence (%)",
+    title.size = "Ratio of Sports CCAs per 100 Students",
     title = "Physical Sports Participation (%)"
   ) +
   tm_layout(
-    title = "Obesity Prevalence vs Physical Sports Participation",
+    title = "Obesity Prevalence vs Physical Sports CCAs",
     legend.outside = TRUE 
   ) +tm_facets_wrap(by = "LEVEL") 
 
