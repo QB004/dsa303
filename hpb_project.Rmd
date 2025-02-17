@@ -426,7 +426,11 @@ census <- read.csv("census stats.csv") %>%
   mutate(PLN_AREA_N = toupper(PLN_AREA_N))
 combine_data <- left_join(sg_ura_boundaries, census)
 View(combine_data)
-tedt
+summary(census)
+tm_shape(combine_data) + tm_fill(fill="Income", fill.scale = tm_scale(breaks=c(6925,8396,9532,11317,16197)))+tm_title("Breakdown by Household Income")
+tm_shape(combine_data) + tm_fill(fill="Education", fill.scale = tm_scale(breaks=c(3.610,4.027,4.315,4.643,6.2)))+tm_title("Breakdown by Education Level")
+tm_shape(combine_data) + tm_fill(fill="Primary", fill.scale = tm_scale(breaks=c(61,4778,7043,11681,21822)))+tm_title("Breakdown by Pri Students")
+tm_shape(combine_data) + tm_fill(fill="Secondary", fill.scale = tm_scale(breaks=c(59,3526,4894,8804,13221)))+tm_title("Breakdown by Sec Students")
 ```
 
 # Food and Nutrition (Nina)
