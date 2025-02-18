@@ -428,9 +428,43 @@ combine_data <- left_join(sg_ura_boundaries, census)
 View(combine_data)
 summary(census)
 tm_shape(combine_data) + tm_fill(fill="Income", fill.scale = tm_scale(breaks=c(6925,8396,9532,11317,16197)))+tm_title("Breakdown by Household Income")
-tm_shape(combine_data) + tm_fill(fill="Education", fill.scale = tm_scale(breaks=c(3.610,4.027,4.315,4.643,6.2)))+tm_title("Breakdown by Education Level")
+tm_shape(combine_data) + tm_fill(fill="Education", fill.scale = tm_scale(breaks=c(9.76,10.74,11.25,11.89,14.78)))+tm_title("Breakdown by Education Level")
 tm_shape(combine_data) + tm_fill(fill="Primary", fill.scale = tm_scale(breaks=c(61,4778,7043,11681,21822)))+tm_title("Breakdown by Pri Students")
 tm_shape(combine_data) + tm_fill(fill="Secondary", fill.scale = tm_scale(breaks=c(59,3526,4894,8804,13221)))+tm_title("Breakdown by Sec Students")
+census_filtered <- combine_data %>% filter(Income != NA)
+census_coords <- st_coordinates(census_filtered)
+
+```
+
+# Spatial Descriptive Summary Measures of Income (Lucas)
+
+```{r}
+income_mean <- calc_mnc(id = 1, points = st_coordinates(census_coords), weighted = T, weights = census_filtered$Income)
+sec_sch_median <- calc_mdc(id = 2, points = st_coordinates(obesity_sec_sch))
+sec_sch_mean_median <- rbind(sec_sch_mean$LOCATIONS, sec_sch_median$LOCATIONS) %>% 
+  data.frame() %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs)
+sec_sch_mean_median$id = c("Spatial mean", "Spatial median")
+
+sec_sch_sdd <- calc_sdd(id = 3, points = st_coordinates(obesity_sec_sch))
+sec_sch_sdd_line <- sec_sch_sdd$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+sec_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_sec_sch))
+sec_sch_sde_line <- sec_sch_sde$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+sec_sch_sde_weighted <- calc_sde(
+  id = 5, calccentre = T, weighted = T, weights = obesity_sec_sch$PREVALENCE,
+  points = st_coordinates(obesity_sec_sch))
+sec_sch_sde_weighted_line <- sec_sch_sde_weighted$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
 ```
 
 # Food and Nutrition (Nina)
