@@ -493,58 +493,28 @@ income_sde_weighted_line <- income_sde_weighted$LOCATIONS %>%
 #Hawker centre data
 hawker_full = st_read("NEAMarketandFoodCentre.geojson") %>%
   st_transform(crs = sg_crs)
-
 hawker = hawker_full["geometry"]
-
-#Map of hawker centres
-tm_shape(sg_ura_boundaries) + 
-  tm_borders() +
-  tm_shape(hawker_sf) + 
-  tm_dots(col = "green", size = 0.3)
-
 
 
 #Fast Food Outlets (Mcdonald's and 711)
-
-
 macs_full = st_read("mcdonalds_singapore.geojson") %>%
   st_transform(crs = sg_crs)
-
   #Check validity
 table(st_is_valid(macs_full))
-
   #Check CRS
 st_crs(macs_full)$epsg
-
   #Extract necessary columns for analysis
 macs = macs_full[,"geometry"]
-
-  #Plot of Mcdonald outlets
-tm_shape(sg_ura_boundaries) + 
-  tm_borders() +
-  tm_shape(macs) + 
-  tm_dots(col = "green", size = 0.3)
-
 
   #7-11 Outlets
 seven_eleven_full = st_read("711_singapore.geojson") %>%
   st_transform(crs = sg_crs)
-
-
   #Extract necessary columns for analysis
 seven_eleven = seven_eleven_full[,"geometry"]
-  
   #Check validity
 table(st_is_valid(seven_eleven))
-
   #Check CRS
 st_crs(seven_eleven)$epsg
-
-  #Plot of 711 outlets
-tm_shape(sg_ura_boundaries) + 
-  tm_borders() +
-  tm_shape(seven_eleven) + 
-  tm_dots(col = "green", size = 0.3)
 
 #Combine data into single SF object
 seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
@@ -552,10 +522,27 @@ macs_sf = mutate(macs, outlet = "mcdonalds")
 hawker_sf = mutate(hawker, outlet = "hawker")
 food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
 
-tm_shape(sg_ura_boundaries) + tm_borders() + 
-  tm_shape(food) + 
-  tm_polygons(fill = "outlet", fill.scale = tm_scale(values = "brewer.set2"))
 
+#Primary school analysis
+  #duplicate primary school data
+obesity_pri_food = obesity_pri_sch
+  #check units
+st_crs(obesity_pri_food)$units
+pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
+pri_intersections <- st_intersects(pri_schools_buffer1, food)
+
+  #calculate the number of food outlets within a 1km radius of each school
+obesity_pri_food$num_food_outlets <- lengths(pri_intersections)
+obesity_pri_food
+
+  #show density via choropleth map
+ura_region_map + 
+  tm_shape(obesity_pri_food) +
+  tm_fill(col = "num_food_outlets", 
+          palette = "brewer.yl_or_rd",
+          alpha = 0.7) + 
+  tm_borders(lwd = 0.5) +
+  tm_title("Food Outlet Density by School")
 ```
 
 # Physical activity (Qasim)
