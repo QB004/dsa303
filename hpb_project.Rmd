@@ -450,25 +450,77 @@ census <- read.csv("census stats.csv") %>%
 combine_data <- left_join(ura_planning_areas, census)
 combine_data
 summary(census)
+areas <- c(
+"ANG MO KIO", "BEDOK", "BISHAN", "BUKIT BATOK", "BUKIT MERAH", "BUKIT PANJANG",
+"BUKIT TIMAH", "CHOA CHU KANG", "CLEMENTI", "DOWNTOWN CORE", "GEYLANG", "HOUGANG",
+"JURONG EAST", "JURONG WEST", "KALLANG", "MARINE PARADE", "OUTRAM", "NOVENA", "PASIR RIS", "PUNGGOL",   "QUEENSTOWN", "RIVER VALLEY", "SEMBAWANG", "SENGKANG", "SERANGOON", "TAMPINES",
+"TANGLIN", "TOA PAYOH", "WOODLANDS", "YISHUN"
+)
+for (area in areas) {
+area_var <- gsub(" ", "_", tolower(area))
+assign(paste0(area_var, "_set"), subset(combine_data, PLN_AREA_N == area))
+assign(area_var, st_union(get(paste0(area_var, "_set"))))
+assign(paste0(area_var, "_point"), st_centroid(get(area_var)))
+}
+st_coordinates(ang_mo_kio_point)
+st_coordinates(bedok_point)
+st_coordinates(bishan_point)
+st_coordinates(bukit_batok_point)
+st_coordinates(bukit_merah_point)
+st_coordinates(bukit_panjang_point)
+st_coordinates(bukit_timah_point)
+st_coordinates(choa_chu_kang_point)
+st_coordinates(clementi_point)
+st_coordinates(downtown_core_point)
+st_coordinates(geylang_point)
+st_coordinates(hougang_point)
+st_coordinates(jurong_east_point)
+st_coordinates(jurong_west_point)
+st_coordinates(kallang_point)
+st_coordinates(marine_parade_point)
+st_coordinates(outram_point)
+st_coordinates(novena_point)
+st_coordinates(pasir_ris_point)
+st_coordinates(punggol_point)
+st_coordinates(queenstown_point)
+st_coordinates(river_valley_point)
+st_coordinates(sembawang_point)
+st_coordinates(sengkang_point)
+st_coordinates(serangoon_point)
+st_coordinates(tampines_point)
+st_coordinates(tanglin_point)
+st_coordinates(toa_payoh_point)
+st_coordinates(woodlands_point)
+st_coordinates(yishun_point)
+points_df = data.frame(PLN_AREA_N = c("ANG MO KIO", "BEDOK", "BISHAN", "BUKIT BATOK", "BUKIT MERAH", "BUKIT PANJANG",
+"BUKIT TIMAH", "CHOA CHU KANG", "CLEMENTI", "DOWNTOWN CORE", "GEYLANG", "HOUGANG",
+"JURONG EAST", "JURONG WEST", "KALLANG", "MARINE PARADE", "OUTRAM", "NOVENA", "PASIR RIS", "PUNGGOL",   "QUEENSTOWN", "RIVER VALLEY", "SEMBAWANG", "SENGKANG", "SERANGOON", "TAMPINES",
+"TANGLIN", "TOA PAYOH", "WOODLANDS", "YISHUN"),
+lat=c(40229.12,34032.1,37450.89,37527.65,28662.87,38761.84,34689,40833.42,33319.17,29721.45,33683.82,38409.7,33633.69,35974.53,32515.77,31398.33,29477.49,34356.64,40066.41,43023.56,30164.7,31156.94,48594.64,41466.18,38582.59,36200.47,32298.93,35429.21,46928.63,44086.22),
+long = c(28976.88,38582.67,28789.76,19255.42,26865.78,21287.04,23256.76,18415.05,19923.36,30335.19,34255.04,34285.76,17035.36,13708.69,31685.37,35005.86,28972.96,28221.51,40795.84,36538.42,22573.46,28072.91,26387.4,34051.82,31839.38,41459.48,26250.09,31083.53,22923.8,28404.04))
+points_df
+points_sf <- st_as_sf(points_df, coords = c("long", "lat"), crs = sg_crs)
+points_sf
+census_merge = left_join(points_sf,census)
+ura_planning_area_map+tm_shape(census_merge)+ tm_symbols(size=0.5,fill="Income")
+ura_planning_area_map+tm_shape(census_merge)+ tm_symbols(size=0.5,fill="Education")
+
 
 tm_shape(combine_data) + 
   tm_fill(fill="Income", 
           fill.scale = tm_scale(breaks = c(6925,8396,9532,11317,16197))
           ) +
   tm_title("Breakdown by Household Income")
-
 tm_shape(combine_data) + 
   tm_fill(fill="Education", 
           fill.scale = tm_scale(breaks = c(9.76,10.74,11.25,11.89,14.78))
           ) +
   tm_title("Breakdown by Education Level")
-
 tm_shape(combine_data) + 
   tm_fill(fill="Primary", 
           fill.scale = tm_scale(breaks = c(61,4778,7043,11681,21822))
           ) +
   tm_title("Breakdown by Pri Students")
-
 tm_shape(combine_data) + 
   tm_fill(fill="Secondary", 
           fill.scale = tm_scale(breaks=c(59,3526,4894,8804,13221))
