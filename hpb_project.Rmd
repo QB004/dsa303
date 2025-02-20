@@ -59,6 +59,12 @@ obesity_data_sf <- obesity_data %>%
     )
 ```
 
+```{r}
+# for now, filter for 2023 data and overweight and severely overweight
+obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
+  filter(YEAR == 2023, CATEGORY == "OSO")
+```
+
 # Exploratory data analysis (by Prof)
 
 ```{r}
@@ -83,9 +89,9 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
   tm_facets_wrap(by = "ZONE")
 ```
 
-# Obesity profile in Singapore (Colin)
+# Singapore maps
 
-## Singapore maps
+These are maps that define Singapore's regions based on URA defined boundaries (region, planning area, subzone) and MOE defined boundaries (zone, cluster). Subsequently, the defined regions can be used together with aggregated data so that we can examine overweight prevalence and other contributing factors by these differently delimited regions.
 
 ```{r}
 tmap_mode("view")
@@ -93,14 +99,14 @@ tmap_mode("view")
 # URA regions map
 ura_regions <- sg_ura_boundaries %>% group_by(REGION_N) %>% 
   summarise(geometry = st_union(geometry))
-ura_region_map <- tm_shape(ura_regions, name = "URA regions") + tm_polygons(
+ura_regions_map <- tm_shape(ura_regions, name = "URA regions") + tm_polygons(
     col = "grey", fill = "REGION_N", fill_alpha = 0.25, 
     fill.legend = tm_legend(title = "URA regions"))
 
 # URA planning areas map
 ura_planning_areas <- sg_ura_boundaries %>% group_by(PLN_AREA_N) %>% 
   summarise(geometry = st_union(geometry))
-ura_planning_area_map <- tm_shape(ura_planning_areas, name = "URA planning areas") + 
+ura_planning_areas_map <- tm_shape(ura_planning_areas, name = "URA planning areas") + 
   tm_polygons(
     col = "grey", fill = "PLN_AREA_N", fill_alpha = 0.25, 
     fill.legend = tm_legend_hide())
@@ -108,7 +114,7 @@ ura_planning_area_map <- tm_shape(ura_planning_areas, name = "URA planning areas
 # URA subzones map
 ura_subzones <- sg_ura_boundaries %>% group_by(SUBZONE_N) %>% 
   summarise(geometry = st_union(geometry))
-ura_subzone_map <- tm_shape(ura_subzones, name = "URA subzones") + tm_polygons(
+ura_subzones_map <- tm_shape(ura_subzones, name = "URA subzones") + tm_polygons(
   col = "grey", fill = "SUBZONE_N", fill_alpha = 0.25, 
   fill.legend = tm_legend_hide())
 
@@ -127,19 +133,17 @@ moe_cluster_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
   fill.legend = tm_legend_hide())
 ```
 
+# Obesity profile in Singapore (Colin)
+
 ## Obesity prevalence overview map
+
+The following map is an overview of overweight prevalence in Singapore schools. You may use the different layers provided in the map to view the individual school data against URA regions, planning areas and subzones, or MOE zones and clusters. Note that MOE zones and clusters have overlapping areas.
 
 ```{r}
 tmap_mode("view")
 
-# for now, filter for 2023 data and overweight and severely overweight
-obesity_filtered <- obesity_data_sf %>% 
-  filter(YEAR == 2023, CATEGORY == "OSO")
-
-# Overview of overweight prevalence levels in Singapore schools
-ura_region_map + ura_planning_area_map + ura_subzone_map + 
-  moe_zone_map + moe_cluster_map +
-  tm_shape(obesity_filtered, name = "Overweight prevalence") +
+# School obesity map plot
+school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prevalence") +
   tm_symbols(
     size = 0.5,
     shape = "LEVEL",
@@ -156,18 +160,27 @@ ura_region_map + ura_planning_area_map + ura_subzone_map +
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
-    ) +
+    )
+
+# Overview of overweight prevalence levels in Singapore schools
+ura_regions_map + ura_planning_areas_map + ura_subzones_map + 
+  moe_zone_map + moe_cluster_map +
+  school_obesity_map +
   tm_title("Overview of overweight prevalence in Singapore schools")
 ```
 
 ## Obesity prevalence by educational level
+
+We examine overweight prevalence in Singapore schools by educational level: Primary school or Secondary school. Primary school and secondary school students have different characteristics that might affect overweight prevalance.
+
+The spatial mean and spatial variance (using the standard deviation distance and standard deviation ellipse) are calculated and plotted for each educational level.
 
 ### by Primary School
 ```{r}
 tmap_mode("view")
 
 # filter out by educational level and remove NA values to calculate SDE
-obesity_pri_sch <- obesity_filtered %>% 
+obesity_pri_sch <- obesity_data_sf_2023_OSO %>% 
   filter(PRI == 1, !is.na(PREVALENCE))
 
 # Mean centre, standard deviation distance, standard deviation ellipse
@@ -198,7 +211,7 @@ pri_sch_sde_weighted_line <- pri_sch_sde_weighted$LOCATIONS %>%
   st_combine() %>% 
   st_cast("LINESTRING")
 
-pri_sch_map <- ura_region_map +
+pri_sch_map <- ura_regions_map +
   tm_shape(obesity_pri_sch, name = "Overweight prevalence") +
   tm_symbols(
     size = "PREVALENCE",
@@ -235,7 +248,7 @@ print(pri_sch_map)
 tmap_mode("view")
 
 # filter out by educational level and remove NA values to calculate SDE
-obesity_sec_sch <- obesity_filtered %>% 
+obesity_sec_sch <- obesity_data_sf_2023_OSO %>% 
   filter(SEC == 1, !is.na(PREVALENCE))
 
 # Mean centre, standard deviation distance, standard deviation ellipse
@@ -266,7 +279,7 @@ sec_sch_sde_weighted_line <- sec_sch_sde_weighted$LOCATIONS %>%
   st_combine() %>% 
   st_cast("LINESTRING")
 
-sec_sch_map <- ura_region_map +
+sec_sch_map <- ura_regions_map +
   tm_shape(obesity_sec_sch, name = "Overweight prevalence") +
   tm_symbols(
     size = "PREVALENCE",
@@ -300,10 +313,15 @@ print(sec_sch_map)
 # tmap_arrange(pri_sch_map, sec_sch_map, nrow = 1)
 ```
 
-## Aggregating overweight counts by different defined regions
+Generally, we observe greater overweight prevalence levels for schools in the North and lower overweight prevalence levels in the South and Central regions of Singapore.
+
+## Obesity prevalence by region
+
+We aggregating overweight counts and school enrollment data by the different delimited regions, and fill in the regions to get visualise overweight prevalance by region.
+
 ```{r}
 # Aggregating overweight counts by URA regions
-obesity_ura_regions <- st_join(sg_ura_boundaries, obesity_data_sf) %>% 
+obesity_ura_regions <- st_join(ura_regions, obesity_data_sf) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(REGION_N) %>% 
   summarise(
@@ -311,7 +329,7 @@ obesity_ura_regions <- st_join(sg_ura_boundaries, obesity_data_sf) %>%
     geometry = st_union(geometry)
     )
 
-ura_region_map + obesity_ura_regions %>% 
+ura_regions_map + obesity_ura_regions %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGG",
@@ -326,7 +344,7 @@ ura_region_map + obesity_ura_regions %>%
   tm_title("Overweight prevalence by URA regions")
 
 # Aggregating overweight counts by URA planning areas
-obesity_ura_planning_areas <- st_join(sg_ura_boundaries, obesity_data_sf) %>% 
+obesity_ura_planning_areas <- st_join(ura_planning_areas, obesity_data_sf) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(PLN_AREA_N) %>% 
   summarise(
@@ -334,7 +352,7 @@ obesity_ura_planning_areas <- st_join(sg_ura_boundaries, obesity_data_sf) %>%
     geometry = st_union(geometry)
     )
 
-ura_planning_area_map + obesity_ura_planning_areas %>% 
+ura_planning_areas_map + obesity_ura_planning_areas %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGG",
@@ -349,7 +367,7 @@ ura_planning_area_map + obesity_ura_planning_areas %>%
   tm_title("Overweight prevalence by URA planning areas")
 
 # Aggregating overweight counts by URA subzones
-obesity_ura_subzones <- st_join(sg_ura_boundaries, obesity_data_sf) %>% 
+obesity_ura_subzones <- st_join(ura_subzones, obesity_data_sf) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(SUBZONE_N) %>% 
   summarise(
@@ -357,7 +375,7 @@ obesity_ura_subzones <- st_join(sg_ura_boundaries, obesity_data_sf) %>%
     geometry = st_union(geometry)
     )
 
-ura_subzone_map + obesity_ura_subzones %>% 
+ura_subzones_map + obesity_ura_subzones %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGG",
@@ -427,20 +445,41 @@ moe_cluster_map + obesity_moe_clusters %>%
 ```
 
 ```{r}
-# Try visualising obesity data in a chloropleth map
+# Visualise obesity data in a chloropleth map
 ```
 
 ## Spatial dependence of obesity in Singapore schools
 ```{r}
-sg_ura_boundaries_nb <- poly2nb(sg_ura_boundaries) # queen contiguity
-sg_subzone_coords <- st_point_on_surface(st_geometry(sg_ura_boundaries))
-plot(st_geometry(sg_ura_boundaries), border="grey60", axes=T,  main="Queen Contiguity")
-plot(sg_ura_boundaries_nb, sg_subzone_coords, pch=19, cex=0.6, add=T)
+# Contiguous neighbours by URA regions
+ura_regions_nb <- poly2nb(obesity_ura_regions, queen = T) # queen contiguity
+ura_regions_coords <- st_point_on_surface(st_geometry(obesity_ura_regions))
+plot(st_geometry(ura_regions), border = "grey", axes = T, 
+     main="SG schools contiguous neighbours by region")
+plot.nb(ura_regions_nb, ura_regions_coords, pch = 19, cex = 0.6, add = T)
 
-sg_ura_lw <- nb2listw(sg_ura_boundaries_nb, style = "W", zero.policy = T)
-sg_ura_lw_B <- nb2listw(sg_ura_boundaries_nb, style = "B", zero.policy = T)
+ura_regions_lw <- nb2listw(ura_regions_nb, style = "W")
+ura_regions_lw_B <- nb2listw(ura_regions_nb, style = "B")
+
+# Contiguous neighbours by URA planning areas
+ura_planning_areas_nb <- poly2nb(obesity_ura_planning_areas, queen = T) # queen contiguity
+ura_planning_areas_coords <- st_point_on_surface(st_geometry(obesity_ura_planning_areas))
+plot(st_geometry(ura_planning_areas), border = "grey", axes = T, 
+     main="SG schools contiguous neighbours by planning area")
+plot.nb(ura_planning_areas_nb, ura_planning_areas_coords, pch = 19, cex = 0.6, add = T)
+
+ura_planning_areas_lw <- nb2listw(ura_planning_areas_nb, style = "W")
+ura_planning_areas_lw_B <- nb2listw(ura_planning_areas_nb, style = "B")
+
+# Contiguous neighbours by URA subzones
+ura_subzones_nb <- poly2nb(obesity_ura_subzones, queen = T) # queen contiguity
+ura_subzones_coords <- st_point_on_surface(st_geometry(obesity_ura_subzones))
+plot(st_geometry(ura_subzones), border = "grey", axes = T, 
+     main="SG schools contiguous neighbours by subzone")
+plot.nb(ura_subzones_nb, ura_subzones_coords, pch = 19, cex = 0.6, add = T)
+
+ura_subzones_lw <- nb2listw(ura_subzones_nb, style = "W", zero.policy = T)
+ura_subzones_lw_B <- nb2listw(ura_subzones_nb, style = "B", zero.policy = T)
 ```
-
 
 # Income distribution (Lucas)
 
@@ -676,7 +715,7 @@ school_sports_ccas <-
 #2023 OSO school obesity data combined with 2024-25 school physical activity cca data
 #gives spatial awareness to physical activity cca by joining to obesity data set by school name
 obesity_joined_school_sports_data <- 
-  obesity_filtered %>% 
+  obesity_data_sf_2023_OSO %>% 
   left_join(school_sports_ccas, by = join_by(SCHOOL == school_name)) %>%
   mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100, #ratio of sports cca per 100 students
          LEVEL = case_when(
