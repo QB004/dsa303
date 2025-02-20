@@ -33,6 +33,11 @@ hmsp_data_sf <-
 
 # Checking that all CRS are matching
 isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_data_sf)))
+
+# Checking CRS units
+st_crs(sg_ura_boundaries)$units
+st_crs(obesity_data)$units
+st_crs(hmsp_data_sf)$units
 ```
 
 ## Transforming data to be usable for analysis
@@ -418,6 +423,15 @@ moe_cluster_map + obesity_moe_clusters %>%
 ```{r}
 # Try visualising obesity data in a chloropleth map
 ```
+
+## Spatial dependence of obesity in Singapore schools
+```{r}
+sg_ura_boundaries_nb <- poly2nb(sg_ura_boundaries) # queen contiguity
+sg_subzone_coords <- st_point_on_surface(st_geometry(sg_ura_boundaries))
+plot(st_geometry(sg_ura_boundaries), border="grey60", axes=T,  main="Queen Contiguity")
+plot(sg_ura_boundaries_nb, sg_subzone_coords, pch=19, cex=0.6, add=T)
+```
+
 
 # Income distribution (Lucas)
 
