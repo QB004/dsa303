@@ -325,14 +325,14 @@ obesity_ura_regions <- st_join(ura_regions, obesity_data_sf) %>%
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(REGION_N) %>% 
   summarise(
-    PREVALENCE_AGG = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
+    PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
     )
 
 ura_regions_map + obesity_ura_regions %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
-    fill = "PREVALENCE_AGG",
+    fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -348,14 +348,14 @@ obesity_ura_planning_areas <- st_join(ura_planning_areas, obesity_data_sf) %>%
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(PLN_AREA_N) %>% 
   summarise(
-    PREVALENCE_AGG = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
+    PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
     )
 
 ura_planning_areas_map + obesity_ura_planning_areas %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
-    fill = "PREVALENCE_AGG",
+    fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -371,14 +371,14 @@ obesity_ura_subzones <- st_join(ura_subzones, obesity_data_sf) %>%
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(SUBZONE_N) %>% 
   summarise(
-    PREVALENCE_AGG = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
+    PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
     )
 
 ura_subzones_map + obesity_ura_subzones %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
-    fill = "PREVALENCE_AGG",
+    fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -396,7 +396,7 @@ obesity_moe_zones <-
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(ZONE) %>% 
   summarise(
-    PREVALENCE_AGG = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
+    PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
     )
 
@@ -405,7 +405,7 @@ moe_zone_map +
   obesity_moe_zones %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
-    fill = "PREVALENCE_AGG",
+    fill = "PREVALENCE_AGGREGATE",
     fill_alpha = 0.95,
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
@@ -424,14 +424,14 @@ obesity_moe_clusters <-
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(CLUSTER) %>% 
   summarise(
-    PREVALENCE_AGG = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
+    PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
     )
 
 moe_cluster_map + obesity_moe_clusters %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
-    fill = "PREVALENCE_AGG",
+    fill = "PREVALENCE_AGGREGATE",
     fill_alpha = 0.95,
     fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
@@ -449,6 +449,7 @@ moe_cluster_map + obesity_moe_clusters %>%
 ```
 
 ## Spatial dependence of obesity in Singapore schools
+
 ```{r}
 # Contiguous neighbours by URA regions
 ura_regions_nb <- poly2nb(obesity_ura_regions, queen = T) # queen contiguity
@@ -477,8 +478,60 @@ plot(st_geometry(ura_subzones), border = "grey", axes = T,
      main="SG schools contiguous neighbours by subzone")
 plot.nb(ura_subzones_nb, ura_subzones_coords, pch = 19, cex = 0.6, add = T)
 
+
+```
+
+### Join count analysis
+```{r}
+# Setting an overweight cutoff point
+OVERWEIGHT_CUTOFF <- 0.15
+
+# by URA region
+ura_regions_lw <- nb2listw(ura_regions_nb, style = "W", zero.policy = T)
+ura_regions_lw_B <- nb2listw(ura_regions_nb, style = "B", zero.policy = T)
+
+obesity_ura_regions$HIGH_PREVALANCE <- 
+  as.factor(obesity_ura_regions$PREVALENCE_AGGREGATE > OVERWEIGHT_CUTOFF)
+
+ura_regions_map + obesity_ura_regions %>% 
+  tm_shape(name = "Overweight prevalence") +
+  tm_polygons(fill = "HIGH_PREVALANCE") +
+  tm_title("Overweight prevalence by URA regions")
+
+joincount.multi(obesity_ura_regions$HIGH_PREVALANCE, listw = ura_regions_lw_B) # too few cells
+
+# by URA planning area
+ura_planning_areas_lw <- nb2listw(ura_planning_areas_nb, style = "W", zero.policy = T)
+ura_planning_areas_lw_B <- nb2listw(ura_planning_areas_nb, style = "B", zero.policy = T)
+
+obesity_ura_planning_areas$HIGH_PREVALANCE <- 
+  as.factor(obesity_ura_planning_areas$PREVALENCE_AGGREGATE > OVERWEIGHT_CUTOFF)
+
+ura_planning_areas_map + obesity_ura_planning_areas %>% 
+  tm_shape(name = "Overweight prevalence") +
+  tm_polygons(fill = "HIGH_PREVALANCE") +
+  tm_title("Overweight prevalence by URA planning areas")
+
+joincount.multi(obesity_ura_planning_areas$HIGH_PREVALANCE, listw = ura_planning_areas_lw_B) 
+
+# by URA subzone (empty neighbour sets exist)
 ura_subzones_lw <- nb2listw(ura_subzones_nb, style = "W", zero.policy = T)
 ura_subzones_lw_B <- nb2listw(ura_subzones_nb, style = "B", zero.policy = T)
+
+obesity_ura_subzones$HIGH_PREVALANCE <- 
+  as.factor(obesity_ura_subzones$PREVALENCE_AGGREGATE > OVERWEIGHT_CUTOFF)
+
+ura_subzones_map + obesity_ura_subzones %>% 
+  tm_shape(name = "Overweight prevalence") +
+  tm_polygons(fill = "HIGH_PREVALANCE") +
+  tm_title("Overweight prevalence by URA subzones")
+
+joincount.multi(obesity_ura_subzones$HIGH_PREVALANCE, listw = ura_subzones_lw_B) 
+```
+
+### Moran's I statistic
+```{r}
+
 ```
 
 # Income distribution (Lucas)
