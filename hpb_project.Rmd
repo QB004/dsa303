@@ -59,10 +59,12 @@ obesity_data_sf <- obesity_data %>%
     )
 ```
 
+We filter our data for the most recent year as the enrollment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO).
+We remove "FUCHUN SECONDARY SCHOOL" as the enrollment data may be inaccurate due to school mergers.
 ```{r}
 # for now, filter for 2023 data and overweight and severely overweight
 obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
-  filter(YEAR == 2023, CATEGORY == "OSO")
+  filter(YEAR == 2023, CATEGORY == "OSO", SCHOOL != "FUCHUN SECONDARY SCHOOL")
 ```
 
 # Exploratory data analysis (by Prof)
@@ -153,7 +155,10 @@ school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prev
       ),
     fill = "PREVALENCE", 
     # a green-red diverging scale to indicate severity of overweight prevalence
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "-brewer.rd_yl_gn"
+      ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
       orientation = "landscape",
@@ -173,7 +178,7 @@ ura_regions_map + ura_planning_areas_map + ura_subzones_map +
 
 We examine overweight prevalence in Singapore schools by educational level: Primary school or Secondary school. Primary school and secondary school students have different characteristics that might affect overweight prevalance.
 
-The spatial mean and spatial variance (using the standard deviation distance and standard deviation ellipse) are calculated and plotted for each educational level.
+The spatial mean centre (unweighted) and spatial variance (using the standard deviation distance and standard deviation ellipse) are calculated and plotted for each educational level.
 
 ### by Primary School
 ```{r}
@@ -219,7 +224,10 @@ pri_sch_map <- ura_regions_map +
     size.legend = tm_legend_hide(),
     fill = "PREVALENCE", 
     # a green-red diverging scale to indicate severity of overweight prevalence
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "-brewer.rd_yl_gn"
+      ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
       orientation = "landscape", 
@@ -287,7 +295,10 @@ sec_sch_map <- ura_regions_map +
     size.legend = tm_legend_hide(),
     fill = "PREVALENCE", 
     # a green-red diverging scale to indicate severity of overweight prevalence
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "-brewer.rd_yl_gn"
+      ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
       orientation = "landscape", 
@@ -333,10 +344,14 @@ ura_regions_map + obesity_ura_regions %>%
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    # fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "-brewer.rd_yl_gn"
+      ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      orientation = "landscape", 
+      # orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
@@ -356,10 +371,12 @@ ura_planning_areas_map + obesity_ura_planning_areas %>%
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "-brewer.rd_yl_gn"
+      ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
@@ -379,10 +396,12 @@ ura_subzones_map + obesity_ura_subzones %>%
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "-brewer.rd_yl_gn"
+      ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
@@ -407,7 +426,10 @@ moe_zone_map +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill_alpha = 0.95,
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "-brewer.rd_yl_gn"
+      ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
       orientation = "landscape", 
@@ -433,12 +455,16 @@ moe_cluster_map + obesity_moe_clusters %>%
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill_alpha = 0.95,
-    fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "-brewer.rd_yl_gn"
+      ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
+      item.height = 0.5, item.width = 2.1,
+      show = T
       )
     ) +
   tm_title("Overweight prevalence by MOE clusters")
@@ -458,9 +484,6 @@ plot(st_geometry(ura_regions), border = "grey", axes = T,
      main="SG schools contiguous neighbours by region")
 plot.nb(ura_regions_nb, ura_regions_coords, pch = 19, cex = 0.6, add = T)
 
-ura_regions_lw <- nb2listw(ura_regions_nb, style = "W")
-ura_regions_lw_B <- nb2listw(ura_regions_nb, style = "B")
-
 # Contiguous neighbours by URA planning areas
 ura_planning_areas_nb <- poly2nb(obesity_ura_planning_areas, queen = T) # queen contiguity
 ura_planning_areas_coords <- st_point_on_surface(st_geometry(obesity_ura_planning_areas))
@@ -468,23 +491,18 @@ plot(st_geometry(ura_planning_areas), border = "grey", axes = T,
      main="SG schools contiguous neighbours by planning area")
 plot.nb(ura_planning_areas_nb, ura_planning_areas_coords, pch = 19, cex = 0.6, add = T)
 
-ura_planning_areas_lw <- nb2listw(ura_planning_areas_nb, style = "W")
-ura_planning_areas_lw_B <- nb2listw(ura_planning_areas_nb, style = "B")
-
 # Contiguous neighbours by URA subzones
 ura_subzones_nb <- poly2nb(obesity_ura_subzones, queen = T) # queen contiguity
 ura_subzones_coords <- st_point_on_surface(st_geometry(obesity_ura_subzones))
 plot(st_geometry(ura_subzones), border = "grey", axes = T, 
      main="SG schools contiguous neighbours by subzone")
 plot.nb(ura_subzones_nb, ura_subzones_coords, pch = 19, cex = 0.6, add = T)
-
-
 ```
 
 ### Join count analysis
 ```{r}
 # Setting an overweight cutoff point
-OVERWEIGHT_CUTOFF <- 0.15
+OVERWEIGHT_CUTOFF <- 0.14
 
 # by URA region
 ura_regions_lw <- nb2listw(ura_regions_nb, style = "W", zero.policy = T)
@@ -531,7 +549,161 @@ joincount.multi(obesity_ura_subzones$HIGH_PREVALANCE, listw = ura_subzones_lw_B)
 
 ### Moran's I statistic
 ```{r}
+# by URA region
+moran.test(obesity_ura_regions$PREVALENCE_AGGREGATE, 
+           listw = ura_regions_lw, 
+           alternative = "greater")
+moran.plot(obesity_ura_regions$PREVALENCE_AGGREGATE, 
+           listw = ura_regions_lw, 
+           main="Moran scatterplot", 
+           labels = F)
 
+# by URA planning area
+moran.test(obesity_ura_planning_areas$PREVALENCE_AGGREGATE, 
+           listw = ura_planning_areas_lw, 
+           alternative = "greater")
+moran.plot(obesity_ura_planning_areas$PREVALENCE_AGGREGATE, 
+           listw = ura_planning_areas_lw, 
+           main="Moran scatterplot", 
+           labels = F)
+
+# by URA subzone (empty neighbour sets exist)
+moran.test(obesity_ura_subzones$PREVALENCE_AGGREGATE, 
+           listw = ura_subzones_lw, 
+           alternative = "greater")
+moran.plot(obesity_ura_subzones$PREVALENCE_AGGREGATE, 
+           listw = ura_subzones_lw, 
+           main="Moran scatterplot", 
+           labels = F)
+```
+
+### Local Moran's I statistic
+
+```{r}
+# # by URA region (not possible)
+# localm_ura_regions <- 
+#   localmoran(obesity_ura_regions$PREVALENCE_AGGREGATE, listw = ura_regions_lw)
+# obesity_ura_regions$LMORANZ <- localm_ura_regions[,4]
+# tm_shape(obesity_ura_regions) + tm_polygons(fill = "LMORANZ") + 
+#   tm_layout(title = "Local Moran's I Z-Statistic (URA regions)")
+
+# by URA planning area
+localm_ura_planning_areas <- 
+  localmoran(obesity_ura_planning_areas$PREVALENCE_AGGREGATE, listw = ura_planning_areas_lw)
+obesity_ura_planning_areas$LMORANZ <- localm_ura_planning_areas[,4]
+tm_shape(obesity_ura_planning_areas) + tm_polygons(fill = "LMORANZ") + 
+  tm_layout(title = "Local Moran's I Z-Statistic (URA planning_areas)")
+
+# by URA subzone (empty neighbour sets exist)
+localm_ura_subzones <- 
+  localmoran(obesity_ura_subzones$PREVALENCE_AGGREGATE, listw = ura_subzones_lw)
+obesity_ura_subzones$LMORANZ <- localm_ura_subzones[,4]
+tm_shape(obesity_ura_subzones) + tm_polygons(fill = "LMORANZ") + 
+  tm_layout(title = "Local Moran's I Z-Statistic (URA subzones)")
+```
+
+### Geary's C statistic
+
+```{r}
+# by URA region
+geary.test(obesity_ura_regions$PREVALENCE_AGGREGATE, listw = ura_regions_lw)
+
+# by URA planning area
+geary.test(obesity_ura_planning_areas$PREVALENCE_AGGREGATE, listw = ura_planning_areas_lw)
+
+# by URA subzone (empty neighbour sets exist)
+geary.test(obesity_ura_subzones$PREVALENCE_AGGREGATE, listw = ura_subzones_lw)
+```
+
+### Getis-Ord's G statistics
+
+```{r}
+# by URA region
+globalG.test(obesity_ura_regions$PREVALENCE_AGGREGATE, listw = ura_regions_lw_B)
+
+# by URA planning area
+globalG.test(obesity_ura_planning_areas$PREVALENCE_AGGREGATE, listw = ura_planning_areas_lw_B)
+
+# by URA subzone (empty neighbour sets exist)
+globalG.test(obesity_ura_subzones$PREVALENCE_AGGREGATE, listw = ura_subzones_lw_B)
+```
+
+### Local Getis-Ord's G statistics
+```{r}
+# by URA region
+obesity_ura_regions$GO_STAT <-
+  localG(obesity_ura_regions$PREVALENCE_AGGREGATE, listw = ura_regions_lw_B)
+tm_shape(obesity_ura_regions) + tm_polygons("GO_STAT")
+
+# by URA planning area
+obesity_ura_planning_areas$GO_STAT <-
+  localG(obesity_ura_planning_areas$PREVALENCE_AGGREGATE, listw = ura_planning_areas_lw_B)
+tm_shape(obesity_ura_planning_areas) + tm_polygons("GO_STAT")
+
+# by URA subzone (empty neighbour sets exist)
+obesity_ura_subzones$GO_STAT <-
+  localG(obesity_ura_subzones$PREVALENCE_AGGREGATE, listw = ura_subzones_lw_B)
+tm_shape(obesity_ura_subzones) + tm_polygons("GO_STAT")
+```
+
+### Correlogram
+```{r}
+# # by URA region (too few observations)
+# correl_ura_regions <- sp.correlogram(
+#   neighbours = ura_regions_nb, 
+#   var = obesity_ura_regions$PREVALENCE_AGGREGATE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_ura_regions <- sp.correlogram(
+#   neighbours = ura_regions_nb, 
+#   var = obesity_ura_regions$PREVALENCE_AGGREGATE, 
+#   order = 3, method = "I", style = "W")
+# correlC_ura_regions <- sp.correlogram(
+#   neighbours = ura_regions_nb, 
+#   var = obesity_ura_regions$PREVALENCE_AGGREGATE,
+#   order = 3, method = "C", style = "W")
+# par(mfrow=c(1,3))
+# plot(correl_ura_regions, main="Contiguity lag orders: correlation")
+# plot(correlI_ura_regions, main="Contiguity lag orders: Moran's I")
+# plot(correlC_ura_regions, main="Contiguity lag orders: Geary's C")
+# par(mfrow=c(1,1))
+
+# by URA planning area
+correl_planning_areas <- sp.correlogram(
+  neighbours = ura_planning_areas_nb, 
+  var = obesity_ura_planning_areas$PREVALENCE_AGGREGATE, 
+  order = 3, method = "corr", style = "W")
+correlI_planning_areas <- sp.correlogram(
+  neighbours = ura_planning_areas_nb, 
+  var = obesity_ura_planning_areas$PREVALENCE_AGGREGATE, 
+  order = 3, method = "I", style = "W")
+correlC_planning_areas <- sp.correlogram(
+  neighbours = ura_planning_areas_nb, 
+  var = obesity_ura_planning_areas$PREVALENCE_AGGREGATE,
+  order = 3, method = "C", style = "W")
+par(mfrow=c(1,3))
+plot(correl_planning_areas, main="Contiguity lag orders: correlation")
+plot(correlI_planning_areas, main="Contiguity lag orders: Moran's I")
+plot(correlC_planning_areas, main="Contiguity lag orders: Geary's C")
+par(mfrow=c(1,1))
+
+# # by URA subzone (empty neighbour sets exist)
+# correl_subzones <- sp.correlogram(
+#   neighbours = ura_subzones_nb, 
+#   var = obesity_ura_subzones$PREVALENCE_AGGREGATE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_subzones <- sp.correlogram(
+#   neighbours = ura_subzones_nb, 
+#   var = obesity_ura_subzones$PREVALENCE_AGGREGATE, 
+#   order = 3, method = "I", style = "W")
+# correlC_subzones <- sp.correlogram(
+#   neighbours = ura_subzones_nb, 
+#   var = obesity_ura_subzones$PREVALENCE_AGGREGATE,
+#   order = 3, method = "C", style = "W")
+# par(mfrow=c(1,3))
+# plot(correl_subzones, main="Contiguity lag orders: correlation")
+# plot(correlI_subzones, main="Contiguity lag orders: Moran's I")
+# plot(correlC_subzones, main="Contiguity lag orders: Geary's C")
+# par(mfrow=c(1,1))
 ```
 
 # Income distribution (Lucas)
