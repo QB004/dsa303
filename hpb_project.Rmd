@@ -1001,7 +1001,7 @@ sec_cca_map_sde <- ura_subzones_map +
 sec_cca_map_sde
 
 
-
+####################################################################################
 
 
 # Aggregating sports cca ratio counts by URA subzones
@@ -1027,6 +1027,7 @@ cca_subzone_map <- ura_subzones_map + sports_ura_subzones %>%
   tm_title("Sports CCA Ratio by URA subzones")
 
 print(cca_subzone_map)
+
 
 
 
