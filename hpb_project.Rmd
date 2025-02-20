@@ -430,6 +430,9 @@ sg_ura_boundaries_nb <- poly2nb(sg_ura_boundaries) # queen contiguity
 sg_subzone_coords <- st_point_on_surface(st_geometry(sg_ura_boundaries))
 plot(st_geometry(sg_ura_boundaries), border="grey60", axes=T,  main="Queen Contiguity")
 plot(sg_ura_boundaries_nb, sg_subzone_coords, pch=19, cex=0.6, add=T)
+
+sg_ura_lw <- nb2listw(sg_ura_boundaries_nb, style = "W", zero.policy = T)
+sg_ura_lw_B <- nb2listw(sg_ura_boundaries_nb, style = "B", zero.policy = T)
 ```
 
 
