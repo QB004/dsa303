@@ -1012,7 +1012,7 @@ sports_ura_subzones <- st_join(ura_subzones, obesity_joined_school_sports_data) 
     geometry = st_union(geometry)
     )
 
-ura_subzones_map + sports_ura_subzones %>% 
+cca_subzone_map <- ura_subzones_map + sports_ura_subzones %>% 
   tm_shape(name = "Sports CCA Ratio per 100") +
   tm_polygons(
     fill = "RATIO_AGG",
@@ -1026,7 +1026,7 @@ ura_subzones_map + sports_ura_subzones %>%
     ) +
   tm_title("Sports CCA Ratio by URA subzones")
 
-
+print(cca_subzone_map)
 
 
 
