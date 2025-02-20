@@ -541,9 +541,8 @@ points_df
 points_sf <- st_as_sf(points_df, coords = c("long", "lat"), crs = sg_crs)
 points_sf
 census_merge = left_join(points_sf,census)
-ura_planning_area_map+tm_shape(census_merge)+ tm_symbols(size=0.5,fill="Income")
-ura_planning_area_map+tm_shape(census_merge)+ tm_symbols(size=0.5,fill="Education")
-
+ura_planning_areas_map+tm_shape(census_merge)+ tm_symbols(size=0.5,fill="Income")
+ura_planning_areas_map+tm_shape(census_merge)+ tm_symbols(size=0.5,fill="Education")
 
 tm_shape(combine_data) + 
   tm_fill(fill="Income", 
