@@ -725,51 +725,134 @@ obesity_joined_school_sports_data <-
         ) 
 
 
-#Visualising physical sports participation by school
+
+#Visualising physical sports participation by school level
 #uses same visual style as obesity map for continuity
 #scale colour is reversed (green is high, red is low) to indicate higher physical sports participation
-sports_ccas_map <- tm_shape(obesity_joined_school_sports_data) +
+
+pri_cca_data <- obesity_joined_school_sports_data %>% filter(LEVEL == "PRIMARY")
+
+pri_cca_map <- ura_subzones_map +  
+  tm_shape(pri_cca_data) +
   tm_symbols(
     size = 0.5,
-    shape = "LEVEL",
-    shape.legend = tm_legend(
-      position = c("BOTTOM", "RIGHT"),
-      title = "Educational level"
-      ),
+    shape = 21,  # circle
     fill = "sports_cca_per_100", 
-    fill.scale = tm_scale_continuous(
-      values = "brewer.rd_yl_gn"), 
+    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"),
     fill.legend = tm_legend(
-      title = "Ratio of Sports CCAs per 100 Students by School",
+      title = "Sports CCAs per 100 Students",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
-      )
     )
-sports_ccas_map
+  ) + 
+  tm_layout(
+    legend.position = c("BOTTOM", "RIGHT"),
+    legend.title.size = 1.2,
+    main.title = "Ratio of Sports CCAs per 100 Students by Primary School"
+  )
 
+pri_cca_map
 
-#same plot but displaying each education level separately
-school_level_sports_map <- tm_shape(obesity_joined_school_sports_data) +
+#FILTER OUT NA VALUES
+
+# Mean centre, standard deviation distance, standard deviation ellipse
+pri_cca_mean <- calc_mnc(id = 1, points = st_coordinates(pri_cca_data))
+pri_cca_median <- calc_mdc(id = 2, points = st_coordinates(pri_cca_data))
+pri_cca_mean_median <- rbind(pri_cca_mean$LOCATIONS, pri_cca_median$LOCATIONS) %>% 
+  data.frame() %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs)
+pir_cca_mean_median$id = c("Spatial mean", "Spatial median")
+
+pri_cca_sdd <- calc_sdd(id = 3, points = st_coordinates(pri_cca_data))
+pri_cca_sdd_line <- pri_cca_sdd$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_cca_sde <- calc_sde(id = 4, points = st_coordinates(pri_cca_data))
+pri_cca_sde_line <- pri_cca_sde$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_cca_sde_weighted <- calc_sde(
+  id = 5, calccentre = T, weighted = T, weights = pri_cca_data$sports_cca_per_100,
+  points = st_coordinates(pri_cca_data))
+pri_cca_sde_weighted_line <- pri_cca_sde_weighted$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_cca_map_sde <- ura_regions_map +
+  tm_shape(pri_cca_data, name = "Ratio of Sports CCAs per 100 Students by School") +
   tm_symbols(
-    size = 0.5,
-    shape = "LEVEL",
-    shape.legend = tm_legend(
-      position = c("BOTTOM", "RIGHT"),
-      title = "Educational level",
-      ),
+    size = "sports_cca_per_100",
+    size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide(),
     fill = "sports_cca_per_100", 
-    fill.scale = tm_scale_continuous(
-      values = "brewer.rd_yl_gn"), 
+    # a green-red diverging scale to indicate severity of overweight prevalence
+    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
       title = "Ratio of Sports CCAs per 100 Students by School",
       orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
-    ) + tm_facets_wrap(by = "LEVEL") #facet by education level
+    ) + 
+  tm_shape(pri_cca_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
+  tm_shape(pri_cca_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+  tm_shape(pri_cca_sde_weighted_line, name = "weighted SDE") + 
+  tm_lines(col = "red", lwd = 2, lty = 3) +
+  tm_shape(pri_cca_mean_median, name = "Summary measures") + tm_dots(
+    size = 0.5, shape = "id", fill = "white", 
+    shape.legend = tm_legend("Summary measures")
+    ) + 
+  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+  tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+  tm_title("Ratio of Sports CCAs per 100 Students by School")
 
-school_level_sports_map
+pri_cca_map_sde
+
+
+
+
+sec_cca_data <- obesity_joined_school_sports_data %>% filter(LEVEL == "SECONDARY")
+
+sec_cca_map <- ura_subzones_map +  
+  tm_shape(sec_cca_data) +
+  tm_symbols(
+    size = 0.5,
+    shape = 22,  #
+    fill = "sports_cca_per_100", 
+    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"),
+    fill.legend = tm_legend(
+      title = "Sports CCAs per 100 Students",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+    )
+  ) + 
+  tm_layout(
+    legend.position = c("BOTTOM", "RIGHT"),
+    legend.title.size = 1.2,
+    main.title = "Ratio of Sports CCAs per 100 Students by Primary School"
+  )
+
+
+sec_ccas_map
+
+
+
+
+
+
+
+
+
+
+
 
 
 tm_shape(obesity_joined_school_sports_data) +
