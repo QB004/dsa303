@@ -6,7 +6,7 @@ Change the file paths accordingly
 
 ```{r}
 # Loading libraries to work with spatial data
-library(tidyverse); library(sf); library(tmap); library(aspace)
+library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep)
 
 # Loading Singapore URA subzone boundary data
 sg_ura_boundaries <- 
@@ -91,18 +91,24 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
 tmap_mode("view")
 
 # URA regions map
-ura_region_map <- tm_shape(sg_ura_boundaries, name = "URA regions") + tm_polygons(
+ura_regions <- sg_ura_boundaries %>% group_by(REGION_N) %>% 
+  summarise(geometry = st_union(geometry))
+ura_region_map <- tm_shape(ura_regions, name = "URA regions") + tm_polygons(
     col = "grey", fill = "REGION_N", fill_alpha = 0.25, 
     fill.legend = tm_legend(title = "URA regions"))
 
 # URA planning areas map
-ura_planning_area_map <- tm_shape(sg_ura_boundaries, name = "URA planning areas") + 
+ura_planning_areas <- sg_ura_boundaries %>% group_by(PLN_AREA_N) %>% 
+  summarise(geometry = st_union(geometry))
+ura_planning_area_map <- tm_shape(ura_planning_areas, name = "URA planning areas") + 
   tm_polygons(
     col = "grey", fill = "PLN_AREA_N", fill_alpha = 0.25, 
     fill.legend = tm_legend_hide())
 
 # URA subzones map
-ura_subzone_map <- tm_shape(sg_ura_boundaries, name = "URA subzones") + tm_polygons(
+ura_subzones <- sg_ura_boundaries %>% group_by(SUBZONE_N) %>% 
+  summarise(geometry = st_union(geometry))
+ura_subzone_map <- tm_shape(ura_subzones, name = "URA subzones") + tm_polygons(
   col = "grey", fill = "SUBZONE_N", fill_alpha = 0.25, 
   fill.legend = tm_legend_hide())
 
@@ -441,7 +447,7 @@ sg_ura_lw_B <- nb2listw(sg_ura_boundaries_nb, style = "B", zero.policy = T)
 ```{r}
 census <- read.csv("census stats.csv") %>% 
   mutate(PLN_AREA_N = toupper(PLN_AREA_N))
-combine_data <- left_join(sg_ura_boundaries, census)
+combine_data <- left_join(ura_planning_areas, census)
 combine_data
 summary(census)
 
@@ -469,7 +475,7 @@ tm_shape(combine_data) +
           ) +
   tm_title("Breakdown by Sec Students")
 
-census_filtered <- combine_data %>% filter(Income != NA)
+census_filtered <- combine_data %>% filter(!is.na(Income))
 census_coords <- st_coordinates(census_filtered)
 ```
 
