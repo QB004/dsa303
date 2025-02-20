@@ -564,16 +564,14 @@ tm_shape(combine_data) +
           fill.scale = tm_scale(breaks=c(59,3526,4894,8804,13221))
           ) +
   tm_title("Breakdown by Sec Students")
-
-census_filtered <- combine_data %>% filter(!is.na(Income))
-census_coords <- st_coordinates(census_filtered)
 ```
 
 # Spatial Descriptive Summary Measures of Income (Lucas)
 
 ```{r}
-income_mean <- calc_mnc(id = 1, points = census_coords, weighted = T, weights = census_filtered$Income)
-income_median <- calc_mdc(id = 2, points = census_coords, weighted = T, weights = census_filtered$Income)
+census_coords <- st_coordinates(census_merge)
+income_mean <- calc_mnc(id = 1, points = census_coords, weighted = T, weights = census_merge$Income)
+income_median <- calc_mdc(id = 2, points = census_coords)
 income_mean_median <- rbind(income_mean$LOCATIONS, income_median$LOCATIONS) %>% 
   data.frame() %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs)
@@ -592,14 +590,105 @@ income_sde_line <- income_sde$LOCATIONS %>%
   st_cast("LINESTRING")
 
 income_sde_weighted <- calc_sde(
-  id = 5, calccentre = T, weighted = T, weights = census_filtered$Income,
+  id = 5, calccentre = T, weighted = T, weights = census_merge$Income,
   points = census_coords)
 income_sde_weighted_line <- income_sde_weighted$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
   st_cast("LINESTRING")
-```
 
+income_map <- ura_planning_area_map +
+    tm_shape(census_merge, name = "Income") +
+    tm_symbols(
+        size = "Income",
+        size.scale = tm_scale_continuous(values.scale = 0.8),
+        size.legend = tm_legend_hide(),
+        fill = "Income", 
+        # a green-red diverging scale to indicate severity of overweight prevalence
+        fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+        fill.legend = tm_legend(
+            title = "Income Distribution",
+            orientation = "landscape", 
+            position = c("BOTTOM", "LEFT"),
+            item.height = 0.5, item.width = 2.1
+        )
+    ) + 
+    tm_shape(income_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
+    tm_shape(income_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+    tm_shape(income_sde_weighted_line, name = "weighted SDE") + 
+    tm_lines(col = "red", lwd = 2, lty = 3) +
+    tm_shape(income_mean_median, name = "Summary measures") + tm_dots(
+        size = 0.5, shape = "id", fill = "white", 
+        shape.legend = tm_legend("Summary measures")
+    ) + 
+    tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+    tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+    tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+    tm_title("Income Distribution across SG Planning Areas")
+
+print(income_map)
+```
+# Spatial Descriptive Summary Measures of Education Years (Lucas)
+
+```{r}
+education_mean <- calc_mnc(id = 1, points = census_coords, weighted = T, weights = census_merge$Education)
+education_median <- calc_mdc(id = 2, points = census_coords)
+education_mean_median <- rbind(education_mean$LOCATIONS, education_median$LOCATIONS) %>% 
+  data.frame() %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs)
+education_mean_median$id = c("Weighted mean", "Weighted median")
+
+education_sdd <- calc_sdd(id = 3, points = census_coords)
+education_sdd_line <- education_sdd$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+education_sde <- calc_sde(id = 4, points = census_coords)
+education_sde_line <- education_sde$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+education_sde_weighted <- calc_sde(
+  id = 5, calccentre = T, weighted = T, weights = census_merge$Education,
+  points = census_coords)
+education_sde_weighted_line <- education_sde_weighted$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+education_map <- ura_planning_area_map +
+    tm_shape(census_merge, name = "Education") +
+    tm_symbols(
+        size = "Education",
+        size.scale = tm_scale_continuous(values.scale = 0.8),
+        size.legend = tm_legend_hide(),
+        fill = "Education", 
+        # a green-red diverging scale to indicate severity of overweight prevalence
+        fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+        fill.legend = tm_legend(
+            title = "Education Years",
+            orientation = "landscape", 
+            position = c("BOTTOM", "LEFT"),
+            item.height = 0.5, item.width = 2.1
+        )
+    ) + 
+    tm_shape(education_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
+    tm_shape(education_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+    tm_shape(education_sde_weighted_line, name = "weighted SDE") + 
+    tm_lines(col = "red", lwd = 2, lty = 3) +
+    tm_shape(education_mean_median, name = "Summary measures") + tm_dots(
+        size = 0.5, shape = "id", fill = "white", 
+        shape.legend = tm_legend("Summary measures")
+    ) + 
+    tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+    tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+    tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+    tm_title("Education Years Across SG Planning Areas")
+
+print(education_map)
+```
 # Food and Nutrition (Nina)
 
 ```{r}
