@@ -188,6 +188,8 @@ tmap_mode("view")
 obesity_pri_sch <- obesity_data_sf_2023_OSO %>% 
   filter(PRI == 1, !is.na(PREVALENCE))
 
+obesity_data_sf_2023_OSO %>% summary()
+
 # Mean centre, standard deviation distance, standard deviation ellipse
 pri_sch_mean <- calc_mnc(id = 1, points = st_coordinates(obesity_pri_sch))
 pri_sch_median <- calc_mdc(id = 2, points = st_coordinates(obesity_pri_sch))
