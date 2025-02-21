@@ -1,0 +1,5924 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2025-02-17T04:35:11Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/368260503",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "operator": "7-11",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8899724,
+          1.3908699
+        ]
+      },
+      "id": "node/368260503"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/368278973",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8892811,
+          1.3939865
+        ]
+      },
+      "id": "node/368278973"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/369124085",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9023251,
+          1.3857165
+        ]
+      },
+      "id": "node/369124085"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/370746817",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "operator": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9013531,
+          1.3904025
+        ]
+      },
+      "id": "node/370746817"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/671080855",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2023-12-29",
+        "level": "0",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8522224,
+          1.3001872
+        ]
+      },
+      "id": "node/671080855"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/893018192",
+        "addr:housenumber": "446",
+        "addr:street": "Pasir Ris Dr 6",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.957437,
+          1.370052
+        ]
+      },
+      "id": "node/893018192"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/956607185",
+        "addr:housenumber": "523",
+        "addr:street": "Bukit Batok Street 52",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7523068,
+          1.3566164
+        ]
+      },
+      "id": "node/956607185"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/965876975",
+        "branch": "Sentosa Cove",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8397265,
+          1.2472062
+        ]
+      },
+      "id": "node/965876975"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1099727750",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7027677,
+          1.3418641
+        ]
+      },
+      "id": "node/1099727750"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1275651889",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2023-11-09",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.853275,
+          1.3018284
+        ]
+      },
+      "id": "node/1275651889"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1686891463",
+        "addr:housename": "Shell No.328 Pasir Panjang",
+        "addr:postcode": "118654",
+        "addr:street": "Pasir Panjang Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7779041,
+          1.2891697
+        ]
+      },
+      "id": "node/1686891463"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1721886707",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.774976,
+          1.3305448
+        ]
+      },
+      "id": "node/1721886707"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1834207944",
+        "addr:housename": "325",
+        "addr:postcode": "400325",
+        "addr:street": "Ubi Ave 1",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Local Knowledge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9038308,
+          1.3276428
+        ]
+      },
+      "id": "node/1834207944"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1953018875",
+        "brand": "7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "Mo-Su 00:00-00:00",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.829954,
+          1.305747
+        ]
+      },
+      "id": "node/1953018875"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2099138266",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8379057,
+          1.2897593
+        ]
+      },
+      "id": "node/2099138266"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2142181977",
+        "addr:street": "Middle Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-04-14",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8557045,
+          1.2969497
+        ]
+      },
+      "id": "node/2142181977"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2142182411",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2023-08-29",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8553052,
+          1.2977694
+        ]
+      },
+      "id": "node/2142182411"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2420993464",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.801276,
+          1.4403061
+        ]
+      },
+      "id": "node/2420993464"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2491314422",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "construction:shop": "convenience",
+        "ele": "1",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7748617,
+          1.2987824
+        ]
+      },
+      "id": "node/2491314422"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2491833040",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7685356,
+          1.3097564
+        ]
+      },
+      "id": "node/2491833040"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2523263772",
+        "addr:housename": "blk 168 bedok south ave 3",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9445768,
+          1.3199937
+        ]
+      },
+      "id": "node/2523263772"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2598989929",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.988881,
+          1.314015
+        ]
+      },
+      "id": "node/2598989929"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2660560575",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "phone": "+65 6835 9649",
+        "shop": "convenience",
+        "website": "https://www.rwsentosa.com/en/shopping/all-shops/7-eleven"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8211279,
+          1.2561745
+        ]
+      },
+      "id": "node/2660560575"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2725342982",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9459575,
+          1.3270991
+        ]
+      },
+      "id": "node/2725342982"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2929675120",
+        "addr:street": "Dunman Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9010777,
+          1.3098736
+        ]
+      },
+      "id": "node/2929675120"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3068338527",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "organic": "no",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.852723,
+          1.3013753
+        ]
+      },
+      "id": "node/3068338527"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3094254815",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7952716,
+          1.3110419
+        ]
+      },
+      "id": "node/3094254815"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3105759121",
+        "addr:street": "Kensington Park Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8660598,
+          1.3646143
+        ]
+      },
+      "id": "node/3105759121"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3186129725",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.947838,
+          1.3315252
+        ]
+      },
+      "id": "node/3186129725"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3273173463",
+        "addr:street": "Geylang Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8807011,
+          1.3127092
+        ]
+      },
+      "id": "node/3273173463"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3276199927",
+        "addr:street": "Lorong 25A Geylang",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.883199,
+          1.3155119
+        ]
+      },
+      "id": "node/3276199927"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3276206037",
+        "addr:city": "Singapore",
+        "addr:housenumber": "1",
+        "addr:postcode": "519599",
+        "addr:street": "Pasir Ris Close",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.955461,
+          1.3791325
+        ]
+      },
+      "id": "node/3276206037"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3345258991",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8000162,
+          1.2748915
+        ]
+      },
+      "id": "node/3345258991"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3446723011",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "survey"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7683661,
+          1.2925966
+        ]
+      },
+      "id": "node/3446723011"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3451431703",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-01-09",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8543736,
+          1.2965738
+        ]
+      },
+      "id": "node/3451431703"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3460831442",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8481915,
+          1.2870119
+        ]
+      },
+      "id": "node/3460831442"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3573448897",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.851324,
+          1.3034544
+        ]
+      },
+      "id": "node/3573448897"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3653443369",
+        "addr:street": "Joo Chiat Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "diet:halal": "yes",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9005456,
+          1.3118828
+        ]
+      },
+      "id": "node/3653443369"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3707462414",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8689864,
+          1.3502318
+        ]
+      },
+      "id": "node/3707462414"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3759024654",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "3",
+        "addr:street": "McCallum Street",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8475518,
+          1.2796702
+        ]
+      },
+      "id": "node/3759024654"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3759044165",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "50",
+        "addr:street": "Club Street",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8458997,
+          1.2821667
+        ]
+      },
+      "id": "node/3759044165"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3759094225",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "35",
+        "addr:street": "Erskine Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8451247,
+          1.2811559
+        ]
+      },
+      "id": "node/3759094225"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3759828395",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "41",
+        "addr:postcode": "088824",
+        "addr:street": "Neil Road",
+        "amenity": "cafe",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "fieldnotes",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8428436,
+          1.2797824
+        ]
+      },
+      "id": "node/3759828395"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3759845204",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "39",
+        "addr:street": "Keong Saik Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8414987,
+          1.2802562
+        ]
+      },
+      "id": "node/3759845204"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3759861924",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "10",
+        "addr:postcode": "078878",
+        "addr:street": "Gopeng St",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8441447,
+          1.2754212
+        ]
+      },
+      "id": "node/3759861924"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3759869445",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "38",
+        "addr:street": "Duxton Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "website": "https://www.7-eleven.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8433906,
+          1.2788217
+        ]
+      },
+      "id": "node/3759869445"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3922463596",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6853331,
+          1.3481139
+        ]
+      },
+      "id": "node/3922463596"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3923016226",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-08-31",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7729834,
+          1.3771841
+        ]
+      },
+      "id": "node/3923016226"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3923016253",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7705042,
+          1.38399
+        ]
+      },
+      "id": "node/3923016253"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3931806105",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7447461,
+          1.3847337
+        ]
+      },
+      "id": "node/3931806105"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4047297298",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24 hours",
+        "operator": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6908263,
+          1.341499
+        ]
+      },
+      "id": "node/4047297298"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4196323795",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6959311,
+          1.3359012
+        ]
+      },
+      "id": "node/4196323795"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4241644468",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7606314,
+          1.3577895
+        ]
+      },
+      "id": "node/4241644468"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4264495208",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8489139,
+          1.288225
+        ]
+      },
+      "id": "node/4264495208"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4264495712",
+        "branch": "Peninsula Plaza",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "payment:american_express": "no",
+        "payment:cash": "yes",
+        "payment:mastercard": "yes",
+        "payment:nets": "yes",
+        "payment:visa": "yes",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.850905,
+          1.2920518
+        ]
+      },
+      "id": "node/4264495712"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4281230791",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8718124,
+          1.3118391
+        ]
+      },
+      "id": "node/4281230791"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4368418590",
+        "addr:postcode": "082001",
+        "addr:street": "Tanjong Pagar Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8429425,
+          1.2750389
+        ]
+      },
+      "id": "node/4368418590"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4486219776",
+        "addr:city": "Singapore",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8537643,
+          1.2996415
+        ]
+      },
+      "id": "node/4486219776"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4493528219",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "organic": "no",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.855331,
+          1.3003539
+        ]
+      },
+      "id": "node/4493528219"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4544316904",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7559191,
+          1.3508971
+        ]
+      },
+      "id": "node/4544316904"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4547834505",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "6",
+        "addr:street": "Jalan Leban",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8290006,
+          1.3713906
+        ]
+      },
+      "id": "node/4547834505"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4560997439",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8584203,
+          1.2912995
+        ]
+      },
+      "id": "node/4560997439"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4561526157",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7520715,
+          1.359123
+        ]
+      },
+      "id": "node/4561526157"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4568867548",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8112414,
+          1.2572896
+        ]
+      },
+      "id": "node/4568867548"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4572385393",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:es": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8532665,
+          1.3051967
+        ]
+      },
+      "id": "node/4572385393"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4583496401",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7951477,
+          1.3310896
+        ]
+      },
+      "id": "node/4583496401"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4583496402",
+        "addr:housenumber": "19",
+        "addr:street": "Jalan Jurong Kechil",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-07-20",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7738201,
+          1.339971
+        ]
+      },
+      "id": "node/4583496402"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4583783461",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "492",
+        "addr:postcode": "640492",
+        "addr:street": "Jurong West Street 41",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7242131,
+          1.3502177
+        ]
+      },
+      "id": "node/4583783461"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4620458492",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8466072,
+          1.2848018
+        ]
+      },
+      "id": "node/4620458492"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4620793887",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8560343,
+          1.298358
+        ]
+      },
+      "id": "node/4620793887"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4634008349",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7909615,
+          1.3060517
+        ]
+      },
+      "id": "node/4634008349"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4634033150",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "operator": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.886845,
+          1.3291
+        ]
+      },
+      "id": "node/4634033150"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4653464295",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "625",
+        "addr:postcode": "510625",
+        "addr:street": "Elias Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9417737,
+          1.3786827
+        ]
+      },
+      "id": "node/4653464295"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4664735170",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9551903,
+          1.3595393
+        ]
+      },
+      "id": "node/4664735170"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4682734911",
+        "addr:street": "East Coast Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.909849,
+          1.3082461
+        ]
+      },
+      "id": "node/4682734911"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4684122140",
+        "addr:street": "East Coast Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9224284,
+          1.3120298
+        ]
+      },
+      "id": "node/4684122140"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4684914891",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8286065,
+          1.3065884
+        ]
+      },
+      "id": "node/4684914891"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4684915189",
+        "addr:city": "Singapore",
+        "addr:housenumber": "163",
+        "addr:postcode": "247933",
+        "addr:street": "Tanglin Road",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "description": "convenience store",
+        "email": "pr@7-eleven.com.sg",
+        "level": "1",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "payment:cards": "yes",
+        "payment:cash": "yes",
+        "phone": "+65 67332071",
+        "shop": "convenience",
+        "source": "local knowledge",
+        "stroller": "yes",
+        "website": "https://www.7-eleven.com.sg/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.823337,
+          1.3048499
+        ]
+      },
+      "id": "node/4684915189"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4685856383",
+        "addr:street": "Jalan Tiga",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8849385,
+          1.3076538
+        ]
+      },
+      "id": "node/4685856383"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4689544986",
+        "addr:street": "Yio Chu Kang Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8739181,
+          1.3606591
+        ]
+      },
+      "id": "node/4689544986"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4689610591",
+        "addr:street": "Geylang Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8909841,
+          1.3147383
+        ]
+      },
+      "id": "node/4689610591"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4689653678",
+        "addr:street": "Geylang Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8772837,
+          1.3121626
+        ]
+      },
+      "id": "node/4689653678"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4696039689",
+        "addr:street": "Eunos Crescent",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9025998,
+          1.3212974
+        ]
+      },
+      "id": "node/4696039689"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4700578110",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.766586,
+          1.3850974
+        ]
+      },
+      "id": "node/4700578110"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4703971117",
+        "addr:street": "Upper Serangoon Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8788923,
+          1.3543007
+        ]
+      },
+      "id": "node/4703971117"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4703971118",
+        "addr:street": "Upper Serangoon Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8787196,
+          1.3541471
+        ]
+      },
+      "id": "node/4703971118"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4704906889",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:de": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8329529,
+          1.2847087
+        ]
+      },
+      "id": "node/4704906889"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4715801593",
+        "addr:city": "Singapore",
+        "addr:street": "Serangoon Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8637244,
+          1.3225036
+        ]
+      },
+      "id": "node/4715801593"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4723314866",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:street": "China Street",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8479186,
+          1.2839565
+        ]
+      },
+      "id": "node/4723314866"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4724301486",
+        "addr:street": "North Canal Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-04-04",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8491466,
+          1.2859771
+        ]
+      },
+      "id": "node/4724301486"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4726776649",
+        "addr:city": "Singapore",
+        "addr:street": "Upper Thomson Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8346521,
+          1.353351
+        ]
+      },
+      "id": "node/4726776649"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4732627246",
+        "addr:street": "Haji Lane",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.859304,
+          1.3004629
+        ]
+      },
+      "id": "node/4732627246"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4734749601",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8611162,
+          1.3038295
+        ]
+      },
+      "id": "node/4734749601"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4738171712",
+        "addr:city": "Singapore",
+        "addr:housenumber": "423",
+        "addr:postcode": "248322",
+        "addr:street": "River Valley Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8294773,
+          1.2951737
+        ]
+      },
+      "id": "node/4738171712"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4738747599",
+        "addr:street": "Choa Chu Kang Park Connector",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7464877,
+          1.385475
+        ]
+      },
+      "id": "node/4738747599"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4745267767",
+        "addr:city": "Singapore",
+        "addr:street": "Serangoon Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8572888,
+          1.3145504
+        ]
+      },
+      "id": "node/4745267767"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4745613614",
+        "addr:street": "Kim Tian Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8293522,
+          1.2851032
+        ]
+      },
+      "id": "node/4745613614"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4747611641",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8408781,
+          1.3008615
+        ]
+      },
+      "id": "node/4747611641"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4747914896",
+        "addr:street": "West Coast Drive",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7600319,
+          1.3120241
+        ]
+      },
+      "id": "node/4747914896"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4749012577",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2023-05-09",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "survey:date": "2021-10-01",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8518318,
+          1.3240446
+        ]
+      },
+      "id": "node/4749012577"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4749128062",
+        "addr:housenumber": "271",
+        "addr:street": "Balestier Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2023-02-01",
+        "disused:shop": "convenience",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8526524,
+          1.3224211
+        ]
+      },
+      "id": "node/4749128062"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4749144147",
+        "addr:housenumber": "36",
+        "addr:street": "Kim Keat Road",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2022-12-20",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8533577,
+          1.3246754
+        ]
+      },
+      "id": "node/4749144147"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4749738867",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "source": "Kaart Ground Survey 2017"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7190502,
+          1.350428
+        ]
+      },
+      "id": "node/4749738867"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4756206327",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-09-06",
+        "level": "1",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9902702,
+          1.3567245
+        ]
+      },
+      "id": "node/4756206327"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4836072446",
+        "addr:country": "SG",
+        "addr:unit": "29",
+        "branch": "Compass One",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8951149,
+          1.3915801
+        ]
+      },
+      "id": "node/4836072446"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4883470842",
+        "addr:street": "Tampines Street 32",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9598239,
+          1.3540632
+        ]
+      },
+      "id": "node/4883470842"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4907683908",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.801674,
+          1.2739777
+        ]
+      },
+      "id": "node/4907683908"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4937054117",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8383985,
+          1.3006848
+        ]
+      },
+      "id": "node/4937054117"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4960772124",
+        "atm:operator": "UOB",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2023-12-01",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8600133,
+          1.3130273
+        ]
+      },
+      "id": "node/4960772124"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5023770455",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8579868,
+          1.302624
+        ]
+      },
+      "id": "node/5023770455"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5055589372",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8599536,
+          1.3114473
+        ]
+      },
+      "id": "node/5055589372"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5096687750",
+        "addr:city": "Singapore",
+        "addr:housenumber": "266C",
+        "addr:postcode": "820268",
+        "addr:street": "Punggol Way",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "operator": "7 Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8975981,
+          1.4051692
+        ]
+      },
+      "id": "node/5096687750"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5251515144",
+        "addr:unit": "01/03",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8171902,
+          1.2894281
+        ]
+      },
+      "id": "node/5251515144"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5264942524",
+        "addr:city": "Singapore",
+        "addr:housenumber": "698",
+        "addr:postcode": "530698",
+        "addr:street": "Hougang Street 61",
+        "addr:unit": "01-02",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8869975,
+          1.3748828
+        ]
+      },
+      "id": "node/5264942524"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5265451728",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8871356,
+          1.3589276
+        ]
+      },
+      "id": "node/5265451728"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5340379394",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7034605,
+          1.3450468
+        ]
+      },
+      "id": "node/5340379394"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5370142874",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7018463,
+          1.3371458
+        ]
+      },
+      "id": "node/5370142874"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5403432642",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8422269,
+          1.2941772
+        ]
+      },
+      "id": "node/5403432642"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5410071921",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8533778,
+          1.3051094
+        ]
+      },
+      "id": "node/5410071921"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5414652968",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9068179,
+          1.3073575
+        ]
+      },
+      "id": "node/5414652968"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5470273947",
+        "addr:city": "Singapore",
+        "addr:housenumber": "152A",
+        "addr:street": "Gangsa Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7653854,
+          1.3754527
+        ]
+      },
+      "id": "node/5470273947"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5474435682",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7645946,
+          1.3148534
+        ]
+      },
+      "id": "node/5474435682"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5479301279",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.815904,
+          1.2886362
+        ]
+      },
+      "id": "node/5479301279"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5504922844",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8538279,
+          1.2869393
+        ]
+      },
+      "id": "node/5504922844"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5848402688",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.850533,
+          1.2828542
+        ]
+      },
+      "id": "node/5848402688"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5850832705",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8595266,
+          1.2933127
+        ]
+      },
+      "id": "node/5850832705"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5871245685",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2023-07-08",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.855939,
+          1.2895584
+        ]
+      },
+      "id": "node/5871245685"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5873790586",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.747326,
+          1.3981942
+        ]
+      },
+      "id": "node/5873790586"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5899408963",
+        "addr:city": "Singapore",
+        "addr:housenumber": "121",
+        "addr:postcode": "470121",
+        "addr:street": "Bedok Reservoir Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9096332,
+          1.3313502
+        ]
+      },
+      "id": "node/5899408963"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5899995456",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8313372,
+          1.3546862
+        ]
+      },
+      "id": "node/5899995456"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5924078228",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8267858,
+          1.2857395
+        ]
+      },
+      "id": "node/5924078228"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5974207276",
+        "addr:city": "Singapore",
+        "addr:housenumber": "148",
+        "addr:postcode": "350148",
+        "addr:street": "Potong Pasir Avenue 1",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "payment:cash": "yes",
+        "payment:coins": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "payment:mastercard": "yes",
+        "payment:notes": "yes",
+        "payment:visa": "yes",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8677915,
+          1.3322504
+        ]
+      },
+      "id": "node/5974207276"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6128474787",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8499881,
+          1.2801114
+        ]
+      },
+      "id": "node/6128474787"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6259798710",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "85",
+        "addr:postcode": "239532",
+        "addr:street": "Killiney Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-06",
+        "name": "7-Eleven",
+        "name:en": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8391586,
+          1.2985134
+        ]
+      },
+      "id": "node/6259798710"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6260001642",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9551593,
+          1.3591664
+        ]
+      },
+      "id": "node/6260001642"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6318347001",
+        "addr:city": "Singapore",
+        "addr:housenumber": "9",
+        "addr:postcode": "169343",
+        "addr:street": "Kampong Bahru Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "website": "https://7-eleven.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8367959,
+          1.2772216
+        ]
+      },
+      "id": "node/6318347001"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6326830482",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "21",
+        "addr:postcode": "649481",
+        "addr:street": "Jurong West Avenue 5",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7012145,
+          1.3500428
+        ]
+      },
+      "id": "node/6326830482"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6356072963",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8366407,
+          1.3014617
+        ]
+      },
+      "id": "node/6356072963"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6357905602",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-12-06",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8525887,
+          1.2841464
+        ]
+      },
+      "id": "node/6357905602"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6373832431",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7468643,
+          1.3207529
+        ]
+      },
+      "id": "node/6373832431"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6377370586",
+        "addr:city": "Singapore",
+        "addr:housenumber": "138",
+        "addr:postcode": "068906",
+        "addr:street": "Robinson Road",
+        "addr:unit": "#01-05",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "phone": "+65 6891 8100",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8486232,
+          1.2788141
+        ]
+      },
+      "id": "node/6377370586"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6417301693",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "disused:shop": "convenience",
+        "name": "7-Eleven"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8193288,
+          1.2538812
+        ]
+      },
+      "id": "node/6417301693"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6417350987",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "fixme": "position around here, not exactly sure in which building",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8217964,
+          1.2494329
+        ]
+      },
+      "id": "node/6417350987"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6437694985",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "1",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8890361,
+          1.3364251
+        ]
+      },
+      "id": "node/6437694985"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6472864416",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.731428,
+          1.3500695
+        ]
+      },
+      "id": "node/6472864416"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6503251149",
+        "addr:floor": "1",
+        "addr:housenumber": "20",
+        "addr:street": "Ah Hood Road",
+        "addr:unit": "#01-27",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2023-10-18",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:mastercard": "yes",
+        "payment:visa": "yes",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8466337,
+          1.3272075
+        ]
+      },
+      "id": "node/6503251149"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6510975824",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "2",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8583951,
+          1.2907524
+        ]
+      },
+      "id": "node/6510975824"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6514811747",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "-2",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8540257,
+          1.280156
+        ]
+      },
+      "id": "node/6514811747"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6531508595",
+        "addr:city": "Singapore",
+        "addr:housenumber": "23",
+        "addr:street": "New Bridge Road",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-10-11",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8475049,
+          1.288768
+        ]
+      },
+      "id": "node/6531508595"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6639589386",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9026609,
+          1.4059392
+        ]
+      },
+      "id": "node/6639589386"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6665214341",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8436953,
+          1.3177775
+        ]
+      },
+      "id": "node/6665214341"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6749841389",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8491932,
+          1.3329424
+        ]
+      },
+      "id": "node/6749841389"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6799825420",
+        "addr:city": "Singapore",
+        "addr:housenumber": "168",
+        "addr:street": "Robinson Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8473906,
+          1.2777381
+        ]
+      },
+      "id": "node/6799825420"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6895146922",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8601957,
+          1.2944945
+        ]
+      },
+      "id": "node/6895146922"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6930038185",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-05-09",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.84676,
+          1.2845726
+        ]
+      },
+      "id": "node/6930038185"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6932017985",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:fa": "سون الون",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8624348,
+          1.3079861
+        ]
+      },
+      "id": "node/6932017985"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6939018372",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8492155,
+          1.2884012
+        ]
+      },
+      "id": "node/6939018372"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6940476836",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "disused:shop": "convenience",
+        "name": "7-Eleven"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7195727,
+          1.3457581
+        ]
+      },
+      "id": "node/6940476836"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6979554018",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.720077,
+          1.3441026
+        ]
+      },
+      "id": "node/6979554018"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7005482945",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "check_date": "2024-04-04",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8433104,
+          1.3199037
+        ]
+      },
+      "id": "node/7005482945"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7049663481",
+        "addr:street": "Selegie Road",
+        "alt_name": "7-11",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2023-06-20",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.849989,
+          1.3036665
+        ]
+      },
+      "id": "node/7049663481"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7055976422",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9317635,
+          1.3726048
+        ]
+      },
+      "id": "node/7055976422"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7082565853",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "1110",
+        "addr:postcode": "449880",
+        "addr:street": "East Coast Parkway",
+        "addr:unit": "#01-01/02",
+        "air_conditioning": "yes",
+        "branch": "ECP Cyclist Park",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "brewery": "Heineken",
+        "check_date": "2023-05-12",
+        "email": "pr@7-eleven.com.sg",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "operator": "07:00-23:00",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "payment:mastercard": "yes",
+        "payment:nets": "yes",
+        "payment:visa": "yes",
+        "shop": "convenience",
+        "website": "https://www.facebook.com/7Eleven.Singapore/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9238404,
+          1.3043671
+        ]
+      },
+      "id": "node/7082565853"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7129649710",
+        "addr:city": "Singapore",
+        "addr:housenumber": "2",
+        "addr:postcode": "238801",
+        "addr:street": "Orchard Turn",
+        "addr:unit": "#B2-72",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "Mo-Su 10:00-22:00",
+        "payment:cash": "yes",
+        "phone": "+65 65094839",
+        "shop": "convenience",
+        "website": "https://www.7-eleven.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8323083,
+          1.3041442
+        ]
+      },
+      "id": "node/7129649710"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7129655562",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "building:levels": "1",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "operator": "7 11",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7761327,
+          1.3423578
+        ]
+      },
+      "id": "node/7129655562"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7283605843",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8105454,
+          1.2812461
+        ]
+      },
+      "id": "node/7283605843"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7513336021",
+        "addr:housenumber": "735",
+        "addr:postcode": "640735",
+        "addr:street": "Jurong West Street 75",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "payment:apple_pay": "yes",
+        "payment:cards": "yes",
+        "payment:cash": "yes",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7008018,
+          1.3458874
+        ]
+      },
+      "id": "node/7513336021"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7528488886",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9220124,
+          1.337581
+        ]
+      },
+      "id": "node/7528488886"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7728528992",
+        "alt_name": "7-11",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6974449,
+          1.3419953
+        ]
+      },
+      "id": "node/7728528992"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7908930034",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8606151,
+          1.3130883
+        ]
+      },
+      "id": "node/7908930034"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8150844098",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "912",
+        "addr:street": "Upper Thomson Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8181031,
+          1.3989584
+        ]
+      },
+      "id": "node/8150844098"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8208607238",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9403266,
+          1.357477
+        ]
+      },
+      "id": "node/8208607238"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8233160394",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9124809,
+          1.3202748
+        ]
+      },
+      "id": "node/8233160394"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8266903961",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8519188,
+          1.3081933
+        ]
+      },
+      "id": "node/8266903961"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8496654293",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "diet:halal": "yes",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9023603,
+          1.3197023
+        ]
+      },
+      "id": "node/8496654293"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8526792784",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "07:00-23:00",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8456916,
+          1.2978099
+        ]
+      },
+      "id": "node/8526792784"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8526971984",
+        "addr:city": "Singapore",
+        "addr:housenumber": "10",
+        "addr:postcode": "408600",
+        "addr:street": "Eunos Road 8",
+        "addr:unit": "#01-105",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "website": "https://www.7-eleven.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8935142,
+          1.3189362
+        ]
+      },
+      "id": "node/8526971984"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8556333498",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8479712,
+          1.3714259
+        ]
+      },
+      "id": "node/8556333498"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8566305133",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "1",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9130341,
+          1.402684
+        ]
+      },
+      "id": "node/8566305133"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8597539837",
+        "brand": "7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "09:00-23:00",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8932786,
+          1.3177835
+        ]
+      },
+      "id": "node/8597539837"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8613927475",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.847954,
+          1.3505982
+        ]
+      },
+      "id": "node/8613927475"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8628474466",
+        "addr:city": "Singapore",
+        "addr:housenumber": "200",
+        "addr:street": "Holland Avenue",
+        "addr:unit": "#B1-04",
+        "air_conditioning": "yes",
+        "branch": "Holland Village MRT",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "currency:SGD": "yes",
+        "level": "-1",
+        "location": "underground",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "shop": "convenience",
+        "website": "https://www.7-eleven.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7959073,
+          1.3115447
+        ]
+      },
+      "id": "node/8628474466"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8642464774",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8460415,
+          1.2761558
+        ]
+      },
+      "id": "node/8642464774"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8642592344",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "Mo-Sa 07:00-23:00; Su 09:00-19:00",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8498498,
+          1.278374
+        ]
+      },
+      "id": "node/8642592344"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8642719436",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "-1",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8596191,
+          1.2827675
+        ]
+      },
+      "id": "node/8642719436"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8658484692",
+        "brand": "7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.935971,
+          1.379167
+        ]
+      },
+      "id": "node/8658484692"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8658564752",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9468396,
+          1.3719152
+        ]
+      },
+      "id": "node/8658564752"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8709291802",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9585957,
+          1.3451501
+        ]
+      },
+      "id": "node/8709291802"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8941732248",
+        "addr:housenumber": "89",
+        "addr:postcode": "188017",
+        "addr:street": "Victoria Street",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2023-08-31",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "ref": "3842",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8525303,
+          1.2970663
+        ]
+      },
+      "id": "node/8941732248"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8976385062",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-03-11",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8647727,
+          1.3035409
+        ]
+      },
+      "id": "node/8976385062"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9061404017",
+        "addr:housenumber": "532",
+        "addr:street": "Ang Mo Kio Avenue 10",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8551237,
+          1.3736652
+        ]
+      },
+      "id": "node/9061404017"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9142407240",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7602946,
+          1.3850571
+        ]
+      },
+      "id": "node/9142407240"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9331402603",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "2",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8328079,
+          1.3038238
+        ]
+      },
+      "id": "node/9331402603"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9368959878",
+        "addr:housenumber": "271",
+        "addr:postcode": "259708",
+        "addr:street": "Bukit Timah Road",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:NTUC FairPrice",
+        "check_date": "2024-01-12",
+        "name": "7-Eleven",
+        "name:en": "NTUC FairPrice",
+        "name:zh": "职总平价超市",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8355655,
+          1.3163433
+        ]
+      },
+      "id": "node/9368959878"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9482669238",
+        "addr:housenumber": "16",
+        "addr:street": "Baghdad Street",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8597143,
+          1.3011625
+        ]
+      },
+      "id": "node/9482669238"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9482669248",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "organic": "no",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8596796,
+          1.301653
+        ]
+      },
+      "id": "node/9482669248"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9653458060",
+        "brand": "7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8933327,
+          1.3159932
+        ]
+      },
+      "id": "node/9653458060"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9676920217",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8440001,
+          1.2845757
+        ]
+      },
+      "id": "node/9676920217"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9677203015",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8597121,
+          1.3034172
+        ]
+      },
+      "id": "node/9677203015"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9710704323",
+        "brand": "7-Eleven",
+        "level": "-1",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "07:00-23:00",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9017536,
+          1.3040999
+        ]
+      },
+      "id": "node/9710704323"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9710976712",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8446282,
+          1.367849
+        ]
+      },
+      "id": "node/9710976712"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9739022113",
+        "brand": "7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8620802,
+          1.3085329
+        ]
+      },
+      "id": "node/9739022113"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9787669579",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8353464,
+          1.2794321
+        ]
+      },
+      "id": "node/9787669579"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9810563663",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9538214,
+          1.3427171
+        ]
+      },
+      "id": "node/9810563663"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9810591360",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9448725,
+          1.3537444
+        ]
+      },
+      "id": "node/9810591360"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9810686287",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9409247,
+          1.3533698
+        ]
+      },
+      "id": "node/9810686287"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9872240462",
+        "addr:unit": "534",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8986044,
+          1.3900165
+        ]
+      },
+      "id": "node/9872240462"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9885569821",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8451042,
+          1.2854461
+        ]
+      },
+      "id": "node/9885569821"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9887532386",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "shop": "convenience",
+        "toilets": "no",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8501318,
+          1.2982654
+        ]
+      },
+      "id": "node/9887532386"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9893218555",
+        "brand": "7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7385109,
+          1.3221251
+        ]
+      },
+      "id": "node/9893218555"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9929710771",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8412687,
+          1.4179767
+        ]
+      },
+      "id": "node/9929710771"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10002061510",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9012128,
+          1.4062095
+        ]
+      },
+      "id": "node/10002061510"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10017979846",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.849222,
+          1.2983904
+        ]
+      },
+      "id": "node/10017979846"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10030129567",
+        "addr:city": "Singapore",
+        "addr:housename": "ibis Budget Hotel Clarke Quay",
+        "addr:housenumber": "20",
+        "addr:postcode": "059663",
+        "addr:street": "Hongkong Street",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-04-26",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8471937,
+          1.2878028
+        ]
+      },
+      "id": "node/10030129567"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10201802665",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8198223,
+          1.2772604
+        ]
+      },
+      "id": "node/10201802665"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10718876434",
+        "brand": "7-Eleven",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "payment:alipay": "yes",
+        "payment:mastercard": "yes",
+        "payment:mastercard_contactless": "yes",
+        "payment:nets": "yes",
+        "payment:sgqr": "yes",
+        "payment:visa": "yes",
+        "payment:visa_contactless": "yes",
+        "payment:wechat": "yes",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8928137,
+          1.3837947
+        ]
+      },
+      "id": "node/10718876434"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10732752509",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8208999,
+          1.2554609
+        ]
+      },
+      "id": "node/10732752509"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10765737805",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8447284,
+          1.2887598
+        ]
+      },
+      "id": "node/10765737805"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10771041183",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2023-12-09",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8511339,
+          1.3005707
+        ]
+      },
+      "id": "node/10771041183"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10833950728",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8166963,
+          1.4530992
+        ]
+      },
+      "id": "node/10833950728"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10838701190",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:street": "Blk 258, Pasir Ris Street 21, #01-08 Loyang Point",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "payment:apple_pay": "yes",
+        "payment:cash": "yes",
+        "payment:coins": "yes",
+        "payment:contactless": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "payment:google_pay": "yes",
+        "payment:mastercard": "yes",
+        "payment:notes": "yes",
+        "payment:visa": "yes",
+        "payment:visa_debit": "yes",
+        "shop": "convenience",
+        "source": "https://www.7-eleven.com.sg/Locate"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9645786,
+          1.3672033
+        ]
+      },
+      "id": "node/10838701190"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10877165736",
+        "addr:city": "Singapore",
+        "addr:housenumber": "1",
+        "addr:postcode": "068803",
+        "addr:street": "Shenton Way",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "phone": "+65 6509 6553",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8508396,
+          1.2795626
+        ]
+      },
+      "id": "node/10877165736"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10891405955",
+        "addr:unit": "#01-58",
+        "air_conditioning": "yes",
+        "branch": "The Woodleigh Mall",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8721172,
+          1.3388158
+        ]
+      },
+      "id": "node/10891405955"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10903409912",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "1",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.693397,
+          1.3424975
+        ]
+      },
+      "id": "node/10903409912"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10968855493",
+        "addr:unit": "10",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8491786,
+          1.3003605
+        ]
+      },
+      "id": "node/10968855493"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10991987484",
+        "addr:unit": "#01-20",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7829893,
+          1.3165489
+        ]
+      },
+      "id": "node/10991987484"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11003093905",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7060865,
+          1.3387134
+        ]
+      },
+      "id": "node/11003093905"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11023056262",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9619197,
+          1.3353279
+        ]
+      },
+      "id": "node/11023056262"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11079698217",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9550626,
+          1.3776063
+        ]
+      },
+      "id": "node/11079698217"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11115314592",
+        "addr:city": "Singapore",
+        "addr:housenumber": "27",
+        "addr:postcode": "347857",
+        "addr:street": "Tai Thong Crescent",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "phone": "+65 6891 8100",
+        "shop": "convenience",
+        "website": "https://www.7-eleven.com.sg/",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8697216,
+          1.329003
+        ]
+      },
+      "id": "node/11115314592"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11166377840",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.849813,
+          1.4283329
+        ]
+      },
+      "id": "node/11166377840"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11166401594",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8440404,
+          1.4160474
+        ]
+      },
+      "id": "node/11166401594"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11194372066",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8461193,
+          1.4251368
+        ]
+      },
+      "id": "node/11194372066"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11194372067",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8405397,
+          1.4228999
+        ]
+      },
+      "id": "node/11194372067"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11194372068",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8384014,
+          1.420792
+        ]
+      },
+      "id": "node/11194372068"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11194372069",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8371674,
+          1.4177162
+        ]
+      },
+      "id": "node/11194372069"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11215128292",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8953614,
+          1.4033079
+        ]
+      },
+      "id": "node/11215128292"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11251028164",
+        "addr:city": "Singapore",
+        "addr:housenumber": "81",
+        "addr:postcode": "239917",
+        "addr:street": "Clemenceau Avenue",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-10-13",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "operator": "DFI Retail Group Holdings Limited",
+        "phone": "+65 6891 8100",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8425678,
+          1.2924056
+        ]
+      },
+      "id": "node/11251028164"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11276372434",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8411464,
+          1.3804677
+        ]
+      },
+      "id": "node/11276372434"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11279549816",
+        "branch": "Le Quest Mall",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7410212,
+          1.3555498
+        ]
+      },
+      "id": "node/11279549816"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11335540708",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2023-11-09",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8489352,
+          1.2991186
+        ]
+      },
+      "id": "node/11335540708"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11343336036",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2023-11-10",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8443158,
+          1.3209506
+        ]
+      },
+      "id": "node/11343336036"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11381484482",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "-1",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8687507,
+          1.3312478
+        ]
+      },
+      "id": "node/11381484482"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11383343394",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9160233,
+          1.3995317
+        ]
+      },
+      "id": "node/11383343394"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11390109688",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6915492,
+          1.3524028
+        ]
+      },
+      "id": "node/11390109688"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11409722849",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2023-12-10",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.788086,
+          1.3065805
+        ]
+      },
+      "id": "node/11409722849"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11476120570",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8609546,
+          1.2930454
+        ]
+      },
+      "id": "node/11476120570"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11480763369",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8525338,
+          1.2972164
+        ]
+      },
+      "id": "node/11480763369"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11563386255",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-01-28",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8541332,
+          1.3037687
+        ]
+      },
+      "id": "node/11563386255"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11563386257",
+        "addr:housenumber": "122",
+        "addr:street": "Jalan Besar",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-01-28",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8561673,
+          1.3065145
+        ]
+      },
+      "id": "node/11563386257"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11627248778",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-02-08",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8500724,
+          1.2850377
+        ]
+      },
+      "id": "node/11627248778"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11663229540",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-02-20",
+        "level": "-1",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8528358,
+          1.2931665
+        ]
+      },
+      "id": "node/11663229540"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11949558318",
+        "addr:unit": "21",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8885574,
+          1.3967434
+        ]
+      },
+      "id": "node/11949558318"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11981074572",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8387245,
+          1.2771886
+        ]
+      },
+      "id": "node/11981074572"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12006432723",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8316253,
+          1.4169047
+        ]
+      },
+      "id": "node/12006432723"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12053283536",
+        "addr:floor": "1",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-07-11",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7644818,
+          1.3629593
+        ]
+      },
+      "id": "node/12053283536"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12143316812",
+        "addr:city": "Singapore",
+        "addr:housenumber": "10",
+        "addr:postcode": "519634",
+        "addr:street": "Pasir Ris Central",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "payment:cash": "yes",
+        "payment:contactless": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9492106,
+          1.3724442
+        ]
+      },
+      "id": "node/12143316812"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12143316817",
+        "addr:city": "Singapore",
+        "addr:housenumber": "1",
+        "addr:postcode": "518457",
+        "addr:street": "Pasir Ris Central Street 3",
+        "branch": "White Sands",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "payment:cash": "yes",
+        "payment:contactless": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "shop": "convenience",
+        "website": "https://www.7-eleven.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9496268,
+          1.3722569
+        ]
+      },
+      "id": "node/12143316817"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12144371951",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-08-27",
+        "layer": "-1",
+        "level": "-1",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8386503,
+          1.3003518
+        ]
+      },
+      "id": "node/12144371951"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12144394179",
+        "addr:floor": "2",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-08-26",
+        "level": "1",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7450304,
+          1.3339507
+        ]
+      },
+      "id": "node/12144394179"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12144394184",
+        "addr:floor": "2",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-08-26",
+        "level": "1",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.743411,
+          1.3343449
+        ]
+      },
+      "id": "node/12144394184"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12167950497",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8052768,
+          1.3162611
+        ]
+      },
+      "id": "node/12167950497"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12245486094",
+        "addr:housenumber": "65",
+        "addr:street": "Airport Boulevard",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2024-10-12",
+        "level": "-2",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9867896,
+          1.3552006
+        ]
+      },
+      "id": "node/12245486094"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12260881532",
+        "addr:city": "Singapore",
+        "addr:housenumber": "126B",
+        "addr:postcode": "692126",
+        "addr:street": "Tengah Drive",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "image": "https://i.imgur.com/pxsfpAN.jpeg",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "operator": "7-Eleven",
+        "shop": "convenience",
+        "website": "https://www.7-eleven.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7356947,
+          1.3589238
+        ]
+      },
+      "id": "node/12260881532"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12376339754",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "brand:wikipedia": "en:7-Eleven",
+        "name": "7-Eleven",
+        "name:zh": "7-11便利店",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.765037,
+          1.3155448
+        ]
+      },
+      "id": "node/12376339754"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12408773894",
+        "addr:city": "Singapore",
+        "addr:housenumber": "282",
+        "addr:postcode": "520282",
+        "addr:street": "Tampines Street 22",
+        "air_conditioning": "yes",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "opening_hours": "24/7",
+        "operator": "7-Eleven",
+        "payment:american_express": "yes",
+        "payment:app": "yes",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "payment:mastercard": "yes",
+        "payment:visa": "yes",
+        "payment:visa_debit": "yes",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.952088,
+          1.347772
+        ]
+      },
+      "id": "node/12408773894"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12444176294",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8503022,
+          1.3914898
+        ]
+      },
+      "id": "node/12444176294"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12460807385",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "2",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9863179,
+          1.3572838
+        ]
+      },
+      "id": "node/12460807385"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12533886457",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "level": "0",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8462435,
+          1.3214767
+        ]
+      },
+      "id": "node/12533886457"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12546605560",
+        "addr:floor": "B3",
+        "addr:housenumber": "7",
+        "addr:street": "Fraser Street",
+        "addr:unit": "#B3-03",
+        "brand": "7-Eleven",
+        "brand:wikidata": "Q259340",
+        "check_date": "2025-01-28",
+        "level": "-3",
+        "name": "7-Eleven",
+        "shop": "convenience"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8576264,
+          1.2991636
+        ]
+      },
+      "id": "node/12546605560"
+    }
+  ]
+}

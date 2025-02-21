@@ -1,0 +1,4068 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2025-02-17T04:33:14Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/368208482",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "level": "1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "operator": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8872571,
+          1.3967854
+        ]
+      },
+      "id": "node/368208482"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/369123937",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "operator": "McDonald's",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9014609,
+          1.3852937
+        ]
+      },
+      "id": "node/369123937"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/369125094",
+        "addr:city": "Singapore",
+        "addr:housenumber": "11",
+        "addr:postcode": "545082",
+        "addr:street": "Rivervale Crescent",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Su-Th,PH 07:00-02:00; Fr-Sa 24/7",
+        "phone": "+65 6388 7320",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9048398,
+          1.3920248
+        ]
+      },
+      "id": "node/369125094"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/369128085",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "zh:麦当劳",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "payment:cash": "yes",
+        "payment:contactless": "yes",
+        "payment:ep_ezlink": "yes",
+        "payment:nets": "yes",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8936806,
+          1.3721746
+        ]
+      },
+      "id": "node/369128085"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/369548445",
+        "addr:city": "Singapore",
+        "addr:street": "Hougang Avenue 8",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "check_date": "2023-06-22",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "diet:halal": "yes",
+        "diet:meat": "yes",
+        "diet:vegetarian": "yes",
+        "drive_through": "no",
+        "highchair": "yes",
+        "internet_access": "wlan",
+        "internet_access:fee": "no",
+        "internet_access:ssid": "McDonalds WiFi",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "outdoor_seating": "yes",
+        "payment:grabpay": "yes",
+        "payment:mastercard": "yes",
+        "payment:visa": "yes",
+        "smoking": "isolated",
+        "source": "survey",
+        "takeaway": "yes",
+        "toilets": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.886987,
+          1.3740336
+        ]
+      },
+      "id": "node/369548445"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/610732258",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "check_date": "2022-11-09",
+        "cuisine": "burger",
+        "diet:halal": "yes",
+        "drive_through": "no",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "outdoor_seating": "no",
+        "payment:contactless": "yes",
+        "payment:credit_cards": "yes",
+        "payment:mastercard": "yes",
+        "payment:visa": "yes",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8550421,
+          1.301261
+        ]
+      },
+      "id": "node/610732258"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/671205205",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "580",
+        "addr:postcode": "149066",
+        "addr:street": "Queensway",
+        "amenity": "fast_food",
+        "branch": "Ridout Tea Garden",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8021608,
+          1.3040423
+        ]
+      },
+      "id": "node/671205205"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/673992964",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8136207,
+          1.3223758
+        ]
+      },
+      "id": "node/673992964"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/679648984",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7633424,
+          1.2975686
+        ]
+      },
+      "id": "node/679648984"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/775915352",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "check_date": "2023-03-18",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "diet:halal": "yes",
+        "diet:vegetarian": "yes",
+        "level": "0",
+        "name": "McDonald's",
+        "outdoor_seating": "no",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "payment:mastercard": "yes",
+        "payment:nets": "yes",
+        "payment:visa": "yes",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8198881,
+          1.4483884
+        ]
+      },
+      "id": "node/775915352"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/966511549",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "762",
+        "addr:postcode": "640762",
+        "addr:street": "Jurong West Street 75",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "2",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6976457,
+          1.3486942
+        ]
+      },
+      "id": "node/966511549"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/966688950",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "638",
+        "addr:postcode": "640638",
+        "addr:street": "Jurong West Street 61",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "name": "McDonald's",
+        "opening_hours": "24/7",
+        "operator": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6970389,
+          1.3415125
+        ]
+      },
+      "id": "node/966688950"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/966690852",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7243864,
+          1.3261328
+        ]
+      },
+      "id": "node/966690852"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1318605429",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 07:00-00:00",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.846034,
+          1.2748834
+        ]
+      },
+      "id": "node/1318605429"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1570710940",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8626356,
+          1.3075121
+        ]
+      },
+      "id": "node/1570710940"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1699579429",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8472747,
+          1.3693658
+        ]
+      },
+      "id": "node/1699579429"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1699579433",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8460242,
+          1.3827588
+        ]
+      },
+      "id": "node/1699579433"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1775796433",
+        "addr:street": "Clementi Avenue 3",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.76569,
+          1.3124773
+        ]
+      },
+      "id": "node/1775796433"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1829431135",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.842675,
+          1.2845434
+        ]
+      },
+      "id": "node/1829431135"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1829455634",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8335522,
+          1.3045417
+        ]
+      },
+      "id": "node/1829455634"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1832093563",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 08:30-22:00",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8653908,
+          1.2828132
+        ]
+      },
+      "id": "node/1832093563"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1838409826",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9859391,
+          1.3547625
+        ]
+      },
+      "id": "node/1838409826"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1843637929",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "80",
+        "addr:postcode": "828815",
+        "addr:street": "Punggol Field",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9134282,
+          1.3936293
+        ]
+      },
+      "id": "node/1843637929"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1953018713",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "level": "-1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "takeaway": "yes",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8287244,
+          1.3063341
+        ]
+      },
+      "id": "node/1953018713"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2059516825",
+        "addr:city": "Singapore",
+        "addr:housenumber": "76",
+        "addr:postcode": "637331",
+        "addr:street": "Nanyang Drive",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "diet:halal": "yes",
+        "level": "1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Sa 07:00-00:00; Su 07:00-22:00",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6802831,
+          1.3468981
+        ]
+      },
+      "id": "node/2059516825"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2132500347",
+        "addr:street": "Ajunied Avenue 2",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8857837,
+          1.3204752
+        ]
+      },
+      "id": "node/2132500347"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2402480208",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "133",
+        "addr:postcode": "059413",
+        "addr:street": "New Bridge Road",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "indoor_seating": "yes",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "outdoor_seating": "no",
+        "takeaway": "yes",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8445746,
+          1.285139
+        ]
+      },
+      "id": "node/2402480208"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2402530866",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "1",
+        "addr:postcode": "048508",
+        "addr:street": "South Canal Road",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "operator": "McDonald's",
+        "phone": "+65 65344350",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8499658,
+          1.2858396
+        ]
+      },
+      "id": "node/2402530866"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2402536816",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "no",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "level": "-1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 07:30-23:00",
+        "outdoor_seating": "yes",
+        "takeaway": "yes",
+        "toilets": "yes",
+        "toilets:access": "yes",
+        "toilets:wheelchair": "designated",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8448902,
+          1.3000112
+        ]
+      },
+      "id": "node/2402536816"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2402539700",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "level": "-1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.856206,
+          1.3113488
+        ]
+      },
+      "id": "node/2402539700"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2402541467",
+        "amenity": "fast_food",
+        "branch": "United Square",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8439049,
+          1.3169709
+        ]
+      },
+      "id": "node/2402541467"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2402545439",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8204787,
+          1.2648062
+        ]
+      },
+      "id": "node/2402545439"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2402545440",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8463678,
+          1.3108167
+        ]
+      },
+      "id": "node/2402545440"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2402546676",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "6",
+        "addr:postcode": "039594",
+        "addr:street": "Raffles Boulevard",
+        "addr:unit": "#02-156/157/166",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "branch": "Marina Square",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "no",
+        "level": "1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "phone": "+65 6883 2286",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8572476,
+          1.2913073
+        ]
+      },
+      "id": "node/2402546676"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2420993452",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7979862,
+          1.4458327
+        ]
+      },
+      "id": "node/2420993452"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2420993462",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8011513,
+          1.4402485
+        ]
+      },
+      "id": "node/2420993462"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2421003729",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7863743,
+          1.4364211
+        ]
+      },
+      "id": "node/2421003729"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2421003732",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7871007,
+          1.4352192
+        ]
+      },
+      "id": "node/2421003732"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2421033263",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7449778,
+          1.3855592
+        ]
+      },
+      "id": "node/2421033263"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2421033264",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "internet_access": "wlan",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7520704,
+          1.3813306
+        ]
+      },
+      "id": "node/2421033264"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2421033266",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7644526,
+          1.3793488
+        ]
+      },
+      "id": "node/2421033266"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2421033268",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7506387,
+          1.3576092
+        ]
+      },
+      "id": "node/2421033268"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2422415669",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "internet_access": "wlan",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.74703,
+          1.3978719
+        ]
+      },
+      "id": "node/2422415669"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2577843463",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7063392,
+          1.3399002
+        ]
+      },
+      "id": "node/2577843463"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2619352060",
+        "addr:street": "Bedok Reservoir Road",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "smoking": "no",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9137615,
+          1.3321426
+        ]
+      },
+      "id": "node/2619352060"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2921955064",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.81815,
+          1.2835358
+        ]
+      },
+      "id": "node/2921955064"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3098271738",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "-1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.820322,
+          1.257543
+        ]
+      },
+      "id": "node/3098271738"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3105759120",
+        "addr:street": "Serangoon Garden Way",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8657643,
+          1.3633811
+        ]
+      },
+      "id": "node/3105759120"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3106499658",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8709089,
+          1.3534064
+        ]
+      },
+      "id": "node/3106499658"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3164004975",
+        "addr:city": "Singapore",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9059944,
+          1.3019278
+        ]
+      },
+      "id": "node/3164004975"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3247461147",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8461844,
+          1.3412309
+        ]
+      },
+      "id": "node/3247461147"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3300494744",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "internet_access": "wlan",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7434289,
+          1.3919593
+        ]
+      },
+      "id": "node/3300494744"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3537304254",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9426149,
+          1.3786011
+        ]
+      },
+      "id": "node/3537304254"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3606772429",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8480163,
+          1.332626
+        ]
+      },
+      "id": "node/3606772429"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3611085410",
+        "addr:city": "Singapore",
+        "addr:housenumber": "1",
+        "addr:postcode": "519599",
+        "addr:street": "Pasir Ris Close",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "diet:halal": "yes",
+        "drive_through": "no",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9551851,
+          1.3769257
+        ]
+      },
+      "id": "node/3611085410"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3668837080",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8032795,
+          1.2872554
+        ]
+      },
+      "id": "node/3668837080"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3694984285",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9324065,
+          1.3445829
+        ]
+      },
+      "id": "node/3694984285"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3718704343",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7516147,
+          1.3282417
+        ]
+      },
+      "id": "node/3718704343"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3740797941",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "operator": "McDonalds",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7444185,
+          1.3477226
+        ]
+      },
+      "id": "node/3740797941"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3788631342",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "operator": "Macdonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8509097,
+          1.3341872
+        ]
+      },
+      "id": "node/3788631342"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3891550933",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "halal": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9883591,
+          1.3540391
+        ]
+      },
+      "id": "node/3891550933"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3914777297",
+        "addr:housenumber": "383",
+        "addr:postcode": "259727",
+        "addr:street": "Bukit Timah Road",
+        "addr:unit": "#01-09B",
+        "amenity": "fast_food",
+        "branch": "Alocassia",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 06:30-01:00",
+        "phone": "+65 6887 4961",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8272994,
+          1.3195729
+        ]
+      },
+      "id": "node/3914777297"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3923016252",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7704405,
+          1.3837892
+        ]
+      },
+      "id": "node/3923016252"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4022006364",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "internet_access": "wlan",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "operator": "McDonald",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7502871,
+          1.3495845
+        ]
+      },
+      "id": "node/4022006364"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4271734998",
+        "addr:housenumber": "3 #01-34",
+        "addr:postcode": "528833",
+        "addr:street": "Simei Street 6",
+        "amenity": "fast_food",
+        "branch": "East Point Mall",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "internet_access": "wlan",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Th,Su 06:00-00:00; Fr-Sa 06:00-01:00",
+        "phone": "67020605",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9533766,
+          1.3427681
+        ]
+      },
+      "id": "node/4271734998"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4279229689",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "1000",
+        "addr:postcode": "449876",
+        "addr:street": "East Coast Parkway",
+        "addr:unit": "#01-05",
+        "amenity": "fast_food",
+        "branch": "East Coast Park Marine Cove",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "email": "customercare@sg.mcd.com",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Su-Th 06:00-24:00;Fr,Sa 00:00-24:00",
+        "phone": "62430471",
+        "takeaway": "yes",
+        "website": "https://mcdonalds.com.sg/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9128221,
+          1.3016348
+        ]
+      },
+      "id": "node/4279229689"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4294004025",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9623221,
+          1.3345833
+        ]
+      },
+      "id": "node/4294004025"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4377547090",
+        "addr:city": "Singapore",
+        "addr:housenumber": "1 #01-24/25/26",
+        "addr:postcode": "237994",
+        "addr:street": "Kim Seng Promenade",
+        "amenity": "fast_food",
+        "branch": "Great World City",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "phone": "+65 6734 0938",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8323815,
+          1.2936409
+        ]
+      },
+      "id": "node/4377547090"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4397148690",
+        "addr:unit": "05",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "level": "2",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9057769,
+          1.4100416
+        ]
+      },
+      "id": "node/4397148690"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4552437538",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.762591,
+          1.3784072
+        ]
+      },
+      "id": "node/4552437538"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4561001467",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8600784,
+          1.2946108
+        ]
+      },
+      "id": "node/4561001467"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4592802977",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "144",
+        "addr:postcode": "588177",
+        "addr:street": "Upper Bukit Timah Road",
+        "addr:unit": "#01-39/#01-40",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7761691,
+          1.3422465
+        ]
+      },
+      "id": "node/4592802977"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4599847291",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.6784171,
+          1.327364
+        ]
+      },
+      "id": "node/4599847291"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4670438595",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9214889,
+          1.3373089
+        ]
+      },
+      "id": "node/4670438595"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4675868326",
+        "addr:street": "New Upper Changi Road",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su,PH 06:00-24:00",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9291499,
+          1.3243472
+        ]
+      },
+      "id": "node/4675868326"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4683522922",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8377971,
+          1.4359437
+        ]
+      },
+      "id": "node/4683522922"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4684122143",
+        "addr:street": "Siglap Road",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.923353,
+          1.3124773
+        ]
+      },
+      "id": "node/4684122143"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4685872775",
+        "addr:street": "Bedok North Avenue 1",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9257716,
+          1.331985
+        ]
+      },
+      "id": "node/4685872775"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4690112142",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7382039,
+          1.3439551
+        ]
+      },
+      "id": "node/4690112142"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4697770633",
+        "addr:street": "Paya Lebar Road",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8925608,
+          1.3184239
+        ]
+      },
+      "id": "node/4697770633"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4712277746",
+        "addr:street": "Hougang Street 21",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.886344,
+          1.3585427
+        ]
+      },
+      "id": "node/4712277746"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4726355240",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "369",
+        "addr:postcode": "758382",
+        "addr:street": "Sembawang Road",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8260764,
+          1.4267083
+        ]
+      },
+      "id": "node/4726355240"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4732825187",
+        "addr:street": "Ang Mo Kio Avenue 10",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8563817,
+          1.3673955
+        ]
+      },
+      "id": "node/4732825187"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4836072442",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "1",
+        "addr:postcode": "545078",
+        "addr:street": "Sengkang Square",
+        "amenity": "fast_food",
+        "branch": "Compass One",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "facebook": "https://www.facebook.com/mcdsg/",
+        "internet_access": "yes",
+        "level": "-1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "07:00-22:30",
+        "self_service": "yes",
+        "smoking": "no",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8952432,
+          1.392401
+        ]
+      },
+      "id": "node/4836072442"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4837878649",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "2",
+        "addr:postcode": "609601",
+        "addr:street": "Jurong East Street 21",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.746041,
+          1.3351169
+        ]
+      },
+      "id": "node/4837878649"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4883488035",
+        "addr:street": "Tampines Street 32",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9595792,
+          1.3540635
+        ]
+      },
+      "id": "node/4883488035"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4883490429",
+        "amenity": "fast_food",
+        "branch": "Tampines East Community Club",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "drive_through": "no",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "outdoor_seating": "yes",
+        "smoking": "no",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9544495,
+          1.3533328
+        ]
+      },
+      "id": "node/4883490429"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5195384744",
+        "addr:city": "Singapore",
+        "addr:housenumber": "120",
+        "addr:postcode": "519640",
+        "addr:street": "Pasir Ris Central",
+        "addr:unit": "01-12",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "outdoor_seating": "no",
+        "phone": "65-65840949",
+        "smoking": "no",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9515336,
+          1.3741881
+        ]
+      },
+      "id": "node/5195384744"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5696237821",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "24/7",
+        "operator": "McDonald's",
+        "smoking": "no",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9477703,
+          1.3492927
+        ]
+      },
+      "id": "node/5696237821"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5828042286",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "zh:麦当劳",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7489009,
+          1.3781178
+        ]
+      },
+      "id": "node/5828042286"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5924056452",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8274757,
+          1.2865108
+        ]
+      },
+      "id": "node/5924056452"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/5974136144",
+        "addr:city": "Singapore",
+        "addr:housenumber": "148",
+        "addr:postcode": "350148",
+        "addr:street": "Potong Pasir Avenue 1",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "diet:halal": "yes",
+        "drive_through": "no",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "operator": "MacDonald",
+        "outdoor_seating": "yes",
+        "smoking": "outside",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8678801,
+          1.3327737
+        ]
+      },
+      "id": "node/5974136144"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6012281647",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "toilets:wheelchair": "no",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.848388,
+          1.3502711
+        ]
+      },
+      "id": "node/6012281647"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6271033469",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "check_date": "2023-06-23",
+        "cuisine": "burger",
+        "level": "-2",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8214606,
+          1.2649958
+        ]
+      },
+      "id": "node/6271033469"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6356072968",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "opening_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8362152,
+          1.3014411
+        ]
+      },
+      "id": "node/6356072968"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6439273252",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7184195,
+          1.348334
+        ]
+      },
+      "id": "node/6439273252"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6497423047",
+        "addr:housenumber": "12",
+        "addr:street": "Kallang Avenue",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "check_date": "2024-04-05",
+        "cuisine": "burger",
+        "level": "0;1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8639506,
+          1.3097929
+        ]
+      },
+      "id": "node/6497423047"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6583281561",
+        "addr:city": "Singapore",
+        "addr:housenumber": "107 #01-16/17/21",
+        "addr:postcode": "179105",
+        "addr:street": "North Bridge Road",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "branch": "Funan",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "check_date": "2024-09",
+        "cuisine": "burger",
+        "highchair": "yes",
+        "level": "0",
+        "level:ref": "1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麥當勞",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "PH,Mo-Su 07:00-02:00",
+        "outdoor_seating": "no",
+        "payment:american_express": "yes",
+        "payment:coins": "yes",
+        "payment:mastercard": "yes",
+        "payment:notes": "yes",
+        "payment:visa": "yes",
+        "phone": "+65 69520352",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8495495,
+          1.2916652
+        ]
+      },
+      "id": "node/6583281561"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6749831454",
+        "addr:housename": "SAFRA Toa Payoh",
+        "addr:housenumber": "293",
+        "addr:street": "Lor 6 Toa Payoh",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "check_date": "2024-02-25",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8546267,
+          1.3308349
+        ]
+      },
+      "id": "node/6749831454"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6780316637",
+        "addr:housenumber": "20",
+        "addr:street": "Ah Hood Road",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "branch": "Zhongshan Mall",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "check_date": "2023-06-13",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "diet:halal": "only",
+        "drive_through": "no",
+        "highchair": "no",
+        "internet_access": "wlan",
+        "internet_access:fee": "no",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "operator": "McDonald's",
+        "outdoor_seating": "yes",
+        "payment:cards": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "payment:grabpay": "yes",
+        "payment:mastercard": "yes",
+        "payment:nets": "yes",
+        "payment:visa": "yes",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8468097,
+          1.3268678
+        ]
+      },
+      "id": "node/6780316637"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6898252892",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7254183,
+          1.3504275
+        ]
+      },
+      "id": "node/6898252892"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6939382735",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8901702,
+          1.3491728
+        ]
+      },
+      "id": "node/6939382735"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6941039455",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8376182,
+          1.373602
+        ]
+      },
+      "id": "node/6941039455"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6966435401",
+        "addr:city": "Singapore",
+        "addr:housenumber": "33",
+        "addr:postcode": "797653",
+        "addr:street": "Sengkang West Avenue",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8761135,
+          1.3911091
+        ]
+      },
+      "id": "node/6966435401"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6981846721",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Su-Th 11:00-22:00; Fr-Sa 11:00-23:00",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8317122,
+          1.3054682
+        ]
+      },
+      "id": "node/6981846721"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7233002744",
+        "addr:city": "Singapore",
+        "addr:housenumber": "460",
+        "addr:postcode": "119963",
+        "addr:street": "Alexandra Road",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "check_date": "2024-04-07",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "outdoor_seating": "no",
+        "phone": "+65 6274 7089",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8016015,
+          1.2744444
+        ]
+      },
+      "id": "node/7233002744"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7457571852",
+        "addr:street": "Clementi Avenue 3",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7646087,
+          1.3156004
+        ]
+      },
+      "id": "node/7457571852"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7457571854",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8356657,
+          1.4299111
+        ]
+      },
+      "id": "node/7457571854"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/7457571857",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "zh:麦当劳",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "source": "Kaart Ground Survey 2017",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9018017,
+          1.4068687
+        ]
+      },
+      "id": "node/7457571857"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8566305130",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9131226,
+          1.402496
+        ]
+      },
+      "id": "node/8566305130"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8658614282",
+        "addr:city": "Singapore",
+        "addr:housenumber": "1",
+        "addr:postcode": "518457",
+        "addr:street": "Pasir Ris Central Street 3",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "diet:halal": "yes",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 06:00-25:00",
+        "outdoor_seating": "no",
+        "takeaway": "yes",
+        "website": "https://mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9493456,
+          1.372359
+        ]
+      },
+      "id": "node/8658614282"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8895494558",
+        "amenity": "fast_food",
+        "branch": "Canberra",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "american;burger",
+        "diet:halal": "yes",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "opening_hours": "Mo-Su 07:00-02:00",
+        "phone": "+65 6683 9116",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8306018,
+          1.442937
+        ]
+      },
+      "id": "node/8895494558"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9020270366",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7664437,
+          1.3850353
+        ]
+      },
+      "id": "node/9020270366"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9128625504",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7934164,
+          1.4308241
+        ]
+      },
+      "id": "node/9128625504"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9269019966",
+        "addr:unit": "27",
+        "amenity": "fast_food",
+        "branch": "Northshore",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "zh:麦当劳",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9019767,
+          1.4169055
+        ]
+      },
+      "id": "node/9269019966"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9810591357",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "only"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.943886,
+          1.3545071
+        ]
+      },
+      "id": "node/9810591357"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9810591358",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.943372,
+          1.3534782
+        ]
+      },
+      "id": "node/9810591358"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9858421985",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "operating_hours": "24/7",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8617815,
+          1.3190438
+        ]
+      },
+      "id": "node/9858421985"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10095179603",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "takeaway": "yes",
+        "wheelchair": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8797178,
+          1.3754404
+        ]
+      },
+      "id": "node/10095179603"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10688756571",
+        "addr:unit": "01-34;01-35;01-36",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "branch": "Sengkang Grand Mall",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "drive_through": "no",
+        "level": "0",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "outdoor_seating": "no",
+        "smoking": "no",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8926835,
+          1.3818652
+        ]
+      },
+      "id": "node/10688756571"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10692330814",
+        "amenity": "fast_food",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7362139,
+          1.3319501
+        ]
+      },
+      "id": "node/10692330814"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10805253972",
+        "amenity": "fast_food",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:wikipedia": "en:McDonald's",
+        "brand:zh": "麦当劳",
+        "check_date": "2024-09-07",
+        "cuisine": "burger",
+        "diet:halal": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7623795,
+          1.3871893
+        ]
+      },
+      "id": "node/10805253972"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10844231198",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "30",
+        "addr:neighbourhood": "The Woodgrove",
+        "addr:postcode": "739065",
+        "addr:street": "Woodlands Avenue 1",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7813106,
+          1.4294771
+        ]
+      },
+      "id": "node/10844231198"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10857609703",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7910316,
+          1.3062227
+        ]
+      },
+      "id": "node/10857609703"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10891405963",
+        "addr:unit": "#B1-11/12",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "branch": "The Woodleigh Mall",
+        "brand": "麦当劳",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "no",
+        "level": "-1",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8721923,
+          1.3385418
+        ]
+      },
+      "id": "node/10891405963"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10914392542",
+        "addr:city": "Singapore",
+        "addr:country": "SG",
+        "addr:housenumber": "8",
+        "addr:postcode": "239695",
+        "addr:street": "Grange Road",
+        "amenity": "fast_food",
+        "branch": "Cineleisure",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "name": "McDonald's",
+        "opening_hours": "24/7",
+        "phone": "+65 65754629",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8364664,
+          1.3013921
+        ]
+      },
+      "id": "node/10914392542"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/10968880935",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "level": "-1",
+        "name": "McDonald's",
+        "opening_hours": "Mo-Th,Su 07:30-24:00; PH -1 day,Fr-Sa 07:30-25:00",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8495202,
+          1.3006161
+        ]
+      },
+      "id": "node/10968880935"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11005379209",
+        "addr:unit": "8",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "level": "0",
+        "name": "McDonald's",
+        "opening_hours": "07:00-22:00",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9050451,
+          1.4091931
+        ]
+      },
+      "id": "node/11005379209"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11166342167",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8343834,
+          1.4166516
+        ]
+      },
+      "id": "node/11166342167"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11166377839",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.849813,
+          1.4284134
+        ]
+      },
+      "id": "node/11166377839"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11274643752",
+        "addr:city": "Singapore",
+        "addr:housenumber": "900",
+        "addr:postcode": "158790",
+        "addr:street": "Tiong Bahru Road",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "branch": "Delta Sports Center",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8202497,
+          1.2893927
+        ]
+      },
+      "id": "node/11274643752"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11279549812",
+        "amenity": "fast_food",
+        "branch": "Le Quest Mall",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7409467,
+          1.3556604
+        ]
+      },
+      "id": "node/11279549812"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11573236356",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:en": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "brand:zh": "麦当劳",
+        "brand:zh-Hans": "麦当劳",
+        "cuisine": "burger",
+        "drive_through": "yes",
+        "name": "McDonald's",
+        "name:en": "McDonald's",
+        "name:zh": "麦当劳",
+        "name:zh-Hans": "麦当劳",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8335322,
+          1.3188935
+        ]
+      },
+      "id": "node/11573236356"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11669078699",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7953836,
+          1.4375063
+        ]
+      },
+      "id": "node/11669078699"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/11710499731",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8247755,
+          1.4417654
+        ]
+      },
+      "id": "node/11710499731"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12063267690",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "name": "McDonald's",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7209247,
+          1.3346851
+        ]
+      },
+      "id": "node/12063267690"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12143894986",
+        "addr:city": "Singapore",
+        "addr:housenumber": "7",
+        "addr:postcode": "519612",
+        "addr:street": "Pasir Ris Central",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "branch": "Pasir Ris Mall",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "diet:halal": "yes",
+        "drive_through": "no",
+        "level": "-1",
+        "name": "McDonald's",
+        "opening_hours": "Mo-Su 07:00-23:00",
+        "phone": "+65 6968 6273",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.9486914,
+          1.3736242
+        ]
+      },
+      "id": "node/12143894986"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12149827694",
+        "addr:city": "Singapore",
+        "addr:housenumber": "200 #01-66",
+        "addr:postcode": "188024",
+        "addr:street": "Victoria Street",
+        "amenity": "fast_food",
+        "branch": "Bugis Junction",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "check_date": "2024-09",
+        "cuisine": "burger",
+        "drive_through": "no",
+        "level": "0",
+        "name": "McDonald's",
+        "opening_hours": "Mo-Su 07:00-00:00",
+        "outdoor_seating": "yes",
+        "phone": "+65 63393690",
+        "takeaway": "yes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8557528,
+          1.2992907
+        ]
+      },
+      "id": "node/12149827694"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/12217258697",
+        "addr:city": "Singapore",
+        "addr:housenumber": "127B",
+        "addr:postcode": "692128",
+        "addr:street": "Plantation Crescent",
+        "air_conditioning": "yes",
+        "amenity": "fast_food",
+        "brand": "McDonald's",
+        "brand:wikidata": "Q38076",
+        "cuisine": "burger",
+        "delivery": "yes",
+        "drive_through": "no",
+        "level": "1",
+        "name": "McDonald's",
+        "opening_hours": "Mo-Su 09:00-00:00",
+        "takeaway": "yes",
+        "website": "https://www.mcdonalds.com.sg/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.7347825,
+          1.3580312
+        ]
+      },
+      "id": "node/12217258697"
+    }
+  ]
+}
