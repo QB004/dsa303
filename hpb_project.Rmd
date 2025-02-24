@@ -1086,7 +1086,9 @@ pri_cca_map <- ura_subzones_map +
     main.title = "Ratio of Sports CCAs per 100 Students by Primary School"
   )
 
-pri_cca_map
+pri_cca_map 
+
+pri_cca_data %>% summary()
 
 # Spatial descriptive summary measures of physical sports participation by primary school
 
@@ -1178,7 +1180,7 @@ sec_cca_map <- ura_subzones_map +
 
 sec_cca_map
 
-
+sec_cca_data %>% summary()
 # Spatial descriptive summary measures of physical sports participation by primary school
 
 # Mean centre, standard deviation distance, standard deviation ellipse
@@ -1241,7 +1243,7 @@ sec_cca_map_sde <- ura_subzones_map +
 sec_cca_map_sde
 
 
-####################################################################################
+###################################################################
 
 
 # Aggregating sports cca ratio counts by URA subzones
