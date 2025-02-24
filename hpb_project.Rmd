@@ -580,7 +580,7 @@ moran.plot(obesity_ura_subzones$PREVALENCE_AGGREGATE,
 ```
 
 ### Local Moran's I statistic
-
+Local Moran's I statistic may be biased towards border regions (indicatre clustering in border regions with less neighbours even if clustering may not be present)
 ```{r}
 # # by URA region (not possible)
 # localm_ura_regions <- 
