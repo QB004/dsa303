@@ -708,6 +708,19 @@ par(mfrow=c(1,1))
 # par(mfrow=c(1,1))
 ```
 
+# Cluster based analysis (Social distance)
+
+```{r}
+tm_shape(obesity_data) + tm_dots(fill = "CLUSTER", size = 0.5)
+(cluster_nb = read.gal("clusters.gal"))
+plot(cluster_nb, st_geometry(obesity_data))
+
+#Spatial autocorrelation measures.
+cluster_wlist = nb2listw(cluster_nb)
+moran.test(obesity_data$TIER_SCORE, cluster_wlist)
+```
+
+
 # Income distribution (Lucas)
 
 ```{r}
