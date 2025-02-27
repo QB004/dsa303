@@ -1,0 +1,222 @@
+---
+title: "HMSP_EDA"
+author: "S F Liu"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# EDA
+
+Load the libraries.
+
+```{r}
+library(sf); library(tmap); suppressMessages(library(spdep))
+```
+
+Import data.
+
+```{r}
+hmsp = read.csv("hmsp_tier_pri_sec.csv")
+head(hmsp)
+```
+
+Give spatial awareness.
+
+```{r}
+sg = st_read("MySingapura.shp")
+sg = st_union(sg)
+sg_map = tm_shape(sg) + tm_borders()
+
+(hmsp = st_as_sf(hmsp, coords = c("longitude", "latitude"), crs = 4326))
+sg_map + 
+  tm_shape(hmsp) + 
+  tm_dots(size = 0.1) +
+  tm_title("Primary and Secondary Schools, Singapore, 2022")
+```
+
+School cluster maps.
+
+```{r}
+# School zones
+(sch_zones = 
+  sg_map +
+  tm_shape(hmsp) + 
+  tm_dots(
+    fill = "ZONE", 
+    fill.scale = tm_scale(values = "poly.glasbey"), 
+    size = 0.5,
+    fill.legend = tm_legend(position = c("right", "bottom"))) +
+  tm_title("School Zones, 2022") +
+  tm_style("classic"))
+
+# School clusters
+sch_clusters = 
+  sg_map +
+  tm_shape(hmsp) + 
+  tm_dots(fill = "CLUSTER") + 
+  tm_facets_wrap(by = "ZONE", nrow = 1, ncol = 1)
+tmap_animation(sch_clusters, width=800, delay=200)
+tmap_animation(sch_clusters, filename="sch_clusters.gif", width=800, delay=200)
+```
+
+HMSP tier maps.
+
+```{r}
+tmap_mode("view")
+hmsp_tier = 
+  tm_shape(hmsp) + 
+  tm_dots(
+    fill = "TIER", 
+    fill.scale = tm_scale(values = "powerbi.bloom"), 
+    size = 0.5
+    )
+hmsp_tier
+hmsp_score = 
+  tm_shape(hmsp) + 
+  tm_dots(
+    fill = "TIER_SCORE", 
+    fill.scale = tm_scale(values = "brewer.blues"), 
+    size = 0.5)
+hmsp_score
+```
+
+# Cluster based analysis (Social distance)
+
+Visualisation of the the clusters
+
+```{r}
+tm_shape(hmsp) + tm_dots(fill = "CLUSTER", size = 0.5)
+```
+
+Group interaction weights matrix based on school clusters.
+
+```{r}
+(cluster_nb = read.gal("clusters.gal"))
+plot(cluster_nb, st_geometry(hmsp))
+
+```
+
+Spatial autocorrelation measures.
+
+```{r}
+cluster_wlist = nb2listw(cluster_nb)
+moran.test(hmsp$TIER_SCORE, cluster_wlist)
+moran.plot(hmsp$TIER_SCORE, cluster_wlist)
+geary.test(hmsp$TIER_SCORE, cluster_wlist)
+```
+
+Do not reject the null of no spatial autocorrelation at 5% level. There is insufficient evidence to suggest a significant spatial spillover effect within school clusters. (Higher order neighbours are not valid here because we used a Group Interaction scheme.) 
+
+Average number of links: 10.88146
+p-value for Moran's test: 0.1903
+
+# Graph neighbours based analysis
+
+1. Delauney triangulation neighbours
+ 
+```{r}
+hmsp = st_jitter(hmsp) # Pertrurb geometries to remove duplication
+coords = st_coordinates(hmsp)
+del_nb = tri2nb(coords, row.names = hmsp$PT_ID) 
+plot(del_nb, st_geometry(hmsp))
+# write.nb.gal(del_nb, "del.gal")
+```
+
+Spatial autocorrelation measures.
+
+```{r}
+del_wlist = nb2listw(del_nb)
+moran.test(hmsp$TIER_SCORE, del_wlist)
+moran.plot(hmsp$TIER_SCORE, del_wlist)
+geary.test(hmsp$TIER_SCORE, del_wlist)
+```
+
+Average number of links: 5.896657 
+p-value for Moran's test: 0.2324
+
+2. Sphere of influence neighbours
+
+```{r}
+if (require(dbscan, quietly=TRUE)) {
+  soi_nb = graph2nb(soi.graph(del_nb, coords))
+} else soi_nb = NULL
+plot(soi_nb, st_geometry(hmsp))
+# write.nb.gal(soi_nb, "soi.gal")
+```
+
+Spatial autocorrelation measures.
+
+```{r}
+soi_wlist = nb2listw(soi_nb)
+moran.test(hmsp$TIER_SCORE, soi_wlist)
+moran.plot(hmsp$TIER_SCORE, soi_wlist)
+geary.test(hmsp$TIER_SCORE, soi_wlist)
+```
+
+Average number of links: 2.613982 
+p-value for Moran's test: 0.4771
+
+# K nearest neighbour based analysis
+
+1. One neighbour
+
+```{r}
+knn1_nb = knn2nb(knearneigh(coords, k = 1), row.names = hmsp$PT_ID) 
+plot(knn1_nb, st_geometry(hmsp))
+```
+
+Spatial autocorrelation measures.
+
+```{r}
+knn1_wlist = nb2listw(knn1_nb)
+moran.test(hmsp$TIER_SCORE, knn1_wlist)
+moran.plot(hmsp$TIER_SCORE, knn1_wlist)
+geary.test(hmsp$TIER_SCORE, knn1_wlist)
+```
+
+Average number of links: 1
+p-value for Moran's test: 0.7719
+
+2. Two neighbours
+
+```{r}
+knn2_nb = knn2nb(knearneigh(coords, k = 2), row.names = hmsp$PT_ID) 
+plot(knn2_nb, st_geometry(hmsp))
+```
+
+Spatial autocorrelation measures.
+
+```{r}
+knn2_wlist = nb2listw(knn2_nb)
+moran.test(hmsp$TIER_SCORE, knn2_wlist)
+moran.plot(hmsp$TIER_SCORE, knn2_wlist)
+geary.test(hmsp$TIER_SCORE, knn2_wlist)
+```
+
+Average number of links: 2
+p-value for Moran's test: 0.6085
+
+3. Three neighbours
+
+```{r}
+knn3_nb = knn2nb(knearneigh(coords, k = 3), row.names = hmsp$PT_ID) 
+plot(knn3_nb, st_geometry(hmsp))
+```
+
+Spatial autocorrelation measures.
+
+```{r}
+knn3_wlist = nb2listw(knn3_nb)
+moran.test(hmsp$TIER_SCORE, knn3_wlist)
+moran.plot(hmsp$TIER_SCORE, knn3_wlist)
+geary.test(hmsp$TIER_SCORE, knn3_wlist)
+```
+
+Average number of links: 3
+p-value for Moran's test: 0.4829
+
+To HPB: *Weak evidence* of spatial autocorrelation based on school clusters.
