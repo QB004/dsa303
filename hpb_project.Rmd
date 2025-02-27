@@ -118,6 +118,11 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
   tm_facets_wrap(by = "ZONE")
 ```
 
+```{r}
+
+```
+
+
 # Singapore maps
 
 These are maps that define Singapore's regions based on URA defined boundaries (region, planning area, subzone) and MOE defined boundaries (zone, cluster). Subsequently, the defined regions can be used together with aggregated data so that we can examine overweight prevalence and other contributing factors by these differently delimited regions.
