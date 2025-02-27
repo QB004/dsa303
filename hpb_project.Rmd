@@ -6,7 +6,7 @@ Change the file paths accordingly
 
 ```{r}
 # Loading libraries to work with spatial data
-library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep)
+library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(corrplot)
 
 # Loading Singapore URA subzone boundary data
 sg_ura_boundaries <- 
@@ -61,6 +61,7 @@ obesity_data_sf <- obesity_data %>%
 
 We filter our data for the most recent year as the enrollment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO).
 We remove "FUCHUN SECONDARY SCHOOL" as the enrollment data may be inaccurate due to school mergers.
+
 ```{r}
 # for now, filter for 2023 data and overweight and severely overweight
 obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
@@ -90,6 +91,7 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
              fill.legend = tm_legend(title = "School clusters")) +
   tm_facets_wrap(by = "ZONE")
 ```
+
 
 # Singapore maps
 
@@ -181,6 +183,7 @@ We examine overweight prevalence in Singapore schools by educational level: Prim
 The spatial mean centre (unweighted) and spatial variance (using the standard deviation distance and standard deviation ellipse) are calculated and plotted for each educational level.
 
 ### by Primary School
+
 ```{r}
 tmap_mode("view")
 
@@ -254,6 +257,7 @@ print(pri_sch_map)
 ```
 
 ### by Secondary School
+
 ```{r}
 tmap_mode("view")
 
@@ -502,6 +506,7 @@ plot.nb(ura_subzones_nb, ura_subzones_coords, pch = 19, cex = 0.6, add = T)
 ```
 
 ### Join count analysis
+
 ```{r}
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
@@ -550,6 +555,7 @@ joincount.multi(obesity_ura_subzones$HIGH_PREVALANCE, listw = ura_subzones_lw_B)
 ```
 
 ### Moran's I statistic
+
 ```{r}
 # by URA region
 moran.test(obesity_ura_regions$PREVALENCE_AGGREGATE, 
@@ -580,7 +586,9 @@ moran.plot(obesity_ura_subzones$PREVALENCE_AGGREGATE,
 ```
 
 ### Local Moran's I statistic
-Local Moran's I statistic may be biased towards border regions (indicatre clustering in border regions with less neighbours even if clustering may not be present)
+
+Local Moran's I statistic may be biased towards border regions (identifies clustering in border regions with less neighbours even if clustering may not be present)
+
 ```{r}
 # # by URA region (not possible)
 # localm_ura_regions <- 
@@ -631,6 +639,7 @@ globalG.test(obesity_ura_subzones$PREVALENCE_AGGREGATE, listw = ura_subzones_lw_
 ```
 
 ### Local Getis-Ord's G statistics
+
 ```{r}
 # by URA region
 obesity_ura_regions$GO_STAT <-
@@ -649,6 +658,7 @@ tm_shape(obesity_ura_subzones) + tm_polygons("GO_STAT")
 ```
 
 ### Correlogram
+
 ```{r}
 # # by URA region (too few observations)
 # correl_ura_regions <- sp.correlogram(
@@ -708,6 +718,8 @@ par(mfrow=c(1,1))
 # par(mfrow=c(1,1))
 ```
 
+We only need to consider the first order neighbour
+
 # Cluster based analysis (Social distance)
 
 ```{r}
@@ -717,9 +729,9 @@ plot(cluster_nb, st_geometry(obesity_data))
 
 #Spatial autocorrelation measures.
 cluster_wlist = nb2listw(cluster_nb)
-moran.test(obesity_data$TIER_SCORE, cluster_wlist)
+moran.test(obesity_data_sf_2023_OSO$PREVALENCE, listw = cluster_wlist, na.action = na.omit)
+obesity_data_sf_2023_OSO %>% summary()
 ```
-
 
 # Income distribution (Lucas)
 
@@ -868,6 +880,7 @@ income_map <- ura_planning_area_map +
 
 print(income_map)
 ```
+
 # Spatial Descriptive Summary Measures of Education Years (Lucas)
 
 ```{r}
@@ -929,6 +942,7 @@ education_map <- ura_planning_area_map +
 
 print(education_map)
 ```
+
 # Food and Nutrition (Nina)
 
 ```{r}
