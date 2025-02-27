@@ -2,8 +2,6 @@
 
 ## Loading the data
 
-Change the file paths accordingly
-
 ```{r}
 # Loading libraries to work with spatial data
 library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(corrplot)
@@ -59,13 +57,19 @@ obesity_data_sf <- obesity_data %>%
     )
 ```
 
-We filter our data for the most recent year as the enrollment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO).
-We remove "FUCHUN SECONDARY SCHOOL" as the enrollment data may be inaccurate due to school mergers.
+We filter our data for the most recent year as the enrollment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO), in the most recent year 2023.
+
+We remove "FUCHUN SECONDARY SCHOOL" as the enrollment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts.
 
 ```{r}
 # for now, filter for 2023 data and overweight and severely overweight
 obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
-  filter(YEAR == 2023, CATEGORY == "OSO", SCHOOL != "FUCHUN SECONDARY SCHOOL")
+  filter(
+    YEAR == 2023, CATEGORY == "OSO", 
+    !(SCHOOL %in% 
+        c("FUCHUN SECONDARY SCHOOL", "TANGLIN SECONDARY SCHOOL","GUANGYANG PRIMARY SCHOOL")
+      )
+    )
 ```
 
 # Exploratory data analysis (by Prof)
@@ -91,7 +95,6 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
              fill.legend = tm_legend(title = "School clusters")) +
   tm_facets_wrap(by = "ZONE")
 ```
-
 
 # Singapore maps
 
@@ -476,10 +479,6 @@ moe_cluster_map + obesity_moe_clusters %>%
   tm_title("Overweight prevalence by MOE clusters")
 ```
 
-```{r}
-# Visualise obesity data in a chloropleth map
-```
-
 ## Spatial dependence of obesity in Singapore schools
 
 ```{r}
@@ -595,21 +594,21 @@ Local Moran's I statistic may be biased towards border regions (identifies clust
 #   localmoran(obesity_ura_regions$PREVALENCE_AGGREGATE, listw = ura_regions_lw)
 # obesity_ura_regions$LMORANZ <- localm_ura_regions[,4]
 # tm_shape(obesity_ura_regions) + tm_polygons(fill = "LMORANZ") + 
-#   tm_layout(title = "Local Moran's I Z-Statistic (URA regions)")
+#   tm_title("Local Moran's I Z-Statistic (URA planning_areas)")
 
 # by URA planning area
 localm_ura_planning_areas <- 
   localmoran(obesity_ura_planning_areas$PREVALENCE_AGGREGATE, listw = ura_planning_areas_lw)
 obesity_ura_planning_areas$LMORANZ <- localm_ura_planning_areas[,4]
 tm_shape(obesity_ura_planning_areas) + tm_polygons(fill = "LMORANZ") + 
-  tm_layout(title = "Local Moran's I Z-Statistic (URA planning_areas)")
+  tm_title("Local Moran's I Z-Statistic (URA planning_areas)")
 
 # by URA subzone (empty neighbour sets exist)
 localm_ura_subzones <- 
   localmoran(obesity_ura_subzones$PREVALENCE_AGGREGATE, listw = ura_subzones_lw)
 obesity_ura_subzones$LMORANZ <- localm_ura_subzones[,4]
 tm_shape(obesity_ura_subzones) + tm_polygons(fill = "LMORANZ") + 
-  tm_layout(title = "Local Moran's I Z-Statistic (URA subzones)")
+  tm_title("Local Moran's I Z-Statistic (URA planning_areas)")
 ```
 
 ### Geary's C statistic
