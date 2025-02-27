@@ -18,6 +18,7 @@ sg_crs <- st_crs(sg_ura_boundaries)
 obesity_data <- 
   # "#N/A" values converted to "NA" for R to be able to read it
   read.csv("obesity.csv", na.strings = "#N/A") %>% 
+  select(-PT_ID.1) %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
   st_transform(crs = sg_crs) %>% 
   st_make_valid()
@@ -44,7 +45,7 @@ st_crs(hmsp_data_sf)$units
 # Loading General Information of Schools dataset
 schools_info <- 
   read_excel("Generalinformationofschools.xlsx", na = c("na", "NA")) %>% 
-  select(school_name, type_code, nature_code, mainlevel_code)
+  select(school_name, dgp_code:mothertongue3_code)
 
 obesity_data <- obesity_data %>% 
   left_join(schools_info, by = join_by(SCHOOL == school_name))
