@@ -42,21 +42,26 @@ st_crs(hmsp_data_sf)$units
 
 ```{r}
 # Loading General Information of Schools dataset
-schools_info <- read_excel(
-  "Generalinformationofschools.xlsx",
-  na = c("na", "NA")
-  ) %>% 
+schools_info <- 
+  read_excel("Generalinformationofschools.xlsx", na = c("na", "NA")) %>% 
   select(school_name, type_code, nature_code, mainlevel_code)
 
-obesity_data <- obesity_data %>% left_join(
-  schools_info,
-  by = join_by(SCHOOL == school_name)
-  )
+obesity_data <- obesity_data %>% 
+  left_join(schools_info, by = join_by(SCHOOL == school_name))
 ```
 
 ## Transforming data to be usable for analysis
 
 ```{r}
+# Changing "PRIMARY + SECONDARY" level label to match PRI and SEC classification
+obesity_data <- obesity_data %>% mutate(
+  LEVEL = case_when(
+    LEVEL == "PRIMARY + SECONDARY" & PRI == 1 ~ "PRIMARY",
+    LEVEL == "PRIMARY + SECONDARY" & PRI == 0 ~ "SECONDARY",
+    TRUE ~ LEVEL
+    )
+  )
+
 obesity_data_sf <- obesity_data %>% 
   pivot_longer(
     # pivot_longer to separate obesity data columns into a tidy format
@@ -208,7 +213,7 @@ tmap_mode("view")
 
 # filter out by educational level and remove NA values to calculate SDE
 obesity_pri_sch <- obesity_data_sf_2023_OSO %>% 
-  filter(PRI == 1, !is.na(PREVALENCE))
+  filter(LEVEL == "PRIMARY", !is.na(PREVALENCE))
 
 obesity_data_sf_2023_OSO %>% summary()
 
@@ -282,7 +287,7 @@ tmap_mode("view")
 
 # filter out by educational level and remove NA values to calculate SDE
 obesity_sec_sch <- obesity_data_sf_2023_OSO %>% 
-  filter(SEC == 1, !is.na(PREVALENCE))
+  filter(LEVEL == "SECONDARY", !is.na(PREVALENCE))
 
 # Mean centre, standard deviation distance, standard deviation ellipse
 sec_sch_mean <- calc_mnc(id = 1, points = st_coordinates(obesity_sec_sch))
