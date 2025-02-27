@@ -4,7 +4,7 @@
 
 ```{r}
 # Loading libraries to work with spatial data
-library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(corrplot)
+library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(corrplot); library(readxl)
 
 # Loading Singapore URA subzone boundary data
 sg_ura_boundaries <- 
@@ -36,6 +36,22 @@ isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_da
 st_crs(sg_ura_boundaries)$units
 st_crs(obesity_data)$units
 st_crs(hmsp_data_sf)$units
+```
+
+## Joining with relevant datasets
+
+```{r}
+# Loading General Information of Schools dataset
+schools_info <- read_excel(
+  "Generalinformationofschools.xlsx",
+  na = c("na", "NA")
+  ) %>% 
+  select(school_name, type_code, nature_code, mainlevel_code)
+
+obesity_data <- obesity_data %>% left_join(
+  schools_info,
+  by = join_by(SCHOOL == school_name)
+  )
 ```
 
 ## Transforming data to be usable for analysis
