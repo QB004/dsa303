@@ -1008,7 +1008,7 @@ obesity_pri_food$num_food_outlets <- lengths(pri_intersections)
 obesity_pri_food
 
 #show density via choropleth map
-ura_region_map + 
+ura_regions_map + 
   tm_shape(obesity_pri_food) +
   tm_fill(col = "num_food_outlets", 
           palette = "brewer.yl_or_rd",
@@ -1032,7 +1032,7 @@ obesity_sec_food$num_food_outlets <- lengths(sec_intersections)
 obesity_sec_food
 
 #show density via choropleth map
-ura_region_map + 
+ura_regions_map + 
   tm_shape(obesity_sec_food) +
   tm_fill(col = "num_food_outlets", 
           palette = "brewer.yl_or_rd",
