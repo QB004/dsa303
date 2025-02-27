@@ -80,7 +80,7 @@ obesity_data_sf <- obesity_data %>%
 
 We filter our data for the most recent year as the enrollment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO), in the most recent year 2023.
 
-We remove "FUCHUN SECONDARY SCHOOL" as the enrollment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts.
+We remove "FUCHUN SECONDARY SCHOOL" as the enrollment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. We remove all remaining schools with no recorded data in 2023 (only "TANJONG KATONG GIRLS' SCHOOL")
 
 ```{r}
 # for now, filter for 2023 data and overweight and severely overweight
@@ -89,7 +89,8 @@ obesity_data_sf_2023_OSO <- obesity_data_sf %>%
     YEAR == 2023, CATEGORY == "OSO", 
     !(SCHOOL %in% 
         c("FUCHUN SECONDARY SCHOOL", "TANGLIN SECONDARY SCHOOL","GUANGYANG PRIMARY SCHOOL")
-      )
+      ),
+    !is.na(PREVALENCE)
     )
 ```
 
