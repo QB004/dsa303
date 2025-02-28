@@ -262,7 +262,7 @@ school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prev
     # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "YlOrRd"
+      values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
@@ -334,7 +334,7 @@ pri_sch_map <- ura_regions_map +
     # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "YlOrRd"
+      values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
@@ -342,7 +342,9 @@ pri_sch_map <- ura_regions_map +
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
-    ) + 
+    )
+
+pri_sch_map +
   tm_shape(pri_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
   tm_shape(pri_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(pri_sch_sde_weighted_line, name = "weighted SDE") + 
@@ -355,8 +357,6 @@ pri_sch_map <- ura_regions_map +
   tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
   tm_title("Overweight prevalence in Primary Schools")
-
-print(pri_sch_map)
 ```
 
 ### by Secondary School
@@ -399,6 +399,7 @@ sec_sch_sde_weighted_line <- sec_sch_sde_weighted$LOCATIONS %>%
 sec_sch_map <- ura_regions_map +
   tm_shape(obesity_sec_sch, name = "Overweight prevalence") +
   tm_symbols(
+    shape = 22,
     size = "PREVALENCE",
     size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide(),
@@ -406,7 +407,7 @@ sec_sch_map <- ura_regions_map +
     # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "YlOrRd"
+      values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
@@ -414,7 +415,9 @@ sec_sch_map <- ura_regions_map +
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
-    ) + 
+    )
+
+sec_sch_map +
   tm_shape(sec_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
   tm_shape(sec_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(sec_sch_sde_weighted_line, name = "weighted SDE") + 
@@ -427,8 +430,6 @@ sec_sch_map <- ura_regions_map +
   tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
   tm_title("Overweight prevalence in Secondary Schools")
-
-print(sec_sch_map)
 
 # tmap_arrange(pri_sch_map, sec_sch_map, nrow = 1)
 ```
@@ -453,10 +454,10 @@ ura_regions_map + obesity_ura_regions %>%
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
-    # fill.scale = tm_scale_continuous(values = "YlOrRd"), 
+    # fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "YlOrRd"
+      values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -483,7 +484,7 @@ ura_planning_areas_map + obesity_ura_planning_areas %>%
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "YlOrRd"
+      values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -509,7 +510,7 @@ ura_subzones_map + obesity_ura_subzones %>%
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "YlOrRd"
+      values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -540,7 +541,7 @@ moe_zone_map +
     fill_alpha = 0.95,
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "YlOrRd"
+      values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -570,7 +571,7 @@ moe_cluster_map + obesity_moe_clusters %>%
     fill_alpha = 0.95,
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "YlOrRd"
+      values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -588,7 +589,7 @@ moe_cluster_map + obesity_moe_clusters %>%
 
 ### Visualisation of contiguous neighbours by region
 
-There are too few contiguous neighbours by URA region to consider (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
+There are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
 
 ```{r}
 # Contiguous neighbours by URA regions
@@ -662,39 +663,47 @@ plot.nb(ura_subzones_nb_SEC, ura_subzones_coords_SEC,
 par(mfrow = c(1,1))
 
 # k nearest neighbours
-knn1_nb_PRI <- obesity_pri_sch %>% 
+knn1_nb_PRI_line <- obesity_pri_sch %>% 
   knearneigh(k = 1) %>% 
-  knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
-knn2_nb_PRI <- obesity_pri_sch %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest neighbour
+  nb2lines(coords = st_geometry(obesity_pri_sch))
+knn2_nb_PRI_line <- obesity_pri_sch %>% 
   knearneigh(k = 2) %>% 
-  knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest 2 neighbours
-knn3_nb_PRI <- obesity_pri_sch %>% 
-  knearneigh(k = 3) %>% 
-  knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest 3 neighbours
+  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest 2 neighbours
+  nb2lines(coords = st_geometry(obesity_pri_sch))
 
-knn1_nb_SEC <- obesity_sec_sch %>% 
+knn3_nb_PRI_line <- obesity_pri_sch %>% 
+  knearneigh(k = 3) %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest 3 neighbours
+  nb2lines(coords = st_geometry(obesity_pri_sch))
+
+knn1_nb_SEC_line <- obesity_sec_sch %>% 
   knearneigh(k = 1) %>% 
-  knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
-knn2_nb_SEC <- obesity_sec_sch %>% 
-  knearneigh(k = 2) %>% 
-  knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest 2 neighbours
-knn3_nb_SEC <- obesity_sec_sch %>% 
-  knearneigh(k = 3) %>% 
-  knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest 3 neighbours
+  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest neighbour
+  nb2lines(coords = st_geometry(obesity_sec_sch))
 
-par(mfcol = c(3,2))
-plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=1 (PRI)")
-plot.nb(knn1_nb_PRI, st_geometry(obesity_pri_sch), pch=19, cex=0.6, add=T)
-plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=2 (PRI)")
-plot.nb(knn2_nb_PRI, st_geometry(obesity_pri_sch), pch=19, cex=0.6, add=T)
-plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=3 (PRI)")
-plot.nb(knn3_nb_PRI, st_geometry(obesity_pri_sch), pch=19, cex=0.6, add=T)
-plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=1 (SEC)")
-plot.nb(knn1_nb_SEC, st_geometry(obesity_sec_sch), pch=19, cex=0.6, add=T)
-plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=2 (SEC)")
-plot.nb(knn2_nb_SEC, st_geometry(obesity_sec_sch), pch=19, cex=0.6, add=T)
-plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=3 (SEC)")
-plot.nb(knn3_nb_SEC, st_geometry(obesity_sec_sch), pch=19, cex=0.6, add=T)
+knn2_nb_SEC_line <- obesity_sec_sch %>% 
+  knearneigh(k = 2) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest 2 neighbours
+  nb2lines(coords = st_geometry(obesity_sec_sch))
+
+knn3_nb_SEC_line <- obesity_sec_sch %>% 
+  knearneigh(k = 3) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest 3 neighbour
+  nb2lines(coords = st_geometry(obesity_sec_sch))
+
+tm_shape(knn1_nb_PRI_line) +
+  tm_lines(lwd = 2) + pri_sch_map
+tm_shape(knn2_nb_PRI_line) +
+  tm_lines(lwd = 2) + pri_sch_map
+tm_shape(knn3_nb_PRI_line) +
+  tm_lines(lwd = 2) + pri_sch_map
+tm_shape(knn1_nb_SEC_line) +
+  tm_lines(lwd = 2) + sec_sch_map
+tm_shape(knn2_nb_SEC_line) +
+  tm_lines(lwd = 2) + sec_sch_map
+tm_shape(knn3_nb_SEC_line) +
+  tm_lines(lwd = 2) + sec_sch_map
 ```
 
 ### Join count analysis
@@ -1001,7 +1010,7 @@ income_map <- ura_planning_area_map +
         size.legend = tm_legend_hide(),
         fill = "Income", 
         # a green-red diverging scale to indicate severity of overweight prevalence
-        fill.scale = tm_scale_continuous(values = "YlOrRd"), 
+        fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
         fill.legend = tm_legend(
             title = "Income Distribution",
             orientation = "landscape", 
@@ -1063,7 +1072,7 @@ education_map <- ura_planning_area_map +
         size.legend = tm_legend_hide(),
         fill = "Education", 
         # a green-red diverging scale to indicate severity of overweight prevalence
-        fill.scale = tm_scale_continuous(values = "YlOrRd"), 
+        fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
         fill.legend = tm_legend(
             title = "Education Years",
             orientation = "landscape", 
@@ -1485,18 +1494,15 @@ sec_cca_map_sde
 ###################################################################
 
 
-
-
-# Aggregating sports cca ratio counts by URA planning area
-cca_ura_planning <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
-  group_by(PLN_AREA_N, LEVEL) %>% 
+# Aggregating sports cca ratio counts by URA subzones
+sports_ura_subzones <- st_join(ura_subzones, obesity_joined_school_sports_data) %>% 
+  group_by(SUBZONE_N) %>% 
   summarise(
     RATIO_AGG = mean(sports_cca_per_100, na.rm = T),
     geometry = st_union(geometry)
-    ) %>%
-  filter(!is.na(RATIO_AGG))
+    )
 
-cca_planning_map <- ura_planning_areas_map + cca_ura_planning %>% 
+cca_subzone_map <- ura_subzones_map + sports_ura_subzones %>% 
   tm_shape(name = "Sports CCA Ratio per 100") +
   tm_polygons(
     fill = "RATIO_AGG",
@@ -1508,12 +1514,9 @@ cca_planning_map <- ura_planning_areas_map + cca_ura_planning %>%
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Average Sports CCA Ratio per 100 Students by URA Planning Area") +
-  tm_facets_wrap(by = "LEVEL")
+  tm_title("Sports CCA Ratio by URA subzones")
 
-
-print(cca_planning_map)
-
+print(cca_subzone_map)
 
 
 
@@ -1564,8 +1567,6 @@ bivariate_map
 
 
 ```
-
-
 # Sports Fields and Facilities (Qasim)
 ```{r}
 # Loading sports facilities data
@@ -1598,23 +1599,6 @@ test_two <- ura_planning_areas_map + tm_shape(fields_shp) +
           fill_alpha = 0.5)
 
 test_two
-
-
-# Loading School Sports facilities (dual use) data
-dus_facilities_shp <- 
-  st_read("DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>% 
-  st_make_valid() %>%
-  st_as_sf() %>%
-  st_transform(crs = sg_crs) 
-
-test_three <- ura_planning_areas_map + tm_shape(dus_facilities_shp) +
-    tm_dots(size = 0.3,
-          fill = "navy",
-          fill.legend = tm_legend(title = "Sports Fields"),
-          fill_alpha = 0.5)
-
-test_three
-
 ```
 
 
