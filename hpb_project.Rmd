@@ -512,29 +512,82 @@ moe_cluster_map + obesity_moe_clusters %>%
   tm_facets_wrap(by = "LEVEL")
 ```
 
-## Spatial dependence of obesity in Singapore schools
+## Spatial dependence of obesity in schools
+
+### Visualisation of contiguous neighbours by region
+
+There are too few contiguous neighbours by URA region to consider (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
 
 ```{r}
 # Contiguous neighbours by URA regions
-ura_regions_nb <- poly2nb(obesity_ura_regions, queen = T) # queen contiguity
-ura_regions_coords <- st_point_on_surface(st_geometry(obesity_ura_regions))
+obesity_ura_regions_PRI <- obesity_ura_regions %>% filter(LEVEL == "PRIMARY")
+obesity_ura_regions_SEC <- obesity_ura_regions %>% filter(LEVEL == "SECONDARY")
+ura_regions_nb_PRI <- obesity_ura_regions_PRI %>% 
+  poly2nb(queen = T)
+ura_regions_nb_SEC <- obesity_ura_regions_SEC %>% 
+  poly2nb(queen = T)
+ura_regions_coords_PRI <-
+  st_point_on_surface(st_geometry(obesity_ura_regions_PRI))
+ura_regions_coords_SEC <-
+  st_point_on_surface(st_geometry(obesity_ura_regions_SEC))
+par(mfrow = c(2,1))
 plot(st_geometry(ura_regions), border = "grey", axes = T, 
-     main="SG schools contiguous neighbours by region")
-plot.nb(ura_regions_nb, ura_regions_coords, pch = 19, cex = 0.6, add = T)
+     main="Primary schools contiguous neighbours by region")
+plot.nb(ura_regions_nb_PRI, ura_regions_coords_PRI, 
+        pch = 19, cex = 0.6, add = T)
+plot(st_geometry(ura_regions), border = "grey", axes = T, 
+     main="Secondary schools contiguous neighbours by region")
+plot.nb(ura_regions_nb_SEC, ura_regions_coords_SEC, 
+        pch = 19, cex = 0.6, add = T)
+par(mfrow = c(1,1))
 
 # Contiguous neighbours by URA planning areas
-ura_planning_areas_nb <- poly2nb(obesity_ura_planning_areas, queen = T) # queen contiguity
-ura_planning_areas_coords <- st_point_on_surface(st_geometry(obesity_ura_planning_areas))
+obesity_ura_planning_areas_PRI <- obesity_ura_planning_areas %>% 
+  filter(LEVEL == "PRIMARY")
+obesity_ura_planning_areas_SEC <- obesity_ura_planning_areas %>% 
+  filter(LEVEL == "SECONDARY")
+ura_planning_areas_nb_PRI <- obesity_ura_planning_areas_PRI %>% 
+  poly2nb(queen = T)
+ura_planning_areas_nb_SEC <- obesity_ura_planning_areas_SEC %>% 
+  poly2nb(queen = T)
+ura_planning_areas_coords_PRI <-
+  st_point_on_surface(st_geometry(obesity_ura_planning_areas_PRI))
+ura_planning_areas_coords_SEC <-
+  st_point_on_surface(st_geometry(obesity_ura_planning_areas_SEC))
+par(mfrow = c(2,1))
 plot(st_geometry(ura_planning_areas), border = "grey", axes = T, 
-     main="SG schools contiguous neighbours by planning area")
-plot.nb(ura_planning_areas_nb, ura_planning_areas_coords, pch = 19, cex = 0.6, add = T)
+     main="Primary schools contiguous neighbours by planning area")
+plot.nb(ura_planning_areas_nb_PRI, ura_planning_areas_coords_PRI, 
+        pch = 19, cex = 0.6, add = T)
+plot(st_geometry(ura_planning_areas), border = "grey", axes = T, 
+     main="Secondary schools contiguous neighbours by planning area")
+plot.nb(ura_planning_areas_nb_SEC, ura_planning_areas_coords_SEC, 
+        pch = 19, cex = 0.6, add = T)
+par(mfrow = c(1,1))
 
 # Contiguous neighbours by URA subzones
-ura_subzones_nb <- poly2nb(obesity_ura_subzones, queen = T) # queen contiguity
-ura_subzones_coords <- st_point_on_surface(st_geometry(obesity_ura_subzones))
+obesity_ura_subzones_PRI <- obesity_ura_subzones %>% 
+  filter(LEVEL == "PRIMARY")
+obesity_ura_subzones_SEC <- obesity_ura_subzones %>% 
+  filter(LEVEL == "SECONDARY")
+ura_subzones_nb_PRI <- obesity_ura_subzones_PRI %>% 
+  poly2nb(queen = T)
+ura_subzones_nb_SEC <- obesity_ura_subzones_SEC %>% 
+  poly2nb(queen = T)
+ura_subzones_coords_PRI <-
+  st_point_on_surface(st_geometry(obesity_ura_subzones_PRI))
+ura_subzones_coords_SEC <-
+  st_point_on_surface(st_geometry(obesity_ura_subzones_SEC))
+par(mfrow = c(2,1))
 plot(st_geometry(ura_subzones), border = "grey", axes = T, 
-     main="SG schools contiguous neighbours by subzone")
-plot.nb(ura_subzones_nb, ura_subzones_coords, pch = 19, cex = 0.6, add = T)
+     main="Primary schools contiguous neighbours by subzone")
+plot.nb(ura_subzones_nb_PRI, ura_subzones_coords_PRI, 
+        pch = 19, cex = 0.6, add = T)
+plot(st_geometry(ura_subzones), border = "grey", axes = T, 
+     main="Secondary schools contiguous neighbours by subzone")
+plot.nb(ura_subzones_nb_SEC, ura_subzones_coords_SEC, 
+        pch = 19, cex = 0.6, add = T)
+par(mfrow = c(1,1))
 ```
 
 ### Join count analysis
