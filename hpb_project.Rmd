@@ -1450,15 +1450,18 @@ sec_cca_map_sde
 ###################################################################
 
 
-# Aggregating sports cca ratio counts by URA subzones
-sports_ura_subzones <- st_join(ura_subzones, obesity_joined_school_sports_data) %>% 
-  group_by(SUBZONE_N) %>% 
+
+
+# Aggregating sports cca ratio counts by URA planning area
+cca_ura_planning <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
+  group_by(PLN_AREA_N, LEVEL) %>% 
   summarise(
     RATIO_AGG = mean(sports_cca_per_100, na.rm = T),
     geometry = st_union(geometry)
-    )
+    ) %>%
+  filter(!is.na(RATIO_AGG))
 
-cca_subzone_map <- ura_subzones_map + sports_ura_subzones %>% 
+cca_planning_map <- ura_planning_areas_map + cca_ura_planning %>% 
   tm_shape(name = "Sports CCA Ratio per 100") +
   tm_polygons(
     fill = "RATIO_AGG",
@@ -1470,9 +1473,12 @@ cca_subzone_map <- ura_subzones_map + sports_ura_subzones %>%
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Sports CCA Ratio by URA subzones")
+  tm_title("Average Sports CCA Ratio per 100 Students by URA Planning Area") +
+  tm_facets_wrap(by = "LEVEL")
 
-print(cca_subzone_map)
+
+print(cca_planning_map)
+
 
 
 
@@ -1523,6 +1529,8 @@ bivariate_map
 
 
 ```
+
+
 # Sports Fields and Facilities (Qasim)
 ```{r}
 # Loading sports facilities data
@@ -1555,6 +1563,23 @@ test_two <- ura_planning_areas_map + tm_shape(fields_shp) +
           fill_alpha = 0.5)
 
 test_two
+
+
+# Loading School Sports facilities (dual use) data
+dus_facilities_shp <- 
+  st_read("DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>% 
+  st_make_valid() %>%
+  st_as_sf() %>%
+  st_transform(crs = sg_crs) 
+
+test_three <- ura_planning_areas_map + tm_shape(dus_facilities_shp) +
+    tm_dots(size = 0.3,
+          fill = "navy",
+          fill.legend = tm_legend(title = "Sports Fields"),
+          fill_alpha = 0.5)
+
+test_three
+
 ```
 
 
