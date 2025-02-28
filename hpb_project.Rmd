@@ -1066,6 +1066,58 @@ ura_regions_map +
           alpha = 0.7) + 
   tm_borders(lwd = 0.5) +
   tm_title("Food Outlet Density by Secondary School")
+
+
+#spatial analysis
+
+#Check for metric units
+st_crs(obesity_sec_food)$proj
+obesity_sec_food_coords = st_coordinates(obesity_sec_food)
+
+mean_sec_food = calc_mnc(id = 1, points = obesity_sec_food_coords)
+median_sec_food = calc_mdc(id = 2, points = obesity_sec_food_coords)
+sdd_sec_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_sec_food_coords)
+
+(LC_sdd_line_sec_food = sdd_sec_food$LOCATIONS %>% 
+    st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
+    st_combine() %>% 
+    st_cast("LINESTRING")) # CRS from the parent object.
+
+sde_sec_food = calc_sde(id=4, calccentre = T, weighted=F, points= obesity_sec_food_coords)
+ls()
+LC_sde_line_sec = sde_sec_food$LOCATIONS %>%
+    st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
+    st_combine() %>% 
+    st_cast("LINESTRING") # CRS from the parent object.
+
+
+(LC_sdd_line_sec = sdd_sec_food$LOCATIONS %>% 
+    st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
+    st_combine() %>% 
+    st_cast("LINESTRING")) # CRS from the parent object.
+
+(LC_std_dist_sec = st_sf(sdd_sec_food$ATTRIBUTES, geom=st_geometry(LC_sdd_line_sec))) 
+
+LC_std_ellps_sec = st_sf(sde_sec_food$ATTRIBUTES, geom = st_geometry(LC_sde_line_sec))
+
+#Plot the summary measures
+(mean_median_sec = rbind(mean_sec_food$LOCATIONS, median_sec_food$LOCATIONS) %>% 
+    data.frame() %>% 
+    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_sec_food))) # matrix -> data.frame -> sf points
+
+mean_median_sec$id =  c("Spatial Mean","Spatial Median") # assign names
+mean_median_sec
+
+sec_food_map + 
+  tm_shape(obesity_sec_food) +
+  tm_shape(LC_std_ellps_sec) + tm_lines(lwd=2) + 
+  tm_shape(LC_std_dist_sec) + tm_lines(lwd=2, lty=2) + 
+  tm_shape(mean_median_sec) + tm_dots(size=0.5, shape="id", fill = "white", shape.legend = tm_legend_hide()) + 
+  tm_compass(position = c("left", "top")) +
+  tm_add_legend(type="symbols", labels="Spatial mean", shape = 1) +
+  tm_add_legend(type="symbols", labels="Spatial median", shape = 0) +
+  tm_add_legend(type="lines", labels="SDD", lty=2) + 
+  tm_add_legend(type="lines", labels="SDE", lty=1)
 ```
 
 # Physical activity (Qasim)
