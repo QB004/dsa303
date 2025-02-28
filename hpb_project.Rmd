@@ -190,7 +190,7 @@ school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prev
     # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "-brewer.rd_yl_gn"
+      values = "YlOrRd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
@@ -209,7 +209,7 @@ ura_regions_map + ura_planning_areas_map + ura_subzones_map +
 
 ## Obesity prevalence by educational level
 
-We examine overweight prevalence in Singapore schools by educational level: Primary school or Secondary school. Primary school and secondary school students have different characteristics that might affect overweight prevalance.
+We examine overweight prevalence in Singapore schools by educational level: Primary school or Secondary school. Primary school and secondary school students have different characteristics that might affect overweight prevalence.
 
 The spatial mean centre (unweighted) and spatial variance (using the standard deviation distance and standard deviation ellipse) are calculated and plotted for each educational level.
 
@@ -262,7 +262,7 @@ pri_sch_map <- ura_regions_map +
     # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "-brewer.rd_yl_gn"
+      values = "YlOrRd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
@@ -334,7 +334,7 @@ sec_sch_map <- ura_regions_map +
     # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "-brewer.rd_yl_gn"
+      values = "YlOrRd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
@@ -365,7 +365,7 @@ Generally, we observe greater overweight prevalence levels for schools in the No
 
 ## Obesity prevalence by region
 
-We aggregating overweight counts and school enrollment data by the different delimited regions, and fill in the regions to get visualise overweight prevalance by region.
+We aggregating overweight counts and school enrollment data by the different delimited regions, and fill in the regions to get visualise overweight prevalence by region.
 
 ```{r}
 # Aggregating overweight counts by URA regions
@@ -381,10 +381,10 @@ ura_regions_map + obesity_ura_regions %>%
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
-    # fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+    # fill.scale = tm_scale_continuous(values = "YlOrRd"), 
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "-brewer.rd_yl_gn"
+      values = "YlOrRd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -410,7 +410,7 @@ ura_planning_areas_map + obesity_ura_planning_areas %>%
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "-brewer.rd_yl_gn"
+      values = "YlOrRd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -435,7 +435,7 @@ ura_subzones_map + obesity_ura_subzones %>%
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "-brewer.rd_yl_gn"
+      values = "YlOrRd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -465,7 +465,7 @@ moe_zone_map +
     fill_alpha = 0.95,
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "-brewer.rd_yl_gn"
+      values = "YlOrRd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -494,7 +494,7 @@ moe_cluster_map + obesity_moe_clusters %>%
     fill_alpha = 0.95,
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "-brewer.rd_yl_gn"
+      values = "YlOrRd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
@@ -542,43 +542,43 @@ OVERWEIGHT_CUTOFF <- 0.14
 ura_regions_lw <- nb2listw(ura_regions_nb, style = "W", zero.policy = T)
 ura_regions_lw_B <- nb2listw(ura_regions_nb, style = "B", zero.policy = T)
 
-obesity_ura_regions$HIGH_PREVALANCE <- 
+obesity_ura_regions$HIGH_PREVALENCE <- 
   as.factor(obesity_ura_regions$PREVALENCE_AGGREGATE > OVERWEIGHT_CUTOFF)
 
 ura_regions_map + obesity_ura_regions %>% 
   tm_shape(name = "Overweight prevalence") +
-  tm_polygons(fill = "HIGH_PREVALANCE") +
+  tm_polygons(fill = "HIGH_PREVALENCE") +
   tm_title("Overweight prevalence by URA regions")
 
-joincount.multi(obesity_ura_regions$HIGH_PREVALANCE, listw = ura_regions_lw_B) # too few cells
+joincount.multi(obesity_ura_regions$HIGH_PREVALENCE, listw = ura_regions_lw_B) # too few cells
 
 # by URA planning area
 ura_planning_areas_lw <- nb2listw(ura_planning_areas_nb, style = "W", zero.policy = T)
 ura_planning_areas_lw_B <- nb2listw(ura_planning_areas_nb, style = "B", zero.policy = T)
 
-obesity_ura_planning_areas$HIGH_PREVALANCE <- 
+obesity_ura_planning_areas$HIGH_PREVALENCE <- 
   as.factor(obesity_ura_planning_areas$PREVALENCE_AGGREGATE > OVERWEIGHT_CUTOFF)
 
 ura_planning_areas_map + obesity_ura_planning_areas %>% 
   tm_shape(name = "Overweight prevalence") +
-  tm_polygons(fill = "HIGH_PREVALANCE") +
+  tm_polygons(fill = "HIGH_PREVALENCE") +
   tm_title("Overweight prevalence by URA planning areas")
 
-joincount.multi(obesity_ura_planning_areas$HIGH_PREVALANCE, listw = ura_planning_areas_lw_B) 
+joincount.multi(obesity_ura_planning_areas$HIGH_PREVALENCE, listw = ura_planning_areas_lw_B) 
 
 # by URA subzone (empty neighbour sets exist)
 ura_subzones_lw <- nb2listw(ura_subzones_nb, style = "W", zero.policy = T)
 ura_subzones_lw_B <- nb2listw(ura_subzones_nb, style = "B", zero.policy = T)
 
-obesity_ura_subzones$HIGH_PREVALANCE <- 
+obesity_ura_subzones$HIGH_PREVALENCE <- 
   as.factor(obesity_ura_subzones$PREVALENCE_AGGREGATE > OVERWEIGHT_CUTOFF)
 
 ura_subzones_map + obesity_ura_subzones %>% 
   tm_shape(name = "Overweight prevalence") +
-  tm_polygons(fill = "HIGH_PREVALANCE") +
+  tm_polygons(fill = "HIGH_PREVALENCE") +
   tm_title("Overweight prevalence by URA subzones")
 
-joincount.multi(obesity_ura_subzones$HIGH_PREVALANCE, listw = ura_subzones_lw_B) 
+joincount.multi(obesity_ura_subzones$HIGH_PREVALENCE, listw = ura_subzones_lw_B) 
 ```
 
 ### Moran's I statistic
@@ -884,7 +884,7 @@ income_map <- ura_planning_area_map +
         size.legend = tm_legend_hide(),
         fill = "Income", 
         # a green-red diverging scale to indicate severity of overweight prevalence
-        fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+        fill.scale = tm_scale_continuous(values = "YlOrRd"), 
         fill.legend = tm_legend(
             title = "Income Distribution",
             orientation = "landscape", 
@@ -946,7 +946,7 @@ education_map <- ura_planning_area_map +
         size.legend = tm_legend_hide(),
         fill = "Education", 
         # a green-red diverging scale to indicate severity of overweight prevalence
-        fill.scale = tm_scale_continuous(values = "-brewer.rd_yl_gn"), 
+        fill.scale = tm_scale_continuous(values = "YlOrRd"), 
         fill.legend = tm_legend(
             title = "Education Years",
             orientation = "landscape", 
