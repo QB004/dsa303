@@ -1144,17 +1144,22 @@ pri_food_map +
   tm_add_legend(type="lines", labels="SDE", lty=1)
 ```
 
-# Physical activity (Qasim)
+
+
+
+# Sports CCAs in Schools (Qasim)
 
 ```{r}
 # Loading school co-curricular activities data
 school_sports_ccas <- 
   read.csv("CocurricularactivitiesCCAs.csv") %>% 
-  group_by(school_name) %>% 
+  group_by(school_name,school_section) %>% 
   summarise(
     total = n(),
     physical_sports_count = sum(cca_grouping_desc == "PHYSICAL SPORTS")) %>% 
-    select(school_name, physical_sports_count)
+    select(school_name,school_section, physical_sports_count) %>% 
+    filter(school_section != "JUNIOR COLLEGE")
+  
 
 
 #2023 OSO school obesity data combined with 2024-25 school physical activity cca data
@@ -1181,7 +1186,7 @@ obesity_joined_school_sports_data <-
 #NEED TO AVERAGE VALUES FOR MISSING VALUES
 pri_cca_data <- obesity_joined_school_sports_data %>% filter(LEVEL == "PRIMARY", !is.na(sports_cca_per_100))
 
-pri_cca_map <- ura_subzones_map +  
+pri_cca_map <- ura_planning_areas_map+  
   tm_shape(pri_cca_data) +
   tm_symbols(
     size = "sports_cca_per_100",
@@ -1237,7 +1242,7 @@ pri_cca_sde_weighted_line <- pri_cca_sde_weighted$LOCATIONS %>%
   st_combine() %>% 
   st_cast("LINESTRING")
 
-pri_cca_map_sde <- ura_subzones_map +
+pri_cca_map_sde <- ura_planning_areas_map +
   tm_shape(pri_cca_data, name = "Ratio of Sports CCAs per 100 Students by School") +
   tm_symbols(
     size = "sports_cca_per_100",
@@ -1272,7 +1277,7 @@ pri_cca_map_sde
 
 sec_cca_data <- obesity_joined_school_sports_data %>% filter(LEVEL == "SECONDARY", !is.na(sports_cca_per_100))
 
-sec_cca_map <- ura_subzones_map +  
+sec_cca_map <- ura_planning_areas_map +  
   tm_shape(sec_cca_data) +
   tm_symbols(
     size = "sports_cca_per_100",
@@ -1328,7 +1333,7 @@ sec_cca_sde_weighted_line <- sec_cca_sde_weighted$LOCATIONS %>%
   st_combine() %>% 
   st_cast("LINESTRING")
 
-sec_cca_map_sde <- ura_subzones_map +
+sec_cca_map_sde <- ura_planning_areas_map +
   tm_shape(sec_cca_data, name = "Ratio of Sports CCAs per 100 Students by School") +
   tm_symbols(
     shape = 22,
@@ -1436,6 +1441,42 @@ bivariate_map
 
 
 ```
+# Sports Fields and Facilities (Qasim)
+```{r}
+# Loading sports facilities data
+sports_facilities_file <- "SportSGSportFacilities.geojson"
+sports_facilities_sf <- st_read(sports_facilities_file) %>% 
+  st_transform(crs = sg_crs)
+
+st_make_valid(sports_facilities_sf) # Check for invalid geometries
+st_as_sf(st_make_valid(sports_facilities_sf)) # Fix invalid geometries
+
+head(sports_facilities_sf)
+
+test_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
+  tm_polygons(size = 0.3,
+          fill = "slateblue4",
+          fill.legend = tm_legend(title = "Sports Fields"))
+test_map
+
+# Loading Sports fields data
+fields_shp <- 
+  st_read("SportsFieldsSGSHP/PLAYSG.shp") %>% 
+  st_make_valid() %>%
+  st_as_sf() %>%
+  st_transform(crs = sg_crs) 
+
+test_two <- ura_planning_areas_map + tm_shape(fields_shp) +
+    tm_dots(size = 0.3,
+          fill = "slateblue2",
+          fill.legend = tm_legend(title = "Sports Fields"),
+          fill_alpha = 0.5)
+
+test_two
+```
+
+
+
 
 # Other Useful stuff
 
