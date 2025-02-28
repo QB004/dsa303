@@ -95,7 +95,7 @@ obesity_data_sf_2023_OSO <- obesity_data_sf %>%
     )
 
 #Combining prof's data with ours (delete this line pls)
-oso23 = read_csv("oso23.csv", show_col_types = FALSE)
+oso23 = read_csv("Prof's Codes/oso23.csv", show_col_types = FALSE)
 oso23 = oso23 |> drop_na(OSO_pct) 
 
 # Re-classify
@@ -588,7 +588,7 @@ moe_cluster_map + obesity_moe_clusters %>%
 
 ### Visualisation of contiguous neighbours by region
 
-There are too few contiguous neighbours by URA region to consider (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
+There are too few contiguous neighbours by URA region to consider (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
 
 ```{r}
 # Contiguous neighbours by URA regions
@@ -660,6 +660,41 @@ plot(st_geometry(ura_subzones), border = "grey", axes = T,
 plot.nb(ura_subzones_nb_SEC, ura_subzones_coords_SEC, 
         pch = 19, cex = 0.6, add = T)
 par(mfrow = c(1,1))
+
+# k nearest neighbours
+knn1_nb_PRI <- obesity_pri_sch %>% 
+  knearneigh(k = 1) %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
+knn2_nb_PRI <- obesity_pri_sch %>% 
+  knearneigh(k = 2) %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest 2 neighbours
+knn3_nb_PRI <- obesity_pri_sch %>% 
+  knearneigh(k = 3) %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest 3 neighbours
+
+knn1_nb_SEC <- obesity_sec_sch %>% 
+  knearneigh(k = 1) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
+knn2_nb_SEC <- obesity_sec_sch %>% 
+  knearneigh(k = 2) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest 2 neighbours
+knn3_nb_SEC <- obesity_sec_sch %>% 
+  knearneigh(k = 3) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest 3 neighbours
+
+par(mfcol = c(3,2))
+plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=1 (PRI)")
+plot.nb(knn1_nb_PRI, st_geometry(obesity_pri_sch), pch=19, cex=0.6, add=T)
+plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=2 (PRI)")
+plot.nb(knn2_nb_PRI, st_geometry(obesity_pri_sch), pch=19, cex=0.6, add=T)
+plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=3 (PRI)")
+plot.nb(knn3_nb_PRI, st_geometry(obesity_pri_sch), pch=19, cex=0.6, add=T)
+plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=1 (SEC)")
+plot.nb(knn1_nb_SEC, st_geometry(obesity_sec_sch), pch=19, cex=0.6, add=T)
+plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=2 (SEC)")
+plot.nb(knn2_nb_SEC, st_geometry(obesity_sec_sch), pch=19, cex=0.6, add=T)
+plot(st_geometry(ura_planning_areas), border="grey", axes=T,  main="k=3 (SEC)")
+plot.nb(knn3_nb_SEC, st_geometry(obesity_sec_sch), pch=19, cex=0.6, add=T)
 ```
 
 ### Join count analysis
