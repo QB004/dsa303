@@ -585,14 +585,13 @@ moe_cluster_map + obesity_moe_clusters %>%
   tm_facets_wrap(by = "LEVEL")
 ```
 
-## Spatial dependence of obesity in schools
 
-### Visualisation of contiguous neighbours by region
+# Cluster based analysis (Contiguous neighbouring regions)
 
 There are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
 
+## Contiguous neighbours by URA regions
 ```{r}
-# Contiguous neighbours by URA regions
 obesity_ura_regions_PRI <- obesity_ura_regions %>% filter(LEVEL == "PRIMARY")
 obesity_ura_regions_SEC <- obesity_ura_regions %>% filter(LEVEL == "SECONDARY")
 ura_regions_nb_PRI <- obesity_ura_regions_PRI %>% 
@@ -613,8 +612,11 @@ plot(st_geometry(ura_regions), border = "grey", axes = T,
 plot.nb(ura_regions_nb_SEC, ura_regions_coords_SEC, 
         pch = 19, cex = 0.6, add = T)
 par(mfrow = c(1,1))
+```
 
-# Contiguous neighbours by URA planning areas
+## Contiguous neighbours by URA planning areas
+
+```{r}
 obesity_ura_planning_areas_PRI <- obesity_ura_planning_areas %>% 
   filter(LEVEL == "PRIMARY")
 obesity_ura_planning_areas_SEC <- obesity_ura_planning_areas %>% 
@@ -637,8 +639,11 @@ plot(st_geometry(ura_planning_areas), border = "grey", axes = T,
 plot.nb(ura_planning_areas_nb_SEC, ura_planning_areas_coords_SEC, 
         pch = 19, cex = 0.6, add = T)
 par(mfrow = c(1,1))
+```
 
-# Contiguous neighbours by URA subzones
+## Contiguous neighbours by URA subzones
+
+```{r}
 obesity_ura_subzones_PRI <- obesity_ura_subzones %>% 
   filter(LEVEL == "PRIMARY")
 obesity_ura_subzones_SEC <- obesity_ura_subzones %>% 
@@ -661,50 +666,9 @@ plot(st_geometry(ura_subzones), border = "grey", axes = T,
 plot.nb(ura_subzones_nb_SEC, ura_subzones_coords_SEC, 
         pch = 19, cex = 0.6, add = T)
 par(mfrow = c(1,1))
-
-# k nearest neighbours
-knn1_nb_PRI_line <- obesity_pri_sch %>% 
-  knearneigh(k = 1) %>% 
-  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest neighbour
-  nb2lines(coords = st_geometry(obesity_pri_sch))
-knn2_nb_PRI_line <- obesity_pri_sch %>% 
-  knearneigh(k = 2) %>% 
-  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest 2 neighbours
-  nb2lines(coords = st_geometry(obesity_pri_sch))
-
-knn3_nb_PRI_line <- obesity_pri_sch %>% 
-  knearneigh(k = 3) %>% 
-  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest 3 neighbours
-  nb2lines(coords = st_geometry(obesity_pri_sch))
-
-knn1_nb_SEC_line <- obesity_sec_sch %>% 
-  knearneigh(k = 1) %>% 
-  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest neighbour
-  nb2lines(coords = st_geometry(obesity_sec_sch))
-
-knn2_nb_SEC_line <- obesity_sec_sch %>% 
-  knearneigh(k = 2) %>% 
-  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest 2 neighbours
-  nb2lines(coords = st_geometry(obesity_sec_sch))
-
-knn3_nb_SEC_line <- obesity_sec_sch %>% 
-  knearneigh(k = 3) %>% 
-  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest 3 neighbour
-  nb2lines(coords = st_geometry(obesity_sec_sch))
-
-tm_shape(knn1_nb_PRI_line) +
-  tm_lines(lwd = 2) + pri_sch_map
-tm_shape(knn2_nb_PRI_line) +
-  tm_lines(lwd = 2) + pri_sch_map
-tm_shape(knn3_nb_PRI_line) +
-  tm_lines(lwd = 2) + pri_sch_map
-tm_shape(knn1_nb_SEC_line) +
-  tm_lines(lwd = 2) + sec_sch_map
-tm_shape(knn2_nb_SEC_line) +
-  tm_lines(lwd = 2) + sec_sch_map
-tm_shape(knn3_nb_SEC_line) +
-  tm_lines(lwd = 2) + sec_sch_map
 ```
+
+## Spatial autocorrelation statistics
 
 ### Join count analysis
 
@@ -921,7 +885,53 @@ par(mfrow=c(1,1))
 
 We only need to consider the first order neighbour
 
+
 # Cluster based analysis (Social distance)
+
+## k nearest neighbours
+```{r}
+knn1_nb_PRI_line <- obesity_pri_sch %>% 
+  knearneigh(k = 1) %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest neighbour
+  nb2lines(coords = st_geometry(obesity_pri_sch))
+knn2_nb_PRI_line <- obesity_pri_sch %>% 
+  knearneigh(k = 2) %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest 2 neighbours
+  nb2lines(coords = st_geometry(obesity_pri_sch))
+
+knn3_nb_PRI_line <- obesity_pri_sch %>% 
+  knearneigh(k = 3) %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) %>% # nearest 3 neighbours
+  nb2lines(coords = st_geometry(obesity_pri_sch))
+
+knn1_nb_SEC_line <- obesity_sec_sch %>% 
+  knearneigh(k = 1) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest neighbour
+  nb2lines(coords = st_geometry(obesity_sec_sch))
+
+knn2_nb_SEC_line <- obesity_sec_sch %>% 
+  knearneigh(k = 2) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest 2 neighbours
+  nb2lines(coords = st_geometry(obesity_sec_sch))
+
+knn3_nb_SEC_line <- obesity_sec_sch %>% 
+  knearneigh(k = 3) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) %>% # nearest 3 neighbour
+  nb2lines(coords = st_geometry(obesity_sec_sch))
+
+tm_shape(knn1_nb_PRI_line) +
+  tm_lines(lwd = 2) + pri_sch_map
+tm_shape(knn2_nb_PRI_line) +
+  tm_lines(lwd = 2) + pri_sch_map
+tm_shape(knn3_nb_PRI_line) +
+  tm_lines(lwd = 2) + pri_sch_map
+tm_shape(knn1_nb_SEC_line) +
+  tm_lines(lwd = 2) + sec_sch_map
+tm_shape(knn2_nb_SEC_line) +
+  tm_lines(lwd = 2) + sec_sch_map
+tm_shape(knn3_nb_SEC_line) +
+  tm_lines(lwd = 2) + sec_sch_map
+```
 
 ```{r}
 tm_shape(obesity_data) + tm_dots(fill = "CLUSTER", size = 0.5)
