@@ -973,45 +973,27 @@ print(education_map)
 # Food and Nutrition (Nina)
 
 ```{r}
-#Hawker centre data
+#Data transformation
+
+#Hawker Centres
 hawker_full = st_read("NEAMarketandFoodCentre.geojson") %>%
   st_transform(crs = sg_crs)
-
 hawker = hawker_full["geometry"]
 
-
-#Fast Food Outlets (Mcdonald's and 711)
+#Fast Food Outlets 
+  #Mcdonald's
 macs_full = st_read("mcdonalds_singapore.geojson") %>%
-  st_transform(crs = sg_crs)
-
-  #Check validity
-table(st_is_valid(macs_full))
-
-  #Check CRS
-st_crs(macs_full)$epsg
-
-  #Extract necessary columns for analysis
-macs = macs_full[,"geometry"]
+  st_transform(crs = sg_crs) 
+table(st_is_valid(macs_full)) #Check validity
+st_crs(macs_full)$epsg #Check CRS
+macs = macs_full[,"geometry"] #Extract necessary columns for analysis
 
   #7-11 Outlets
 seven_eleven_full = st_read("711_singapore.geojson") %>%
   st_transform(crs = sg_crs)
-
-
-  #Extract necessary columns for analysis
-seven_eleven = seven_eleven_full[,"geometry"]
-  
-  #Check validity
-table(st_is_valid(seven_eleven))
-
-  #Check CRS
-st_crs(seven_eleven)$epsg
-
-  #Plot of 711 outlets
-tm_shape(sg_ura_boundaries) + 
-  tm_borders() +
-  tm_shape(seven_eleven) + 
-  tm_dots(col = "green", size = 0.3)
+seven_eleven = seven_eleven_full[,"geometry"] #Extract necessary columns for analysis
+table(st_is_valid(seven_eleven)) #Check validity
+st_crs(seven_eleven)$epsg #Check CRS
 
 #Combine data into single SF object
 seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
@@ -1020,37 +1002,31 @@ hawker_sf = mutate(hawker, outlet = "hawker")
 food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
 
 
-#Primary school analysis
-
-#duplicate primary school data
-obesity_pri_food = obesity_pri_sch
-
-#check units
-st_crs(obesity_pri_food)$units
+##### Primary school analysis
+obesity_pri_food = obesity_pri_sch #duplicate primary school data
+st_crs(obesity_pri_food)$units #check units
 pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
 pri_intersections <- st_intersects(pri_schools_buffer1, food)
 
-#calculate the number of food outlets within a 1km radius of each school
+#Calculate the number of food outlets within a 1km radius of each school
 obesity_pri_food$num_food_outlets <- lengths(pri_intersections)
 obesity_pri_food
 
-#show density via choropleth map
-ura_regions_map + 
+#Show density via choropleth map
+pri_food_map = ura_regions_map + 
   tm_shape(obesity_pri_food) +
-  tm_fill(col = "num_food_outlets", 
-          palette = "brewer.yl_or_rd",
-          alpha = 0.7) + 
-  tm_borders(lwd = 0.5) +
+  tm_symbols(
+    size = 0.5,
+    fill = "num_food_outlets"
+  ) +
   tm_title("Food Outlet Density by Primary School")
 
+print(pri_food_map)
 
-#Secondary school analysis
 
-#duplicate primary school data
-obesity_sec_food = obesity_sec_sch
-
-#check units
-st_crs(obesity_sec_food)$units
+####Secondary school analysis
+obesity_sec_food = obesity_sec_sch #duplicate secondary school data
+st_crs(obesity_sec_food)$units #check units
 sec_schools_buffer1 <- st_buffer(obesity_sec_food, dist = 1000) %>% st_geometry()
 sec_intersections <- st_intersects(sec_schools_buffer1, food)
 
@@ -1059,29 +1035,28 @@ obesity_sec_food$num_food_outlets <- lengths(sec_intersections)
 obesity_sec_food
 
 #show density via choropleth map
-ura_regions_map + 
+sec_food_map = ura_regions_map + 
   tm_shape(obesity_sec_food) +
-  tm_fill(col = "num_food_outlets", 
-          palette = "brewer.yl_or_rd",
-          alpha = 0.7) + 
-  tm_borders(lwd = 0.5) +
+  tm_symbols(
+    size = 0.5,
+    fill = "num_food_outlets"
+  ) +
   tm_title("Food Outlet Density by Secondary School")
 
+print(sec_food_map)
 
-#spatial analysis
-
-#Check for metric units
-st_crs(obesity_sec_food)$proj
+###Spatial analysis - Secondary school
+st_crs(obesity_sec_food)$proj #Check for metric units
 obesity_sec_food_coords = st_coordinates(obesity_sec_food)
 
 mean_sec_food = calc_mnc(id = 1, points = obesity_sec_food_coords)
 median_sec_food = calc_mdc(id = 2, points = obesity_sec_food_coords)
 sdd_sec_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_sec_food_coords)
 
-(LC_sdd_line_sec_food = sdd_sec_food$LOCATIONS %>% 
+LC_sdd_line_sec_food = sdd_sec_food$LOCATIONS %>% 
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
     st_combine() %>% 
-    st_cast("LINESTRING")) # CRS from the parent object.
+    st_cast("LINESTRING") # CRS from the parent object.
 
 sde_sec_food = calc_sde(id=4, calccentre = T, weighted=F, points= obesity_sec_food_coords)
 ls()
@@ -1089,7 +1064,6 @@ LC_sde_line_sec = sde_sec_food$LOCATIONS %>%
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
     st_combine() %>% 
     st_cast("LINESTRING") # CRS from the parent object.
-
 
 (LC_sdd_line_sec = sdd_sec_food$LOCATIONS %>% 
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
@@ -1113,6 +1087,56 @@ sec_food_map +
   tm_shape(LC_std_ellps_sec) + tm_lines(lwd=2) + 
   tm_shape(LC_std_dist_sec) + tm_lines(lwd=2, lty=2) + 
   tm_shape(mean_median_sec) + tm_dots(size=0.5, shape="id", fill = "white", shape.legend = tm_legend_hide()) + 
+  tm_compass(position = c("left", "top")) +
+  tm_add_legend(type="symbols", labels="Spatial mean", shape = 1) +
+  tm_add_legend(type="symbols", labels="Spatial median", shape = 0) +
+  tm_add_legend(type="lines", labels="SDD", lty=2) + 
+  tm_add_legend(type="lines", labels="SDE", lty=1)
+
+
+##Spatial analysis - Primary school
+st_crs(obesity_pri_food)$proj #Check for metric units 
+obesity_pri_food_coords = st_coordinates(obesity_pri_food)
+
+mean_pri_food = calc_mnc(id = 1, points = obesity_pri_food_coords)
+median_pri_food = calc_mdc(id = 2, points = obesity_pri_food_coords)
+sdd_pri_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_pri_food_coords)
+
+(LC_sdd_line_pri_food = sdd_pri_food$LOCATIONS %>% 
+    st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_pri_food)) %>% 
+    st_combine() %>% 
+    st_cast("LINESTRING")) # CRS from the parent object.
+
+sde_pri_food = calc_sde(id=4, calccentre = T, weighted=F, points= obesity_pri_food_coords)
+ls()
+LC_sde_line_pri = sde_pri_food$LOCATIONS %>%
+    st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_pri_food)) %>% 
+    st_combine() %>% 
+    st_cast("LINESTRING") # CRS from the parent object.
+
+
+(LC_sdd_line_pri = sdd_pri_food$LOCATIONS %>% 
+    st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_pri_food)) %>% 
+    st_combine() %>% 
+    st_cast("LINESTRING")) # CRS from the parent object.
+
+(LC_std_dist_pri = st_sf(sdd_pri_food$ATTRIBUTES, geom=st_geometry(LC_sdd_line_pri))) 
+
+LC_std_ellps_pri = st_sf(sde_pri_food$ATTRIBUTES, geom = st_geometry(LC_sde_line_pri))
+
+#Plot the summary measures 
+(mean_median_pri = rbind(mean_pri_food$LOCATIONS, median_pri_food$LOCATIONS) %>% 
+    data.frame() %>% 
+    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_pri_food))) # matrix -> data.frame -> sf points
+
+mean_median_pri$id =  c("Spatial Mean","Spatial Median") # assign names
+mean_median_pri
+
+pri_food_map + 
+  tm_shape(obesity_pri_food) +
+  tm_shape(LC_std_ellps_pri) + tm_lines(lwd=2) + 
+  tm_shape(LC_std_dist_pri) + tm_lines(lwd=2, lty=2) + 
+  tm_shape(mean_median_pri) + tm_dots(size=0.5, shape="id", fill = "white", shape.legend = tm_legend_hide()) + 
   tm_compass(position = c("left", "top")) +
   tm_add_legend(type="symbols", labels="Spatial mean", shape = 1) +
   tm_add_legend(type="symbols", labels="Spatial median", shape = 0) +
