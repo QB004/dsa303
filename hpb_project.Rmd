@@ -93,6 +93,16 @@ obesity_data_sf_2023_OSO <- obesity_data_sf %>%
       ),
     !is.na(PREVALENCE)
     )
+
+#Combining prof's data with ours (delete this line pls)
+oso23 = read_csv("oso23.csv", show_col_types = FALSE)
+oso23 = oso23 |> drop_na(OSO_pct) 
+
+# Re-classify
+oso23[,c(3, 4, 8, 13:26)] = lapply(oso23[,c(3, 4, 8, 13:26)], as.factor)
+oso23_new = oso23 %>% select(c("PT_ID", "HMSP_Tier", "HMSP_Score", "special"))
+obesity_data_sf_2023_OSO_new = left_join(obesity_data_sf_2023_OSO, oso23_new, by = "PT_ID")
+obesity_data_sf_2023_OSO = obesity_data_sf_2023_OSO_new #we can delete this line if necessary and just use obesity_data_sf_2023_oso_new
 ```
 
 # Exploratory data analysis (by Prof)
@@ -117,6 +127,68 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
              fill.scale = tm_scale(values = "brewer.set1"), 
              fill.legend = tm_legend(title = "School clusters")) +
   tm_facets_wrap(by = "ZONE")
+
+# OSO rate by school level
+ggplot(obesity_data_sf_2023_OSO, aes(x = LEVEL, y = PREVALENCE, fill = LEVEL)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by School Level",
+       x = "Level",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  coord_flip()  # Flip the coordinates to make it horizontal 
+
+# OSO rate by Zone
+ggplot(obesity_data_sf_2023_OSO, aes(x = ZONE, y = PREVALENCE, fill = ZONE)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by Zone",
+       x = "Zone",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  coord_flip()  # Flip the coordinates to make it horizontal 
+
+# OSO rate by School Type
+sub = obesity_data_sf_2023_OSO |>
+  filter(type_code %in% c("GOVERNMENT SCHOOL", "GOVERNMENT-AIDED SCH"))
+ggplot(sub, aes(x = type_code, y = PREVALENCE, fill = type_code)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by School Type",
+       x = "School Type",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  coord_flip()  # Flip the coordinates to make it horizontal 
+
+# OSO rate by Gender Mix
+ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nature_code)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by Gender Mix",
+       x = "Gender Mix",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  scale_x_discrete(drop = TRUE) +
+  coord_flip() # Flip the coordinates to make it horizontal 
+  
+# OSO rate by Specialised Programs
+ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by Specialised Programs",
+       x = "Special Program",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  scale_x_discrete(drop = TRUE) +
+  coord_flip() # Flip the coordinates to make it horizontal 
+
+# OSO rate by HMSP Tier
+ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_Tier)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of OSO23 rate by HMSP Tier",
+       x = "HMSP Tier",
+       y = "OSO Rate") +
+  theme_minimal() +
+  scale_x_discrete(drop = TRUE) +
+  coord_flip() # Flip the coordinates to make it horizontal 
+
+cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
+
 ```
 
 ```{r}
