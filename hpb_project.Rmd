@@ -93,6 +93,16 @@ obesity_data_sf_2023_OSO <- obesity_data_sf %>%
       ),
     !is.na(PREVALENCE)
     )
+
+#Combining prof's data with ours (delete this line pls)
+oso23 = read_csv("oso23.csv", show_col_types = FALSE)
+oso23 = oso23 |> drop_na(OSO_pct) 
+
+# Re-classify
+oso23[,c(3, 4, 8, 13:26)] = lapply(oso23[,c(3, 4, 8, 13:26)], as.factor)
+oso23_new = oso23 %>% select(c("PT_ID", "HMSP_Tier", "HMSP_Score", "special"))
+obesity_data_sf_2023_OSO_new = left_join(obesity_data_sf_2023_OSO, oso23_new, by = "PT_ID")
+obesity_data_sf_2023_OSO = obesity_data_sf_2023_OSO_new #we can delete this line if necessary and just use obesity_data_sf_2023_oso_new
 ```
 
 # Exploratory data analysis (by Prof)
@@ -117,6 +127,68 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
              fill.scale = tm_scale(values = "brewer.set1"), 
              fill.legend = tm_legend(title = "School clusters")) +
   tm_facets_wrap(by = "ZONE")
+
+# OSO rate by school level
+ggplot(obesity_data_sf_2023_OSO, aes(x = LEVEL, y = PREVALENCE, fill = LEVEL)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by School Level",
+       x = "Level",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  coord_flip()  # Flip the coordinates to make it horizontal 
+
+# OSO rate by Zone
+ggplot(obesity_data_sf_2023_OSO, aes(x = ZONE, y = PREVALENCE, fill = ZONE)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by Zone",
+       x = "Zone",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  coord_flip()  # Flip the coordinates to make it horizontal 
+
+# OSO rate by School Type
+sub = obesity_data_sf_2023_OSO |>
+  filter(type_code %in% c("GOVERNMENT SCHOOL", "GOVERNMENT-AIDED SCH"))
+ggplot(sub, aes(x = type_code, y = PREVALENCE, fill = type_code)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by School Type",
+       x = "School Type",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  coord_flip()  # Flip the coordinates to make it horizontal 
+
+# OSO rate by Gender Mix
+ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nature_code)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by Gender Mix",
+       x = "Gender Mix",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  scale_x_discrete(drop = TRUE) +
+  coord_flip() # Flip the coordinates to make it horizontal 
+  
+# OSO rate by Specialised Programs
+ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of prevalence rate by Specialised Programs",
+       x = "Special Program",
+       y = "Prevalence Rate") +
+  theme_minimal() +
+  scale_x_discrete(drop = TRUE) +
+  coord_flip() # Flip the coordinates to make it horizontal 
+
+# OSO rate by HMSP Tier
+ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_Tier)) +
+  geom_boxplot(na.rm = T) +
+  labs(title = "Boxplot of OSO23 rate by HMSP Tier",
+       x = "HMSP Tier",
+       y = "OSO Rate") +
+  theme_minimal() +
+  scale_x_discrete(drop = TRUE) +
+  coord_flip() # Flip the coordinates to make it horizontal 
+
+cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
+
 ```
 
 ```{r}
@@ -365,13 +437,13 @@ Generally, we observe greater overweight prevalence levels for schools in the No
 
 ## Obesity prevalence by region
 
-We aggregating overweight counts and school enrollment data by the different delimited regions, and fill in the regions to get visualise overweight prevalence by region.
+We aggregate overweight counts and school enrollment data by the different delimited regions, and fill in the regions to get visualise overweight prevalence by region.
 
 ```{r}
 # Aggregating overweight counts by URA regions
 obesity_ura_regions <- st_join(ura_regions, obesity_data_sf) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
-  group_by(REGION_N) %>% 
+  group_by(REGION_N, LEVEL) %>% 
   summarise(
     PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
@@ -393,12 +465,13 @@ ura_regions_map + obesity_ura_regions %>%
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Overweight prevalence by URA regions")
+  tm_title("Overweight prevalence by URA regions") +
+  tm_facets_wrap(by = "LEVEL")
 
 # Aggregating overweight counts by URA planning areas
-obesity_ura_planning_areas <- st_join(ura_planning_areas, obesity_data_sf) %>% 
+obesity_ura_planning_areas <- st_join(ura_planning_areas, obesity_data_sf) %>%
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
-  group_by(PLN_AREA_N) %>% 
+  group_by(PLN_AREA_N, LEVEL) %>% 
   summarise(
     PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
@@ -418,12 +491,13 @@ ura_planning_areas_map + obesity_ura_planning_areas %>%
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Overweight prevalence by URA planning areas")
+  tm_title("Overweight prevalence by URA planning areas") +
+  tm_facets_wrap(by = "LEVEL")
 
 # Aggregating overweight counts by URA subzones
 obesity_ura_subzones <- st_join(ura_subzones, obesity_data_sf) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
-  group_by(SUBZONE_N) %>% 
+  group_by(SUBZONE_N, LEVEL) %>% 
   summarise(
     PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
@@ -443,14 +517,15 @@ ura_subzones_map + obesity_ura_subzones %>%
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Overweight prevalence by URA subzones")
+  tm_title("Overweight prevalence by URA subzones") +
+  tm_facets_wrap(by = "LEVEL")
 
 # Aggregating overweight counts by MOE school zones
 obesity_moe_zones <- 
   # we left_join instead of st_join due to overlapping boundaries
   left_join(moe_zones, st_drop_geometry(obesity_data_sf)) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
-  group_by(ZONE) %>% 
+  group_by(ZONE, LEVEL) %>% 
   summarise(
     PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
@@ -475,13 +550,14 @@ moe_zone_map +
       show = T
       )
     ) +
-  tm_title("Overweight prevalence by MOE clusters")
+  tm_title("Overweight prevalence by MOE clusters") +
+  tm_facets_wrap(by = "LEVEL")
 
 # Aggregating overweight counts by MOE clusters
 obesity_moe_clusters <- 
   left_join(moe_clusters, st_drop_geometry(obesity_data_sf)) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
-  group_by(CLUSTER) %>% 
+  group_by(CLUSTER, LEVEL) %>% 
   summarise(
     PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
     geometry = st_union(geometry)
@@ -504,32 +580,86 @@ moe_cluster_map + obesity_moe_clusters %>%
       show = T
       )
     ) +
-  tm_title("Overweight prevalence by MOE clusters")
+  tm_title("Overweight prevalence by MOE clusters") +
+  tm_facets_wrap(by = "LEVEL")
 ```
 
-## Spatial dependence of obesity in Singapore schools
+## Spatial dependence of obesity in schools
+
+### Visualisation of contiguous neighbours by region
+
+There are too few contiguous neighbours by URA region to consider (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
 
 ```{r}
 # Contiguous neighbours by URA regions
-ura_regions_nb <- poly2nb(obesity_ura_regions, queen = T) # queen contiguity
-ura_regions_coords <- st_point_on_surface(st_geometry(obesity_ura_regions))
+obesity_ura_regions_PRI <- obesity_ura_regions %>% filter(LEVEL == "PRIMARY")
+obesity_ura_regions_SEC <- obesity_ura_regions %>% filter(LEVEL == "SECONDARY")
+ura_regions_nb_PRI <- obesity_ura_regions_PRI %>% 
+  poly2nb(queen = T)
+ura_regions_nb_SEC <- obesity_ura_regions_SEC %>% 
+  poly2nb(queen = T)
+ura_regions_coords_PRI <-
+  st_point_on_surface(st_geometry(obesity_ura_regions_PRI))
+ura_regions_coords_SEC <-
+  st_point_on_surface(st_geometry(obesity_ura_regions_SEC))
+par(mfrow = c(2,1))
 plot(st_geometry(ura_regions), border = "grey", axes = T, 
-     main="SG schools contiguous neighbours by region")
-plot.nb(ura_regions_nb, ura_regions_coords, pch = 19, cex = 0.6, add = T)
+     main="Primary schools contiguous neighbours by region")
+plot.nb(ura_regions_nb_PRI, ura_regions_coords_PRI, 
+        pch = 19, cex = 0.6, add = T)
+plot(st_geometry(ura_regions), border = "grey", axes = T, 
+     main="Secondary schools contiguous neighbours by region")
+plot.nb(ura_regions_nb_SEC, ura_regions_coords_SEC, 
+        pch = 19, cex = 0.6, add = T)
+par(mfrow = c(1,1))
 
 # Contiguous neighbours by URA planning areas
-ura_planning_areas_nb <- poly2nb(obesity_ura_planning_areas, queen = T) # queen contiguity
-ura_planning_areas_coords <- st_point_on_surface(st_geometry(obesity_ura_planning_areas))
+obesity_ura_planning_areas_PRI <- obesity_ura_planning_areas %>% 
+  filter(LEVEL == "PRIMARY")
+obesity_ura_planning_areas_SEC <- obesity_ura_planning_areas %>% 
+  filter(LEVEL == "SECONDARY")
+ura_planning_areas_nb_PRI <- obesity_ura_planning_areas_PRI %>% 
+  poly2nb(queen = T)
+ura_planning_areas_nb_SEC <- obesity_ura_planning_areas_SEC %>% 
+  poly2nb(queen = T)
+ura_planning_areas_coords_PRI <-
+  st_point_on_surface(st_geometry(obesity_ura_planning_areas_PRI))
+ura_planning_areas_coords_SEC <-
+  st_point_on_surface(st_geometry(obesity_ura_planning_areas_SEC))
+par(mfrow = c(2,1))
 plot(st_geometry(ura_planning_areas), border = "grey", axes = T, 
-     main="SG schools contiguous neighbours by planning area")
-plot.nb(ura_planning_areas_nb, ura_planning_areas_coords, pch = 19, cex = 0.6, add = T)
+     main="Primary schools contiguous neighbours by planning area")
+plot.nb(ura_planning_areas_nb_PRI, ura_planning_areas_coords_PRI, 
+        pch = 19, cex = 0.6, add = T)
+plot(st_geometry(ura_planning_areas), border = "grey", axes = T, 
+     main="Secondary schools contiguous neighbours by planning area")
+plot.nb(ura_planning_areas_nb_SEC, ura_planning_areas_coords_SEC, 
+        pch = 19, cex = 0.6, add = T)
+par(mfrow = c(1,1))
 
 # Contiguous neighbours by URA subzones
-ura_subzones_nb <- poly2nb(obesity_ura_subzones, queen = T) # queen contiguity
-ura_subzones_coords <- st_point_on_surface(st_geometry(obesity_ura_subzones))
+obesity_ura_subzones_PRI <- obesity_ura_subzones %>% 
+  filter(LEVEL == "PRIMARY")
+obesity_ura_subzones_SEC <- obesity_ura_subzones %>% 
+  filter(LEVEL == "SECONDARY")
+ura_subzones_nb_PRI <- obesity_ura_subzones_PRI %>% 
+  poly2nb(queen = T)
+ura_subzones_nb_SEC <- obesity_ura_subzones_SEC %>% 
+  poly2nb(queen = T)
+ura_subzones_coords_PRI <-
+  st_point_on_surface(st_geometry(obesity_ura_subzones_PRI))
+ura_subzones_coords_SEC <-
+  st_point_on_surface(st_geometry(obesity_ura_subzones_SEC))
+par(mfrow = c(2,1))
 plot(st_geometry(ura_subzones), border = "grey", axes = T, 
-     main="SG schools contiguous neighbours by subzone")
-plot.nb(ura_subzones_nb, ura_subzones_coords, pch = 19, cex = 0.6, add = T)
+     main="Primary schools contiguous neighbours by subzone")
+plot.nb(ura_subzones_nb_PRI, ura_subzones_coords_PRI, 
+        pch = 19, cex = 0.6, add = T)
+plot(st_geometry(ura_subzones), border = "grey", axes = T, 
+     main="Secondary schools contiguous neighbours by subzone")
+plot.nb(ura_subzones_nb_SEC, ura_subzones_coords_SEC, 
+        pch = 19, cex = 0.6, add = T)
+par(mfrow = c(1,1))
 ```
 
 ### Join count analysis
@@ -765,63 +895,15 @@ obesity_data_sf_2023_OSO %>% summary()
 ```{r}
 census <- read.csv("census stats.csv") %>% 
   mutate(PLN_AREA_N = toupper(PLN_AREA_N))
-combine_data <- left_join(ura_planning_areas, census)
-combine_data
-summary(census)
-areas <- c(
-"ANG MO KIO", "BEDOK", "BISHAN", "BUKIT BATOK", "BUKIT MERAH", "BUKIT PANJANG",
-"BUKIT TIMAH", "CHOA CHU KANG", "CLEMENTI", "DOWNTOWN CORE", "GEYLANG", "HOUGANG",
-"JURONG EAST", "JURONG WEST", "KALLANG", "MARINE PARADE", "OUTRAM", "NOVENA", "PASIR RIS", "PUNGGOL",   "QUEENSTOWN", "RIVER VALLEY", "SEMBAWANG", "SENGKANG", "SERANGOON", "TAMPINES",
-"TANGLIN", "TOA PAYOH", "WOODLANDS", "YISHUN"
-)
-for (area in areas) {
-area_var <- gsub(" ", "_", tolower(area))
-assign(paste0(area_var, "_set"), subset(combine_data, PLN_AREA_N == area))
-assign(area_var, st_union(get(paste0(area_var, "_set"))))
-assign(paste0(area_var, "_point"), st_centroid(get(area_var)))
-}
-st_coordinates(ang_mo_kio_point)
-st_coordinates(bedok_point)
-st_coordinates(bishan_point)
-st_coordinates(bukit_batok_point)
-st_coordinates(bukit_merah_point)
-st_coordinates(bukit_panjang_point)
-st_coordinates(bukit_timah_point)
-st_coordinates(choa_chu_kang_point)
-st_coordinates(clementi_point)
-st_coordinates(downtown_core_point)
-st_coordinates(geylang_point)
-st_coordinates(hougang_point)
-st_coordinates(jurong_east_point)
-st_coordinates(jurong_west_point)
-st_coordinates(kallang_point)
-st_coordinates(marine_parade_point)
-st_coordinates(outram_point)
-st_coordinates(novena_point)
-st_coordinates(pasir_ris_point)
-st_coordinates(punggol_point)
-st_coordinates(queenstown_point)
-st_coordinates(river_valley_point)
-st_coordinates(sembawang_point)
-st_coordinates(sengkang_point)
-st_coordinates(serangoon_point)
-st_coordinates(tampines_point)
-st_coordinates(tanglin_point)
-st_coordinates(toa_payoh_point)
-st_coordinates(woodlands_point)
-st_coordinates(yishun_point)
-points_df = data.frame(PLN_AREA_N = c("ANG MO KIO", "BEDOK", "BISHAN", "BUKIT BATOK", "BUKIT MERAH", "BUKIT PANJANG",
-"BUKIT TIMAH", "CHOA CHU KANG", "CLEMENTI", "DOWNTOWN CORE", "GEYLANG", "HOUGANG",
-"JURONG EAST", "JURONG WEST", "KALLANG", "MARINE PARADE", "OUTRAM", "NOVENA", "PASIR RIS", "PUNGGOL",   "QUEENSTOWN", "RIVER VALLEY", "SEMBAWANG", "SENGKANG", "SERANGOON", "TAMPINES",
-"TANGLIN", "TOA PAYOH", "WOODLANDS", "YISHUN"),
-lat=c(40229.12,34032.1,37450.89,37527.65,28662.87,38761.84,34689,40833.42,33319.17,29721.45,33683.82,38409.7,33633.69,35974.53,32515.77,31398.33,29477.49,34356.64,40066.41,43023.56,30164.7,31156.94,48594.64,41466.18,38582.59,36200.47,32298.93,35429.21,46928.63,44086.22),
-long = c(28976.88,38582.67,28789.76,19255.42,26865.78,21287.04,23256.76,18415.05,19923.36,30335.19,34255.04,34285.76,17035.36,13708.69,31685.37,35005.86,28972.96,28221.51,40795.84,36538.42,22573.46,28072.91,26387.4,34051.82,31839.38,41459.48,26250.09,31083.53,22923.8,28404.04))
-points_df
-points_sf <- st_as_sf(points_df, coords = c("long", "lat"), crs = sg_crs)
-points_sf
-census_merge = left_join(points_sf,census)
-ura_planning_areas_map+tm_shape(census_merge)+ tm_symbols(size=0.5,fill="Income")
-ura_planning_areas_map+tm_shape(census_merge)+ tm_symbols(size=0.5,fill="Education")
+
+census_merge <- ura_planning_areas %>%
+  left_join(census)
+
+ura_planning_areas_map + tm_shape(census_merge) +
+  tm_polygons(fill = "Income")
+
+ura_planning_areas_map + tm_shape(census_merge) +
+  tm_polygons(fill="Education")
 
 tm_shape(combine_data) + 
   tm_fill(fill="Income", 
