@@ -634,6 +634,7 @@ tmap_arrange(pri_map, sec_map)
 ### Spatial autocorrelation statistics
 
 #### Join count analysis
+
 ```{r}
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
@@ -648,9 +649,9 @@ obesity_ura_planning_areas_pri$HIGH_PREVALENCE <-
 ura_regions_map + obesity_ura_planning_areas_pri %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(fill = "HIGH_PREVALENCE") +
-  tm_title("Overweight prevalence by URA regions")
+  tm_title("Overweight prevalence by URA planning areas")
 joincount.multi(obesity_ura_planning_areas_pri$HIGH_PREVALENCE, 
-                listw = ura_planning_areas_lw_B_pri)
+                listw = ura_planning_areas_lw_B_pri) 
 
 # by Secondary school
 ura_planning_areas_lw_sec <- 
@@ -662,7 +663,7 @@ obesity_ura_planning_areas_sec$HIGH_PREVALENCE <-
 ura_regions_map + obesity_ura_planning_areas_sec %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(fill = "HIGH_PREVALENCE") +
-  tm_title("Overweight prevalence by URA regions")
+  tm_title("Overweight prevalence by URA planning areas")
 joincount.multi(obesity_ura_planning_areas_sec$HIGH_PREVALENCE, 
                 listw = ura_planning_areas_lw_B_sec)
 ```
@@ -695,7 +696,7 @@ localm_ura_planning_areas_pri <-
              listw = ura_planning_areas_lw_pri)
 obesity_ura_planning_areas_pri$LMORANZ <- localm_ura_planning_areas_pri[,4]
 tm_shape(obesity_ura_planning_areas_pri) + tm_polygons(fill = "LMORANZ") + 
-  tm_title("Local Moran's I Z-Statistic (URA planning_areas)")
+  tm_title("Local Moran's I Z-Statistic (URA planning areas)")
 
 # by Secondary school
 localm_ura_planning_areas_sec <- 
@@ -703,7 +704,7 @@ localm_ura_planning_areas_sec <-
              listw = ura_planning_areas_lw_sec)
 obesity_ura_planning_areas_sec$LMORANZ <- localm_ura_planning_areas_sec[,4]
 tm_shape(obesity_ura_planning_areas_sec) + tm_polygons(fill = "LMORANZ") + 
-  tm_title("Local Moran's I Z-Statistic (URA planning_areas)")
+  tm_title("Local Moran's I Z-Statistic (URA planning areas)")
 ```
 
 #### Geary's C statistic
@@ -721,11 +722,11 @@ geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
 ```{r}
 # by Primary school
 globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
-             listw = ura_planning_areas_lw_pri)
+             listw = ura_planning_areas_lw_B_pri)
 
 # by Secondary school
 globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
-             listw = ura_planning_areas_lw_sec)
+             listw = ura_planning_areas_lw_B_sec)
 ```
 
 #### Local Getis-Ord's G statistics
@@ -733,13 +734,13 @@ globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
 # by Primary school
 obesity_ura_planning_areas_pri$GO_STAT <-
   localG(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
-         listw = ura_planning_areas_lw_pri)
+         listw = ura_planning_areas_lw_B_pri)
 tm_shape(obesity_ura_planning_areas_pri) + tm_polygons("GO_STAT")
 
 # by Secondary school
 obesity_ura_planning_areas_sec$GO_STAT <-
   localG(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
-         listw = ura_planning_areas_lw_sec)
+         listw = ura_planning_areas_lw_B_sec)
 tm_shape(obesity_ura_planning_areas_sec) + tm_polygons("GO_STAT")
 ```
 
@@ -828,17 +829,17 @@ geary.test(obesity_moe_clusters_pri$PREVALENCE_AGGREGATE, moe_clusters_lw_pri)
 
 ```{r}
 # by Primary schools
-obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
-del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch_jitter), 
+# obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
+del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch), 
                      row.names = obesity_pri_sch_jitter$PT_ID) 
-pri_map <- tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch_jitter))) +
+pri_map <- tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
   tm_lines(lwd = 2) + pri_sch_map
 
 # by Secondary schools
-obesity_sec_sch_jitter <- st_jitter(obesity_sec_sch) 
-del_nb_sec <- tri2nb(st_coordinates(obesity_sec_sch_jitter), 
+# obesity_sec_sch_jitter <- st_jitter(obesity_sec_sch) 
+del_nb_sec <- tri2nb(st_coordinates(obesity_sec_sch), 
                      row.names = obesity_sec_sch_jitter$PT_ID) 
-sec_map <- tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch_jitter))) +
+sec_map <- tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch))) +
   tm_lines(lwd = 2) + sec_sch_map
 
 tmap_arrange(pri_map, sec_map)
@@ -848,24 +849,32 @@ tmap_arrange(pri_map, sec_map)
 
 ```{r}
 # by Primary schools
-del_lw_pri <- nb2listw(del_nb_pri)
+(del_lw_pri <- nb2listw(del_nb_pri))
 moran.test(obesity_pri_sch$PREVALENCE, del_lw_pri)
 moran.plot(obesity_pri_sch$PREVALENCE, del_lw_pri)
 geary.test(obesity_pri_sch$PREVALENCE, del_lw_pri)
 
 # by Secondary schools
-del_lw_sec <- nb2listw(del_nb_sec)
+(del_lw_sec <- nb2listw(del_nb_sec))
 moran.test(obesity_sec_sch$PREVALENCE, del_lw_sec)
 moran.plot(obesity_sec_sch$PREVALENCE, del_lw_sec)
 geary.test(obesity_sec_sch$PREVALENCE, del_lw_sec)
 ```
+
+Average number of links (Primary school): 5.823204 
+p-value for Moran's test (Primary school): 4.515e-10
+p-value for Geary C's test (Primary school): 9.073e-10
+
+Average number of links (Secondary school): 5.805556 
+p-value for Moran's test (Secondary school): 0.0001695
+p-value for Geary C's test (Secondary school): 9.452e-05
 
 ## Sphere of influence neighbours
 
 ```{r}
 # by Primary schools
 if (require(dbscan, quietly=TRUE)) {
-  soi_nb_pri <- graph2nb(soi.graph(del_nb_pri, st_geometry(obesity_pri_sch_jitter)))
+  soi_nb_pri <- graph2nb(soi.graph(del_nb_pri, st_geometry(obesity_pri_sch)))
 } else {
   soi_nb = NULL
 }
@@ -873,7 +882,7 @@ soi_lw_pri <- nb2listw(soi_nb_pri)
 
 # by Secondary schools
 if (require(dbscan, quietly=TRUE)) {
-  soi_nb_sec <- graph2nb(soi.graph(del_nb_sec, st_geometry(obesity_sec_sch_jitter)))
+  soi_nb_sec <- graph2nb(soi.graph(del_nb_sec, st_geometry(obesity_sec_sch)))
 } else {
   soi_nb = NULL
 }
@@ -884,17 +893,25 @@ soi_lw_sec <- nb2listw(soi_nb_sec)
 
 ```{r}
 # by Primary schools
-soi_lw_pri <- nb2listw(soi_nb_pri)
+(soi_lw_pri <- nb2listw(soi_nb_pri))
 moran.test(obesity_pri_sch$PREVALENCE, soi_lw_pri)
 moran.plot(obesity_pri_sch$PREVALENCE, soi_lw_pri)
 geary.test(obesity_pri_sch$PREVALENCE, soi_lw_pri)
 
 # by Secondary schools
-soi_lw_sec <- nb2listw(soi_nb_sec)
+(soi_lw_sec <- nb2listw(soi_nb_sec))
 moran.test(obesity_sec_sch$PREVALENCE, soi_lw_sec)
 moran.plot(obesity_sec_sch$PREVALENCE, soi_lw_sec)
 geary.test(obesity_sec_sch$PREVALENCE, soi_lw_sec)
 ```
+
+Average number of links (Primary school): 3.082873 
+p-value for Moran's test (Primary school): 2.581e-06
+p-value for Geary C's test (Primary school): 2.736e-06
+
+Average number of links (Secondary school): 2.958333 
+p-value for Moran's test (Secondary school): 0.0004617
+p-value for Geary C's test (Secondary school): 0.0002675
 
 # K nearest neighbour based analysis
 
@@ -921,17 +938,25 @@ tmap_arrange(pri_map, sec_map)
 
 ```{r}
 # by Primary schools
-knn1_lw_pri <- nb2listw(knn1_nb_pri)
+(knn1_lw_pri <- nb2listw(knn1_nb_pri))
 moran.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
 moran.plot(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
 geary.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
 
 # by Secondary schools
-knn1_lw_sec <- nb2listw(knn1_nb_sec)
+(knn1_lw_sec <- nb2listw(knn1_nb_sec))
 moran.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
 moran.plot(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
 geary.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
 ```
+
+Average number of links (Primary school): 1 
+p-value for Moran's test (Primary school): 0.008449
+p-value for Geary C's test (Primary school): 0.04445
+
+Average number of links (Secondary school): 1 
+p-value for Moran's test (Secondary school): 0.0004819
+p-value for Geary C's test (Secondary school): 0.004126
 
 ## 2 neighbours
 ```{r}
@@ -956,17 +981,25 @@ tmap_arrange(pri_map, sec_map)
 
 ```{r}
 # by Primary schools
-knn2_lw_pri <- nb2listw(knn2_nb_pri)
+(knn2_lw_pri <- nb2listw(knn2_nb_pri))
 moran.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
 moran.plot(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
 geary.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
 
 # by Secondary schools
-knn2_lw_sec <- nb2listw(knn2_nb_sec)
+(knn2_lw_sec <- nb2listw(knn2_nb_sec))
 moran.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
 moran.plot(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
 geary.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
 ```
+
+Average number of links (Primary school): 2
+p-value for Moran's test (Primary school): 6.805e-05
+p-value for Geary C's test (Primary school): 0.000133
+
+Average number of links (Secondary school): 2
+p-value for Moran's test (Secondary school): 0.003471
+p-value for Geary C's test (Secondary school): 0.03461
 
 ## 3 neighbours
 ```{r}
@@ -991,17 +1024,25 @@ tmap_arrange(pri_map, sec_map)
 
 ```{r}
 # by Primary schools
-knn3_lw_pri <- nb2listw(knn3_nb_pri)
+(knn3_lw_pri <- nb2listw(knn3_nb_pri))
 moran.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
 moran.plot(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
 geary.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
 
 # by Secondary schools
-knn3_lw_sec <- nb2listw(knn3_nb_sec)
+(knn3_lw_sec <- nb2listw(knn3_nb_sec))
 moran.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
 moran.plot(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
 geary.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
 ```
+
+Average number of links (Primary school): 3
+p-value for Moran's test (Primary school): 2.337e-06
+p-value for Geary C's test (Primary school): 1.103e-06
+
+Average number of links (Secondary school): 3
+p-value for Moran's test (Secondary school): 0.000427
+p-value for Geary C's test (Secondary school): 0.002858
 
 # Income distribution (Lucas)
 
@@ -1564,38 +1605,33 @@ sec_cca_map_sde
 
 
 # Aggregating sports cca ratio counts by URA subzones
-
-cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>%
-  filter(YEAR == 2023, CATEGORY == "OSO") %>% 
-  group_by(PLN_AREA_N, LEVEL) %>% 
+sports_ura_subzones <- st_join(ura_subzones, obesity_joined_school_sports_data) %>% 
+  group_by(SUBZONE_N) %>% 
   summarise(
     RATIO_AGG = mean(sports_cca_per_100, na.rm = T),
     geometry = st_union(geometry)
-    ) %>%
-  filter(!is.na(RATIO_AGG))
+    )
 
-cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>% 
-  tm_shape(name = "Sport CCA Ratio per 100 Students") +
+cca_subzone_map <- ura_subzones_map + sports_ura_subzones %>% 
+  tm_shape(name = "Sports CCA Ratio per 100") +
   tm_polygons(
     fill = "RATIO_AGG",
-    fill.scale = tm_scale(
-      #breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "brewer.rd_yl_gn"
-      ), 
+    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
       title = "Sports CCAs per 100 Students",
+      orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Average Sports CCA Ratio by URA Planning Area") +
-  tm_facets_wrap(by = "LEVEL")
+  tm_title("Sports CCA Ratio by URA subzones")
 
-cca_planning_avg_map
-```
+print(cca_subzone_map)
 
-```{r}
-#WORK IN PROGRESS
+
+
+
+
 #bivariate chloropleth for obesity prevalence and physical sports participation?
 
 
@@ -1641,12 +1677,9 @@ bivariate_map
 
 
 ```
-
-
 # Sports Fields and Facilities (Qasim)
 ```{r}
 # Loading sports facilities data
-
 sports_facilities_file <- "SportSGSportFacilities.geojson"
 sports_facilities_sf <- st_read(sports_facilities_file) %>% 
   st_transform(crs = sg_crs)
@@ -1656,32 +1689,11 @@ st_as_sf(st_make_valid(sports_facilities_sf)) # Fix invalid geometries
 
 head(sports_facilities_sf)
 
-sport_sg_facility_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
+test_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
   tm_polygons(size = 0.3,
           fill = "slateblue4",
           fill.legend = tm_legend(title = "Sports Fields"))
-
-sport_sg_facility_map
-
-
-
-# Loading dual use facilities data
-
-dual_use_facilities_shp <- 
-  st_read("DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>% 
-  st_make_valid() %>%
-  st_as_sf() %>%
-  st_transform(crs = sg_crs) 
-
-dus_facility_map <- ura_planning_areas_map + tm_shape(dual_use_facilities_shp) +
-    tm_dots(size = 0.3,
-          fill = "navy",
-          fill.legend = tm_legend(title = "Dual Use School Sports Facilities"),
-          fill_alpha = 0.5)
-
-dus_facility_map
-
-
+test_map
 
 # Loading Sports fields data
 fields_shp <- 
@@ -1690,13 +1702,13 @@ fields_shp <-
   st_as_sf() %>%
   st_transform(crs = sg_crs) 
 
-sports_fields_map <- ura_planning_areas_map + tm_shape(fields_shp) +
+test_two <- ura_planning_areas_map + tm_shape(fields_shp) +
     tm_dots(size = 0.3,
           fill = "slateblue2",
           fill.legend = tm_legend(title = "Sports Fields"),
           fill_alpha = 0.5)
 
-sports_fields_map
+test_two
 ```
 
 
