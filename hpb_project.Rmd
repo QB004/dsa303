@@ -1564,7 +1564,9 @@ sec_cca_map_sde
 
 
 # Aggregating sports cca ratio counts by URA subzones
-cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
+
+cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>%
+  filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(PLN_AREA_N, LEVEL) %>% 
   summarise(
     RATIO_AGG = mean(sports_cca_per_100, na.rm = T),
@@ -1572,52 +1574,28 @@ cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_dat
     ) %>%
   filter(!is.na(RATIO_AGG))
 
-cca_planning_avg_map <- ura_planning_area_map + cca_planning_avg %>% 
-  tm_shape(name = "Sports CCA Ratio per 100") +
+cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>% 
+  tm_shape(name = "Sport CCA Ratio per 100 Students") +
   tm_polygons(
     fill = "RATIO_AGG",
-    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"), 
-    fill.legend = tm_legend(
-      title = "Sports CCAs per 100 Students",
-      orientation = "landscape", 
-      position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
-      )
-    ) +
-  tm_title("Average Sports CCA Ratio by URA Planning Area") + 
-  tm_facets_wrap(by = "LEVEL")
-
-print(cca_planning_avg_map)
-
- 
-# Aggregating overweight counts by URA planning areas
-cca_ura_planning_areas <- st_join(ura_planning_areas, obesity_data_sf) %>%
-  filter(YEAR == 2023, CATEGORY == "OSO") %>% 
-  group_by(PLN_AREA_N, LEVEL) %>% 
-  summarise(
-    PREVALENCE_AGGREGATE = sum(COUNT, na.rm = T) / sum(ENROLMENT, na.rm = T),
-    geometry = st_union(geometry)
-    )
-
-ura_planning_areas_map + obesity_ura_planning_areas %>% 
-  tm_shape(name = "Overweight prevalence") +
-  tm_polygons(
-    fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "brewer.yl_or_rd"
+      #breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "brewer.rd_yl_gn"
       ), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence",
+      title = "Sports CCAs per 100 Students",
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Overweight prevalence by URA planning areas") +
+  tm_title("Average Sports CCA Ratio by URA Planning Area") +
   tm_facets_wrap(by = "LEVEL")
 
+cca_planning_avg_map
+```
 
-
+```{r}
+#WORK IN PROGRESS
 #bivariate chloropleth for obesity prevalence and physical sports participation?
 
 
@@ -1663,9 +1641,12 @@ bivariate_map
 
 
 ```
+
+
 # Sports Fields and Facilities (Qasim)
 ```{r}
 # Loading sports facilities data
+
 sports_facilities_file <- "SportSGSportFacilities.geojson"
 sports_facilities_sf <- st_read(sports_facilities_file) %>% 
   st_transform(crs = sg_crs)
@@ -1675,11 +1656,32 @@ st_as_sf(st_make_valid(sports_facilities_sf)) # Fix invalid geometries
 
 head(sports_facilities_sf)
 
-test_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
+sport_sg_facility_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
   tm_polygons(size = 0.3,
           fill = "slateblue4",
           fill.legend = tm_legend(title = "Sports Fields"))
-test_map
+
+sport_sg_facility_map
+
+
+
+# Loading dual use facilities data
+
+dual_use_facilities_shp <- 
+  st_read("DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>% 
+  st_make_valid() %>%
+  st_as_sf() %>%
+  st_transform(crs = sg_crs) 
+
+dus_facility_map <- ura_planning_areas_map + tm_shape(dual_use_facilities_shp) +
+    tm_dots(size = 0.3,
+          fill = "navy",
+          fill.legend = tm_legend(title = "Dual Use School Sports Facilities"),
+          fill_alpha = 0.5)
+
+dus_facility_map
+
+
 
 # Loading Sports fields data
 fields_shp <- 
@@ -1688,13 +1690,13 @@ fields_shp <-
   st_as_sf() %>%
   st_transform(crs = sg_crs) 
 
-test_two <- ura_planning_areas_map + tm_shape(fields_shp) +
+sports_fields_map <- ura_planning_areas_map + tm_shape(fields_shp) +
     tm_dots(size = 0.3,
           fill = "slateblue2",
           fill.legend = tm_legend(title = "Sports Fields"),
           fill_alpha = 0.5)
 
-test_two
+sports_fields_map
 ```
 
 
