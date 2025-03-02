@@ -1608,11 +1608,6 @@ sec_cca_map_sde
 
 
 
-# Aggregating sports cca ratio counts by URA planning area
-
-cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>%
-  filter(YEAR == 2023, CATEGORY == "OSO") %>% 
-  group_by(PLN_AREA_N, LEVEL) %>% 
 
 # Aggregating sports cca ratio counts by URA planning area
 cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
@@ -1708,7 +1703,6 @@ sports_facilities_sf <- st_read(sports_facilities_file) %>%
 st_make_valid(sports_facilities_sf) # Check for invalid geometries
 st_as_sf(st_make_valid(sports_facilities_sf)) # Fix invalid geometries
 
-head(sports_facilities_sf)
 
 sport_sg_facility_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
   tm_polygons(size = 0.3,
@@ -1817,24 +1811,6 @@ sec_dus_map
 
 
 ## 1 neighbour
-
-
-# by Primary schools
-knn1_nb_pri <- obesity_pri_sch %>% 
-  knearneigh(k = 1) %>% 
-  knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
-pri_map <- tm_shape(nb2lines(knn1_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + pri_sch_map
-
-# by Secondary schools
-knn1_nb_sec <- obesity_sec_sch %>% 
-  knearneigh(k = 1) %>% 
-  knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
-sec_map <- tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + sec_sch_map
-
-tmap_arrange(pri_map, sec_map)
-
 
 
 
