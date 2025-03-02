@@ -1719,25 +1719,6 @@ sport_sg_facility_map
 
 
 
-#DATA SET OF CHOICE
-# Loading dual use facilities data
-
-dual_use_facilities_shp <- 
-  st_read("DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>% 
-  st_make_valid() %>%
-  st_as_sf() %>%
-  st_transform(crs = sg_crs) 
-
-dus_facility_map <- ura_planning_areas_map + tm_shape(dual_use_facilities_shp) +
-    tm_dots(size = 0.3,
-          fill = "navy",
-          fill.legend = tm_legend(title = "Dual Use School Sports Facilities"),
-          fill_alpha = 0.5)
-
-dus_facility_map
-
-
-
 # Loading Sports fields data
 fields_shp <- 
   st_read("SportsFieldsSGSHP/PLAYSG.shp") %>% 
@@ -1755,6 +1736,27 @@ sports_fields_map <- ura_planning_areas_map + tm_shape(fields_shp) +
 sports_fields_map
 
 
+
+#DATA SET OF CHOICE
+# Loading dual use facilities data
+
+dual_use_facilities <- 
+  st_read("DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>% 
+  st_make_valid() %>%
+  st_as_sf() %>%
+  st_transform(crs = sg_crs) 
+
+dus_facility_map <- ura_planning_areas_map + tm_shape(dual_use_facilities) +
+    tm_dots(size = 0.3,
+          fill = "navy",
+          fill.legend = tm_legend(title = "Dual Use School Sports Facilities"),
+          fill_alpha = 0.5)
+
+dus_facility_map
+
+
+
+
 #displaying schools and sports facilities on the same map
 
 #primary schools
@@ -1764,7 +1766,7 @@ pri_dus_map <- ura_planning_areas_map +
     size = 0.3,
     fill = "red"
   ) +
-  tm_shape(dual_use_facilities_shp) +
+  tm_shape(dual_use_facilities) +
   tm_dots(
     size = 0.3,
     fill = "blue"
@@ -1785,7 +1787,7 @@ sec_dus_map <- ura_planning_areas_map +
     size = 0.3,
     fill = "red"
   ) +
-  tm_shape(dual_use_facilities_shp) +
+  tm_shape(dual_use_facilities) +
   tm_dots(
     size = 0.3,
     fill = "blue"
@@ -1832,6 +1834,46 @@ sec_map <- tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))
   tm_lines(lwd = 2) + sec_sch_map
 
 tmap_arrange(pri_map, sec_map)
+
+
+
+
+class(dus_)
+
+
+# Assuming you have two data frames or sf objects:
+# schools: contains locations of schools
+# facilities: contains locations of sports facilities
+
+
+# Step 2: Calculate distances between all schools and facilities
+distances <- st_distance(schools_sf, facilities_sf)
+
+# Step 3: For each school, find the k nearest facilities
+k <- 3  # Change this to your desired k value
+nearest_facilities <- apply(distances, 1, function(dists) {
+  order(dists)[1:k]
+})
+
+# Create a data frame with the results
+results <- data.frame(
+  school_id = schools_sf$id,  # Replace with your actual ID column
+  stringsAsFactors = FALSE
+)
+
+# Add the nearest facilities for each school
+for (i in 1:k) {
+  facility_col <- paste0("nearest_facility_", i)
+  distance_col <- paste0("distance_", i)
+  
+  results[[facility_col]] <- sapply(1:nrow(schools_sf), function(j) {
+    facilities_sf$id[nearest_facilities[i, j]]  # Replace with your actual ID column
+  })
+  
+  results[[distance_col]] <- sapply(1:nrow(schools_sf), function(j) {
+    distances[j, nearest_facilities[i, j]]
+  })
+}
 ```
 
 ```
