@@ -1370,12 +1370,13 @@ obesity_joined_school_sports_data <-
          )
         ) 
 
-
+```
 
 #Visualising physical sports participation by school level
 
 ###########################PRIMARY SCHOOL####################################
 
+```{r}
 # Primary school sports participation
 
 #NEED TO AVERAGE VALUES FOR MISSING VALUES
@@ -1467,9 +1468,11 @@ pri_cca_map_sde <- ura_planning_areas_map +
 
 pri_cca_map_sde
 
+```
+
 
 ####################################SECONDARY SCHOOL####################################
-
+```{r}
 sec_cca_data <- obesity_joined_school_sports_data %>% filter(LEVEL == "SECONDARY", !is.na(sports_cca_per_100))
 
 sec_cca_map <- ura_planning_areas_map +  
@@ -1563,7 +1566,7 @@ sec_cca_map_sde
 ###################################################################
 
 
-# Aggregating sports cca ratio counts by URA subzones
+# Aggregating sports cca ratio counts by URA planning area
 
 cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>%
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
@@ -1593,6 +1596,8 @@ cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>%
 
 cca_planning_avg_map
 ```
+
+
 
 ```{r}
 #WORK IN PROGRESS
@@ -1643,6 +1648,7 @@ bivariate_map
 ```
 
 
+
 # Sports Fields and Facilities (Qasim)
 ```{r}
 # Loading sports facilities data
@@ -1665,6 +1671,7 @@ sport_sg_facility_map
 
 
 
+#DATA SET OF CHOICE
 # Loading dual use facilities data
 
 dual_use_facilities_shp <- 
@@ -1697,10 +1704,79 @@ sports_fields_map <- ura_planning_areas_map + tm_shape(fields_shp) +
           fill_alpha = 0.5)
 
 sports_fields_map
+
+
+#displaying schools and sports facilities on the same map
+
+#primary schools
+pri_dus_map <- ura_planning_areas_map + 
+  tm_shape(pri_cca_data) +
+  tm_symbols(
+    size = 0.5,
+    fill = "red"
+  ) +
+  tm_shape(dual_use_facilities_shp) +
+  tm_dots(
+    size = 0.5,
+    fill = "blue"
+  ) +
+  tm_layout(
+    legend.position = c("BOTTOM", "RIGHT"),
+    legend.title.size = 1.2,
+    main.title = "Primary Schools and Dual Use Sports Facilities"
+  )
+
+pri_dus_map
+
+
+#seconadry schools
+sec_dus_map <- ura_planning_areas_map + 
+  tm_shape(sec_cca_data) +
+  tm_symbols(
+    size = 0.5,
+    fill = "red"
+  ) +
+  tm_shape(dual_use_facilities_shp) +
+  tm_dots(
+    size = 0.5,
+    fill = "blue"
+  ) +
+  tm_layout(
+    legend.position = c("BOTTOM", "RIGHT"),
+    legend.title.size = 1.2,
+    main.title = "Secondary Schools and Dual Use Sports Facilities"
+  )
+
+sec_dus_map
+
 ```
 
+# K Nearest Neighbours
+```{r}
+# K nearest neighbour based analysis 
 
+#NEAREST SPORTS FACILITY TO SCHOOL
 
+## 1 neighbour
+```{r}
+# by Primary schools
+knn1_nb_pri <- obesity_pri_sch %>% 
+  knearneigh(k = 1) %>% 
+  knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
+pri_map <- tm_shape(nb2lines(knn1_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + pri_sch_map
+
+# by Secondary schools
+knn1_nb_sec <- obesity_sec_sch %>% 
+  knearneigh(k = 1) %>% 
+  knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
+sec_map <- tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) + sec_sch_map
+
+tmap_arrange(pri_map, sec_map)
+```
+
+```
 
 # Other Useful stuff
 
