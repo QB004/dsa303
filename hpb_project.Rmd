@@ -596,14 +596,16 @@ obesity_ura_regions_pri <- obesity_ura_regions %>% filter(LEVEL == "PRIMARY")
 ura_regions_nb_pri <- obesity_ura_regions_pri %>% poly2nb(queen = T)
 ura_regions_nb_line_pri <- ura_regions_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_regions_pri)))
-pri_map <- ura_regions_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
+pri_map <- ura_regions_map +
+  ura_regions_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_regions_pri)) %>% tm_shape() + tm_symbols()
 
 obesity_ura_regions_sec <- obesity_ura_regions %>% filter(LEVEL == "SECONDARY")
 ura_regions_nb_sec <- obesity_ura_regions_sec %>% poly2nb(queen = T)
 ura_regions_nb_line_sec <- ura_regions_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_regions_sec)))
-sec_map <- ura_regions_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
+sec_map <- ura_regions_map +
+  ura_regions_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_regions_sec)) %>% tm_shape() + tm_symbols()
 
 tmap_arrange(pri_map, sec_map)
@@ -612,11 +614,20 @@ tmap_arrange(pri_map, sec_map)
 ## Contiguous neighbours by URA planning areas
 
 ```{r}
-obesity_ura_planning_areas_pri <- obesity_ura_planning_areas %>% filter(LEVEL == "PRIMARY")
-ura_planning_areas_nb_pri <- obesity_ura_planning_areas_pri %>% poly2nb(queen = T)
+# # Manually connecting 1 observation with no neighbours with its nearest neighbour
+# obesity_ura_planning_areas_pri <- obesity_ura_planning_areas %>% 
+#   filter(LEVEL == "PRIMARY") %>% 
+#   rowid_to_column("index")
+# ura_planning_areas_nb_pri <- obesity_ura_planning_areas_pri %>% poly2nb(queen = T)
+# ura_planning_areas_nb_pri %>%
+#   write.nb.gal(file = "ura_planning_areas_nb_pri.gal",
+#                ind = ura_planning_areas_nb_pri$index)
+
+ura_planning_areas_nb_pri <- read.gal(ura_planning_areas_nb_pri.gal)
 ura_planning_areas_nb_line_pri <- ura_planning_areas_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)))
-pri_map <- ura_planning_areas_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
+pri_map <- ura_planning_areas_map +
+  ura_planning_areas_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)) %>% 
   tm_shape() + tm_symbols()
 
@@ -624,7 +635,8 @@ obesity_ura_planning_areas_sec <- obesity_ura_planning_areas %>% filter(LEVEL ==
 ura_planning_areas_nb_sec <- obesity_ura_planning_areas_sec %>% poly2nb(queen = T)
 ura_planning_areas_nb_line_sec <- ura_planning_areas_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_sec)))
-sec_map <- ura_planning_areas_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
+sec_map <- ura_planning_areas_map +
+  ura_planning_areas_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_sec)) %>% 
   tm_shape() + tm_symbols()
 
@@ -831,14 +843,14 @@ geary.test(obesity_moe_clusters_pri$PREVALENCE_AGGREGATE, moe_clusters_lw_pri)
 # by Primary schools
 # obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
 del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch), 
-                     row.names = obesity_pri_sch_jitter$PT_ID) 
+                     row.names = obesity_pri_sch$PT_ID) 
 pri_map <- tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
   tm_lines(lwd = 2) + pri_sch_map
 
 # by Secondary schools
 # obesity_sec_sch_jitter <- st_jitter(obesity_sec_sch) 
 del_nb_sec <- tri2nb(st_coordinates(obesity_sec_sch), 
-                     row.names = obesity_sec_sch_jitter$PT_ID) 
+                     row.names = obesity_sec_sch$PT_ID) 
 sec_map <- tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch))) +
   tm_lines(lwd = 2) + sec_sch_map
 
@@ -1231,20 +1243,12 @@ seven_eleven = seven_eleven_full[,"geometry"] #Extract necessary columns for ana
 table(st_is_valid(seven_eleven)) #Check validity
 st_crs(seven_eleven)$epsg #Check CRS
 
-  #Malls
-malls_csv = read.csv("shopping_mall_coordinates.csv")
-malls_full = st_as_sf(malls_csv, coords = c("LONGITUDE", "LATITUDE"), crs = 4326) %>%
-  st_transform(crs = sg_crs)
-st_crs(malls_full)
-
-
 #Combine data into single SF object
 seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
 macs_sf = mutate(macs, outlet = "mcdonalds")
 hawker_sf = mutate(hawker, outlet = "hawker")
-mall_sf = mutate(malls_full, outlet = "shopping mall")[-1]
-food = rbind(seven_eleven_sf, macs_sf, hawker_sf, mall_sf)
-food
+food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
+
 
 ##### Primary school analysis
 obesity_pri_food = obesity_pri_sch #duplicate primary school data
@@ -1388,42 +1392,7 @@ pri_food_map +
   tm_add_legend(type="lines", labels="SDE", lty=1)
 ```
 
-#Distance of the nearest food option to each school (Nina)
-```{r} 
-#Write function to compute distance to nearest food option, along with outlet_type
-library(geosphere)
 
-find_nearest_food_options <- function(schools_sf, food_options_sf) {
-
-  if (st_crs(schools_sf) != st_crs(food_options_sf)) {
-    stop("CRS of schools_sf and food_options_sf must be the same.")
-  }
-
-  distances <- st_distance(schools_sf, food_options_sf)
-  nearest_indices <- apply(distances, 1, which.min)
-
-  nearest_distances <- apply(distances, 1, min)
-
-  nearest_outlet_types <- food_options_sf$outlet[nearest_indices]
-
-    result_sf <- schools_sf %>%
-    mutate(
-      distance_to_nearest_food_option = as.numeric(nearest_distances),
-      outlet_type = nearest_outlet_types
-    ) %>%
-    select(SCHOOL, distance_to_nearest_food_option, outlet_type, geometry)
-  
-  print(result_sf)
-}
-
-
-nearest_outlet_distance = find_nearest_food_options(school_sf, food)
-nearest_outlet_distance
-
-#Combine data into original sf object
-food_combined_sf = obesity_data_sf_2023_OSO %>%
-  st_join(nearest_outlet_distance[,c(2,3)], by = "SCHOOL")
-```
 
 
 # Sports CCAs in Schools (Qasim)
