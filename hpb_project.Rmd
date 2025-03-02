@@ -1869,6 +1869,9 @@ for (j in 1:k) {
   })
 }
 
+pri_knn_3 <- results %>% filter(level == "PRIMARY") 
+sec_knn_3 <- results %>% filter(level == "SECONDARY")
+
 
 ```
 
