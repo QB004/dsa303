@@ -592,6 +592,7 @@ There are too few contiguous neighbours by URA region to analyse meaningfully (o
 ## Contiguous neighbours by URA regions
 
 ```{r}
+# by Primary school
 obesity_ura_regions_pri <- obesity_ura_regions %>% filter(LEVEL == "PRIMARY")
 ura_regions_nb_pri <- obesity_ura_regions_pri %>% poly2nb(queen = T)
 ura_regions_nb_line_pri <- ura_regions_nb_pri %>% 
@@ -600,6 +601,7 @@ pri_map <- ura_regions_map +
   ura_regions_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_regions_pri)) %>% tm_shape() + tm_symbols()
 
+# by Secondary school
 obesity_ura_regions_sec <- obesity_ura_regions %>% filter(LEVEL == "SECONDARY")
 ura_regions_nb_sec <- obesity_ura_regions_sec %>% poly2nb(queen = T)
 ura_regions_nb_line_sec <- ura_regions_nb_sec %>% 
@@ -614,16 +616,18 @@ tmap_arrange(pri_map, sec_map)
 ## Contiguous neighbours by URA planning areas
 
 ```{r}
-# # Manually connecting 1 observation with no neighbours with its nearest neighbour
-# obesity_ura_planning_areas_pri <- obesity_ura_planning_areas %>% 
-#   filter(LEVEL == "PRIMARY") %>% 
-#   rowid_to_column("index")
+# by Primary school
+obesity_ura_planning_areas_pri <- obesity_ura_planning_areas %>%
+  filter(LEVEL == "PRIMARY") %>%
+  rowid_to_column("index")
+
+# # Manually connecting 1 observation with no neighbours with its nearest neighbours
 # ura_planning_areas_nb_pri <- obesity_ura_planning_areas_pri %>% poly2nb(queen = T)
 # ura_planning_areas_nb_pri %>%
 #   write.nb.gal(file = "ura_planning_areas_nb_pri.gal",
 #                ind = ura_planning_areas_nb_pri$index)
 
-ura_planning_areas_nb_pri <- read.gal(ura_planning_areas_nb_pri.gal)
+ura_planning_areas_nb_pri <- read.gal("ura_planning_areas_nb_pri.gal")
 ura_planning_areas_nb_line_pri <- ura_planning_areas_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)))
 pri_map <- ura_planning_areas_map +
@@ -631,8 +635,18 @@ pri_map <- ura_planning_areas_map +
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)) %>% 
   tm_shape() + tm_symbols()
 
-obesity_ura_planning_areas_sec <- obesity_ura_planning_areas %>% filter(LEVEL == "SECONDARY")
-ura_planning_areas_nb_sec <- obesity_ura_planning_areas_sec %>% poly2nb(queen = T)
+# by Secondary school
+obesity_ura_planning_areas_sec <- obesity_ura_planning_areas %>% 
+  filter(LEVEL == "SECONDARY")  %>%
+  rowid_to_column("index")
+
+# # Manually connecting 1 observation with no neighbours with its nearest neighbour
+# ura_planning_areas_nb_sec <- obesity_ura_planning_areas_sec %>% poly2nb(queen = T)
+# ura_planning_areas_nb_sec %>%
+#   write.nb.gal(file = "ura_planning_areas_nb_sec.gal",
+#                ind = ura_planning_areas_nb_sec$index)
+
+ura_planning_areas_nb_sec <- read.gal("ura_planning_areas_nb_sec.gal")
 ura_planning_areas_nb_line_sec <- ura_planning_areas_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_sec)))
 sec_map <- ura_planning_areas_map +
@@ -645,6 +659,38 @@ tmap_arrange(pri_map, sec_map)
 
 ### Spatial autocorrelation statistics
 
+```{r}
+# by Primary schools
+(ura_planning_areas_lw_pri <- nb2listw(ura_planning_areas_nb_pri, style = "W"))
+ura_planning_areas_lw_B_pri <- nb2listw(ura_planning_areas_nb_pri, style = "B")
+moran.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri)
+moran.plot(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri,
+           main="Moran scatterplot")
+geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri)
+globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
+             ura_planning_areas_lw_B_pri)
+
+# by Secondary schools
+(ura_planning_areas_lw_sec <- nb2listw(ura_planning_areas_nb_sec, style = "W"))
+ura_planning_areas_lw_B_sec <- nb2listw(ura_planning_areas_nb_sec, style = "B")
+moran.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec)
+moran.plot(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec, 
+           main="Moran scatterplot")
+geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec)
+globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
+             ura_planning_areas_lw_B_sec)
+```
+
+Average number of links (Primary school): 3.428571 
+p-value for Global Moran's I test (Primary school): 0.006533
+p-value for Global Geary's C test (Primary school): 0.005138
+p-value for Global Getis-Ord's G test (Primary school): 0.8745
+
+Average number of links (Secondary school): 3.285714 
+p-value for Global Moran's I test (Secondary school): 0.5256
+p-value for Global Geary's C test (Secondary school): 0.5418
+p-value for Global Getis-Ord's G test (Secondary school): 0.8072
+
 #### Join count analysis
 
 ```{r}
@@ -652,52 +698,24 @@ tmap_arrange(pri_map, sec_map)
 OVERWEIGHT_CUTOFF <- 0.14
 
 # by Primary school
-ura_planning_areas_lw_pri <- 
-  nb2listw(ura_planning_areas_nb_pri, style = "W", zero.policy = T)
-ura_planning_areas_lw_B_pri <- 
-  nb2listw(ura_planning_areas_nb_pri, style = "B", zero.policy = T)
 obesity_ura_planning_areas_pri$HIGH_PREVALENCE <- 
   as.factor(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE > OVERWEIGHT_CUTOFF)
-ura_regions_map + obesity_ura_planning_areas_pri %>% 
-  tm_shape(name = "Overweight prevalence") +
-  tm_polygons(fill = "HIGH_PREVALENCE") +
-  tm_title("Overweight prevalence by URA planning areas")
+pri_map <- ura_regions_map + obesity_ura_planning_areas_pri %>% 
+  tm_shape(name = "Overweight prevalence") + tm_polygons(fill = "HIGH_PREVALENCE") +
+  tm_title("Join count analysis")
 joincount.multi(obesity_ura_planning_areas_pri$HIGH_PREVALENCE, 
-                listw = ura_planning_areas_lw_B_pri) 
+                ura_planning_areas_lw_B_pri) 
 
 # by Secondary school
-ura_planning_areas_lw_sec <- 
-  nb2listw(ura_planning_areas_nb_sec, style = "W", zero.policy = T)
-ura_planning_areas_lw_B_sec <- 
-  nb2listw(ura_planning_areas_nb_sec, style = "B", zero.policy = T)
 obesity_ura_planning_areas_sec$HIGH_PREVALENCE <- 
   as.factor(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE > OVERWEIGHT_CUTOFF)
-ura_regions_map + obesity_ura_planning_areas_sec %>% 
-  tm_shape(name = "Overweight prevalence") +
-  tm_polygons(fill = "HIGH_PREVALENCE") +
-  tm_title("Overweight prevalence by URA planning areas")
+sec_map <- ura_regions_map + obesity_ura_planning_areas_sec %>% 
+  tm_shape(name = "Overweight prevalence") + tm_polygons(fill = "HIGH_PREVALENCE") +
+  tm_title("Join count analysis")
 joincount.multi(obesity_ura_planning_areas_sec$HIGH_PREVALENCE, 
-                listw = ura_planning_areas_lw_B_sec)
-```
+                ura_planning_areas_lw_B_sec)
 
-#### Moran's I statistic
-
-```{r}
-# by Primary school
-moran.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
-           listw = ura_planning_areas_lw_pri)
-moran.plot(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
-           listw = ura_planning_areas_lw_pri, 
-           main="Moran scatterplot", 
-           labels = F)
-
-# by Secondary school
-moran.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
-           listw = ura_planning_areas_lw_sec)
-moran.plot(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
-           listw = ura_planning_areas_lw_sec, 
-           main="Moran scatterplot", 
-           labels = F)
+tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Moran's I statistic
@@ -705,40 +723,20 @@ moran.plot(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
 # by Primary school
 localm_ura_planning_areas_pri <- 
   localmoran(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
-             listw = ura_planning_areas_lw_pri)
+             ura_planning_areas_lw_pri)
 obesity_ura_planning_areas_pri$LMORANZ <- localm_ura_planning_areas_pri[,4]
-tm_shape(obesity_ura_planning_areas_pri) + tm_polygons(fill = "LMORANZ") + 
-  tm_title("Local Moran's I Z-Statistic (URA planning areas)")
+pri_map <- tm_shape(obesity_ura_planning_areas_pri) + tm_polygons(fill = "LMORANZ") + 
+  tm_title("Local Moran's I Z-Statistic")
 
 # by Secondary school
 localm_ura_planning_areas_sec <- 
   localmoran(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
-             listw = ura_planning_areas_lw_sec)
+             ura_planning_areas_lw_sec)
 obesity_ura_planning_areas_sec$LMORANZ <- localm_ura_planning_areas_sec[,4]
-tm_shape(obesity_ura_planning_areas_sec) + tm_polygons(fill = "LMORANZ") + 
-  tm_title("Local Moran's I Z-Statistic (URA planning areas)")
-```
+sec_map <- tm_shape(obesity_ura_planning_areas_sec) + tm_polygons(fill = "LMORANZ") + 
+  tm_title("Local Moran's I Z-Statistic")
 
-#### Geary's C statistic
-```{r}
-# by Primary school
-geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
-           listw = ura_planning_areas_lw_pri)
-
-# by Secondary school
-geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
-           listw = ura_planning_areas_lw_sec)
-```
-
-#### Getis-Ord's G statistics
-```{r}
-# by Primary school
-globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
-             listw = ura_planning_areas_lw_B_pri)
-
-# by Secondary school
-globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
-             listw = ura_planning_areas_lw_B_sec)
+tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
@@ -746,51 +744,47 @@ globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
 # by Primary school
 obesity_ura_planning_areas_pri$GO_STAT <-
   localG(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
-         listw = ura_planning_areas_lw_B_pri)
-tm_shape(obesity_ura_planning_areas_pri) + tm_polygons("GO_STAT")
+         ura_planning_areas_lw_B_pri)
+pri_map <- tm_shape(obesity_ura_planning_areas_pri) + tm_polygons("GO_STAT") +
+  tm_title("Local Getis-Ord's G statistics")
 
 # by Secondary school
 obesity_ura_planning_areas_sec$GO_STAT <-
   localG(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
-         listw = ura_planning_areas_lw_B_sec)
-tm_shape(obesity_ura_planning_areas_sec) + tm_polygons("GO_STAT")
+         ura_planning_areas_lw_B_sec)
+sec_map <- tm_shape(obesity_ura_planning_areas_sec) + tm_polygons("GO_STAT") +
+  tm_title("Local Getis-Ord's G statistics")
+
+tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram
 ```{r}
 # by Primary school
 correl_planning_areas_pri <- sp.correlogram(
-  neighbours = ura_planning_areas_nb_pri, 
-  var = obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
-  order = 3, method = "corr", style = "W", zero.policy = T)
+  ura_planning_areas_nb_pri, obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
+  order = 3, method = "corr", style = "W")
 correlI_planning_areas_pri <- sp.correlogram(
-  neighbours = ura_planning_areas_nb_pri, 
-  var = obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
-  order = 3, method = "I", style = "W", zero.policy = T)
+  ura_planning_areas_nb_pri, obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
+  order = 3, method = "I", style = "W")
 correlC_planning_areas_pri <- sp.correlogram(
-  neighbours = ura_planning_areas_nb_pri, 
-  var = obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
-  order = 3, method = "C", style = "W", zero.policy = T)
-par(mfrow=c(1,3))
+  ura_planning_areas_nb_pri, obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
+  order = 3, method = "C", style = "W")
+par(mfrow=c(2,3))
 plot(correl_planning_areas_pri, main="Contiguity lag orders: correlation")
 plot(correlI_planning_areas_pri, main="Contiguity lag orders: Moran's I")
 plot(correlC_planning_areas_pri, main="Contiguity lag orders: Geary's C")
-par(mfrow=c(1,1))
 
 # by Secondary school
 correl_planning_areas_sec <- sp.correlogram(
-  neighbours = ura_planning_areas_nb_sec, 
-  var = obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
-  order = 3, method = "corr", style = "W", zero.policy = T)
+  ura_planning_areas_nb_sec, obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
+  order = 3, method = "corr", style = "W")
 correlI_planning_areas_sec <- sp.correlogram(
-  neighbours = ura_planning_areas_nb_sec, 
-  var = obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
-  order = 3, method = "I", style = "W", zero.policy = T)
+  ura_planning_areas_nb_sec, obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, 
+  order = 3, method = "I", style = "W")
 correlC_planning_areas_sec <- sp.correlogram(
-  neighbours = ura_planning_areas_nb_sec, 
-  var = obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
-  order = 3, method = "C", style = "W", zero.policy = T)
-par(mfrow=c(1,3))
+  ura_planning_areas_nb_sec, obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
+  order = 3, method = "C", style = "W")
 plot(correl_planning_areas_sec, main="Contiguity lag orders: correlation")
 plot(correlI_planning_areas_sec, main="Contiguity lag orders: Moran's I")
 plot(correlC_planning_areas_sec, main="Contiguity lag orders: Geary's C")
@@ -804,14 +798,16 @@ obesity_ura_subzones_pri <- obesity_ura_subzones %>% filter(LEVEL == "PRIMARY")
 ura_subzones_nb_pri <- obesity_ura_subzones_pri %>% poly2nb(queen = T)
 ura_subzones_nb_line_pri <- ura_subzones_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_subzones_pri)))
-pri_map <- ura_subzones_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
+pri_map <- ura_subzones_map +
+  ura_subzones_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_subzones_pri)) %>% tm_shape() + tm_symbols()
 
 obesity_ura_subzones_sec <- obesity_ura_subzones %>% filter(LEVEL == "SECONDARY")
 ura_subzones_nb_sec <- obesity_ura_subzones_sec %>% poly2nb(queen = T)
 ura_subzones_nb_line_sec <- ura_subzones_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_subzones_sec)))
-sec_map <- ura_subzones_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
+sec_map <- ura_subzones_map +
+  ura_subzones_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_subzones_sec)) %>% tm_shape() + tm_symbols()
 
 tmap_arrange(pri_map, sec_map)
@@ -861,25 +857,141 @@ tmap_arrange(pri_map, sec_map)
 
 ```{r}
 # by Primary schools
-(del_lw_pri <- nb2listw(del_nb_pri))
+(del_lw_pri <- nb2listw(del_nb_pri, style = "W"))
+del_lw_B_pri <- nb2listw(del_nb_pri, style = "B")
 moran.test(obesity_pri_sch$PREVALENCE, del_lw_pri)
-moran.plot(obesity_pri_sch$PREVALENCE, del_lw_pri)
+moran.plot(obesity_pri_sch$PREVALENCE, del_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, del_lw_pri)
+globalG.test(obesity_pri_sch$PREVALENCE, del_lw_B_pri)
 
 # by Secondary schools
-(del_lw_sec <- nb2listw(del_nb_sec))
+(del_lw_sec <- nb2listw(del_nb_sec, style = "W"))
+del_lw_B_sec <- nb2listw(del_nb_sec, style = "B")
 moran.test(obesity_sec_sch$PREVALENCE, del_lw_sec)
-moran.plot(obesity_sec_sch$PREVALENCE, del_lw_sec)
+moran.plot(obesity_sec_sch$PREVALENCE, del_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, del_lw_sec)
+globalG.test(obesity_sec_sch$PREVALENCE, del_lw_B_sec)
 ```
 
 Average number of links (Primary school): 5.823204 
-p-value for Moran's test (Primary school): 4.515e-10
-p-value for Geary C's test (Primary school): 9.073e-10
+p-value for Global Moran's I test (Primary school): 4.515e-10
+p-value for Global Geary's C test (Primary school): 9.073e-10
+p-value for Global Getis-Ord's G test (Primary school): 0.05955
 
 Average number of links (Secondary school): 5.805556 
-p-value for Moran's test (Secondary school): 0.0001695
-p-value for Geary C's test (Secondary school): 9.452e-05
+p-value for Global Moran's I test (Secondary school): 0.0001695
+p-value for Global Geary's C test (Secondary school): 9.452e-05
+p-value for Global Getis-Ord's G test (Secondary school): 0.2914
+
+#### Join count analysis
+
+```{r}
+# Setting an overweight cutoff point
+OVERWEIGHT_CUTOFF <- 0.14
+
+# by Primary school
+obesity_pri_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+pri_map <- ura_regions_map + obesity_pri_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+                del_lw_B_pri) 
+
+# by Secondary school
+obesity_sec_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+sec_map <- ura_regions_map + obesity_sec_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+                del_lw_B_sec)
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Moran's I statistic
+```{r}
+# by Primary school
+localm_del_pri <- 
+  localmoran(obesity_pri_sch$PREVALENCE, 
+             del_lw_pri)
+obesity_pri_sch$LMORANZ <- localm_del_pri[,4]
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+# by Secondary school
+localm_del_sec <- 
+  localmoran(obesity_sec_sch$PREVALENCE, 
+             del_lw_sec)
+obesity_sec_sch$LMORANZ <- localm_del_sec[,4]
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Getis-Ord's G statistics
+```{r}
+# by Primary school
+obesity_pri_sch$GO_STAT <-
+  localG(obesity_pri_sch$PREVALENCE, 
+         del_lw_B_pri)
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+# by Secondary school
+obesity_sec_sch$GO_STAT <-
+  localG(obesity_sec_sch$PREVALENCE, 
+         del_lw_B_sec)
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Correlogram
+```{r}
+# by Primary school
+correl_del_pri <- sp.correlogram(
+  del_nb_pri, obesity_pri_sch$PREVALENCE, 
+  order = 3, method = "corr", style = "W")
+correlI_del_pri <- sp.correlogram(
+  del_nb_pri, obesity_pri_sch$PREVALENCE, 
+  order = 3, method = "I", style = "W")
+correlC_del_pri <- sp.correlogram(
+  del_nb_pri, obesity_pri_sch$PREVALENCE,
+  order = 3, method = "C", style = "W")
+par(mfrow=c(2,3))
+plot(correl_del_pri, main="Contiguity lag orders: correlation")
+plot(correlI_del_pri, main="Contiguity lag orders: Moran's I")
+plot(correlC_del_pri, main="Contiguity lag orders: Geary's C")
+
+# by Secondary school
+correl_del_sec <- sp.correlogram(
+  del_nb_sec, obesity_sec_sch$PREVALENCE, 
+  order = 3, method = "corr", style = "W")
+correlI_del_sec <- sp.correlogram(
+  del_nb_sec, obesity_sec_sch$PREVALENCE, 
+  order = 3, method = "I", style = "W")
+correlC_del_sec <- sp.correlogram(
+  del_nb_sec, obesity_sec_sch$PREVALENCE,
+  order = 3, method = "C", style = "W")
+plot(correl_del_sec, main="Contiguity lag orders: correlation")
+plot(correlI_del_sec, main="Contiguity lag orders: Moran's I")
+plot(correlC_del_sec, main="Contiguity lag orders: Geary's C")
+par(mfrow=c(1,1))
+```
+
 
 ## Sphere of influence neighbours
 
