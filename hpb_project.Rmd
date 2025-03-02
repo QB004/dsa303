@@ -1607,27 +1607,27 @@ sec_cca_map_sde
 ###################################################################
 
 
-<<<<<<< HEAD
+
 # Aggregating sports cca ratio counts by URA planning area
 
 cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>%
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(PLN_AREA_N, LEVEL) %>% 
-=======
-# Aggregating sports cca ratio counts by URA subzones
-sports_ura_subzones <- st_join(ura_subzones, obesity_joined_school_sports_data) %>% 
-  group_by(SUBZONE_N) %>% 
->>>>>>> ac619dc86bde81bd0d902ef9ae52237b3f59b616
+
+# Aggregating sports cca ratio counts by URA planning area
+cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
+  group_by(PLN_AREA_N, LEVEL) %>% 
   summarise(
     RATIO_AGG = mean(sports_cca_per_100, na.rm = T),
     geometry = st_union(geometry)
-    )
+    ) %>%
+  filter(!is.na(RATIO_AGG))
 
-cca_subzone_map <- ura_subzones_map + sports_ura_subzones %>% 
+cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>% 
   tm_shape(name = "Sports CCA Ratio per 100") +
   tm_polygons(
     fill = "RATIO_AGG",
-    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(values = "brewer.rd_yl_gn"), 
     fill.legend = tm_legend(
       title = "Sports CCAs per 100 Students",
       orientation = "landscape", 
@@ -1635,21 +1635,19 @@ cca_subzone_map <- ura_subzones_map + sports_ura_subzones %>%
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Sports CCA Ratio by URA subzones")
+  tm_title("Sports CCA Ratio by URA subzones") +
+  tm_facets_wrap(by = "LEVEL")
 
-print(cca_subzone_map)
+print(cca_planning_avg_map)
+
+```
 
 
-
-
-
-<<<<<<< HEAD
 
 
 ```{r}
 #WORK IN PROGRESS
-=======
->>>>>>> ac619dc86bde81bd0d902ef9ae52237b3f59b616
+
 #bivariate chloropleth for obesity prevalence and physical sports participation?
 
 
@@ -1695,12 +1693,11 @@ bivariate_map
 
 
 ```
-<<<<<<< HEAD
 
 
 
-=======
->>>>>>> ac619dc86bde81bd0d902ef9ae52237b3f59b616
+
+
 # Sports Fields and Facilities (Qasim)
 ```{r}
 # Loading sports facilities data
@@ -1713,11 +1710,10 @@ st_as_sf(st_make_valid(sports_facilities_sf)) # Fix invalid geometries
 
 head(sports_facilities_sf)
 
-test_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
+sport_sg_facility_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
   tm_polygons(size = 0.3,
           fill = "slateblue4",
           fill.legend = tm_legend(title = "Sports Fields"))
-<<<<<<< HEAD
 
 sport_sg_facility_map
 
@@ -1741,9 +1737,6 @@ dus_facility_map <- ura_planning_areas_map + tm_shape(dual_use_facilities_shp) +
 dus_facility_map
 
 
-=======
-test_map
->>>>>>> ac619dc86bde81bd0d902ef9ae52237b3f59b616
 
 # Loading Sports fields data
 fields_shp <- 
@@ -1752,13 +1745,13 @@ fields_shp <-
   st_as_sf() %>%
   st_transform(crs = sg_crs) 
 
-test_two <- ura_planning_areas_map + tm_shape(fields_shp) +
+sports_fields_map <- ura_planning_areas_map + tm_shape(fields_shp) +
     tm_dots(size = 0.3,
           fill = "slateblue2",
           fill.legend = tm_legend(title = "Sports Fields"),
           fill_alpha = 0.5)
 
-<<<<<<< HEAD
+
 sports_fields_map
 
 
@@ -1768,12 +1761,12 @@ sports_fields_map
 pri_dus_map <- ura_planning_areas_map + 
   tm_shape(pri_cca_data) +
   tm_symbols(
-    size = 0.5,
+    size = 0.3,
     fill = "red"
   ) +
   tm_shape(dual_use_facilities_shp) +
   tm_dots(
-    size = 0.5,
+    size = 0.3,
     fill = "blue"
   ) +
   tm_layout(
@@ -1789,12 +1782,12 @@ pri_dus_map
 sec_dus_map <- ura_planning_areas_map + 
   tm_shape(sec_cca_data) +
   tm_symbols(
-    size = 0.5,
+    size = 0.3,
     fill = "red"
   ) +
   tm_shape(dual_use_facilities_shp) +
   tm_dots(
-    size = 0.5,
+    size = 0.3,
     fill = "blue"
   ) +
   tm_layout(
@@ -1805,19 +1798,25 @@ sec_dus_map <- ura_planning_areas_map +
 
 sec_dus_map
 
-=======
-test_two
->>>>>>> ac619dc86bde81bd0d902ef9ae52237b3f59b616
 ```
 
 # K Nearest Neighbours
-```{r}
+
 # K nearest neighbour based analysis 
 
 #NEAREST SPORTS FACILITY TO SCHOOL
 
 ## 1 neighbour
+
 ```{r}
+# K nearest neighbour based analysis 
+
+#NEAREST SPORTS FACILITY TO SCHOOL
+
+
+## 1 neighbour
+
+
 # by Primary schools
 knn1_nb_pri <- obesity_pri_sch %>% 
   knearneigh(k = 1) %>% 
