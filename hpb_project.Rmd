@@ -1630,7 +1630,7 @@ cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>%
       item.height = 0.5, item.width = 2.1
       )
     ) +
-  tm_title("Sports CCA Ratio by URA subzones") +
+  tm_title("Average Sports CCAs Ratio by URA planning areas") +
   tm_facets_wrap(by = "LEVEL")
 
 print(cca_planning_avg_map)
@@ -1639,7 +1639,7 @@ print(cca_planning_avg_map)
 
 
 
-
+###################################WIP™####################################
 ```{r}
 #WORK IN PROGRESS
 
@@ -1840,6 +1840,7 @@ results <- data.frame(
   school_id = obesity_joined_school_sports_data$PT_ID,
   school_name = obesity_joined_school_sports_data$SCHOOL,
   level = obesity_joined_school_sports_data$LEVEL,
+  geometry = obesity_joined_school_sports_data$geometry,
   stringsAsFactors = FALSE
 )
 
@@ -1873,6 +1874,65 @@ pri_knn_3 <- results %>% filter(level == "PRIMARY")
 sec_knn_3 <- results %>% filter(level == "SECONDARY")
 
 
+
+pri_nearest_dus <- st_as_sf(pri_knn_3, crs = sg_crs)
+sec_nearest_dus <- st_as_sf(sec_knn_3, crs = sg_crs)
+
+
+#AVERAGE DISTANCE TO THE NEAREST SPORTS FACILITY FROM SCHOOLS
+
+#Heat map of nearest sports facility to schools - PRIMARY SCHOOLS
+pri_dus_avg_distance <- st_join(ura_planning_areas, pri_nearest_dus) %>% 
+  group_by(PLN_AREA_N, level) %>% 
+  summarise(
+    avg_distance = mean(distance_1, na.rm = T),
+    geometry = st_union(geometry)
+    ) %>%
+  filter(!is.na(avg_distance))
+
+pri_dus_avg_distance_map <- ura_planning_areas_map + pri_dus_avg_distance %>% 
+  tm_shape(name = "Average Distance to Nearest DUS Sports Facility") +
+  tm_polygons(
+    fill = "avg_distance",
+    fill.scale = tm_scale(values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Average Distance in Metres",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) +
+  tm_title("Average Distance to Nearest DUS Sports Facility from Primary Schools")
+
+print(dus_avg_distance_map)
+
+
+
+
+#Heat map of nearest sports facility to schools - SECONDARY SCHOOLS 
+sec_dus_avg_distance <- st_join(ura_planning_areas, sec_nearest_dus) %>% 
+  group_by(PLN_AREA_N, level) %>% 
+  summarise(
+    avg_distance = mean(distance_1, na.rm = T),
+    geometry = st_union(geometry)
+    ) %>%
+  filter(!is.na(avg_distance))
+
+sec_dus_avg_distance_map <- ura_planning_areas_map + sec_dus_avg_distance %>% 
+  tm_shape(name = "Average Distance to Nearest DUS Sports Facility") +
+  tm_polygons(
+    fill = "avg_distance",
+    fill.scale = tm_scale(values = "-brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "Average Distance in Metres",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) +
+  tm_title("Average Distance to Nearest DUS Sports Facility from Secondary Schools")
+
+print(sec_dus_avg_distance_map)
 ```
 
 # Other Useful stuff
