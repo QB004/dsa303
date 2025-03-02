@@ -1231,12 +1231,20 @@ seven_eleven = seven_eleven_full[,"geometry"] #Extract necessary columns for ana
 table(st_is_valid(seven_eleven)) #Check validity
 st_crs(seven_eleven)$epsg #Check CRS
 
+  #Malls
+malls_csv = read.csv("shopping_mall_coordinates.csv")
+malls_full = st_as_sf(malls_csv, coords = c("LONGITUDE", "LATITUDE"), crs = 4326) %>%
+  st_transform(crs = sg_crs)
+st_crs(malls_full)
+
+
 #Combine data into single SF object
 seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
 macs_sf = mutate(macs, outlet = "mcdonalds")
 hawker_sf = mutate(hawker, outlet = "hawker")
-food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
-
+mall_sf = mutate(malls_full, outlet = "shopping mall")[-1]
+food = rbind(seven_eleven_sf, macs_sf, hawker_sf, mall_sf)
+food
 
 ##### Primary school analysis
 obesity_pri_food = obesity_pri_sch #duplicate primary school data
@@ -1380,7 +1388,54 @@ pri_food_map +
   tm_add_legend(type="lines", labels="SDE", lty=1)
 ```
 
+#Distance of the nearest food option to each school (Nina)
+```{r} 
+#Write function to compute distance to nearest food option, along with outlet_type
+library(geosphere)
 
+find_nearest_food_options <- function(schools_sf, food_options_sf) {
+
+  # Ensure both sf objects have the same CRS
+  if (st_crs(schools_sf) != st_crs(food_options_sf)) {
+    stop("CRS of schools_sf and food_options_sf must be the same.")
+  }
+
+  # Calculate pairwise distances using geosphere::distGeo
+  distances <- st_distance(schools_sf, food_options_sf)
+
+  # Find the index of the nearest food option for each school
+  nearest_indices <- apply(distances, 1, which.min)
+
+  # Extract the distances to the nearest food options
+  nearest_distances <- apply(distances, 1, min)
+
+  # Extract the outlet types of the nearest food options
+  nearest_outlet_types <- food_options_sf$outlet[nearest_indices]
+
+  # Create a new sf object
+  #result_sf <- schools_sf %>%
+   # mutate(
+    #  distance_to_nearest_food_option = as.numeric(nearest_distances)) %>%
+    #select(SCHOOL, distance_to_nearest_food_option, geometry)
+
+    result_sf <- schools_sf %>%
+    mutate(
+      distance_to_nearest_food_option = as.numeric(nearest_distances),
+      outlet_type = nearest_outlet_types
+    ) %>%
+    select(SCHOOL, distance_to_nearest_food_option, outlet_type, geometry)
+  
+  print(result_sf)
+}
+
+
+nearest_outlet_distance = find_nearest_food_options(school_sf, food)
+nearest_outlet_distance
+
+#Combine data into original sf object
+food_combined_sf = obesity_data_sf_2023_OSO %>%
+  st_join(nearest_outlet_distance[,c(2,3)], by = "SCHOOL")
+```
 
 
 # Sports CCAs in Schools (Qasim)
