@@ -1838,43 +1838,61 @@ tmap_arrange(pri_map, sec_map)
 
 
 
-class(dus_)
+class(dual_use_facilities)
 
 
-# Assuming you have two data frames or sf objects:
-# schools: contains locations of schools
-# facilities: contains locations of sports facilities
+# Calculate distances
+distances <- st_distance(obesity_joined_school_sports_data, dual_use_facilities)
 
-
-# Step 2: Calculate distances between all schools and facilities
-distances <- st_distance(schools_sf, facilities_sf)
-
-# Step 3: For each school, find the k nearest facilities
+# For each school, find the k nearest facilities
 k <- 3  # Change this to your desired k value
-nearest_facilities <- apply(distances, 1, function(dists) {
-  order(dists)[1:k]
-})
+nearest_facilities <- list()
+
+for (i in 1:nrow(obesity_joined_school_sports_data)) {
+  # Get distances from this school to all facilities
+  school_distances <- distances[i,]
+  
+  # Find indices of k nearest facilities (or fewer if there aren't k facilities)
+  nearest_indices <- order(school_distances)[1:min(k, length(school_distances))]
+  
+  # Store these indices
+  nearest_facilities[[i]] <- nearest_indices
+}
 
 # Create a data frame with the results
 results <- data.frame(
-  school_id = schools_sf$id,  # Replace with your actual ID column
+  school_id = obesity_joined_school_sports_data$PT_ID,
+  school_name = obesity_joined_school_sports_data$SCHOOL,
+  level = obesity_joined_school_sports_data$LEVEL,
   stringsAsFactors = FALSE
 )
 
 # Add the nearest facilities for each school
-for (i in 1:k) {
-  facility_col <- paste0("nearest_facility_", i)
-  distance_col <- paste0("distance_", i)
+for (j in 1:k) {
+  facility_col <- paste0("nearest_facility_", j)
+  distance_col <- paste0("distance_", j)
   
-  results[[facility_col]] <- sapply(1:nrow(schools_sf), function(j) {
-    facilities_sf$id[nearest_facilities[i, j]]  # Replace with your actual ID column
+  results[[facility_col]] <- sapply(1:nrow(obesity_joined_school_sports_data),
+  function(i) {
+    if (length(nearest_facilities[[i]]) >= j) {
+      # Return the ID of the jth nearest facility using the OBJECTID column
+      dual_use_facilities$OBJECTID[nearest_facilities[[i]][j]]
+    } else {
+      NA
+    }
   })
   
-  results[[distance_col]] <- sapply(1:nrow(schools_sf), function(j) {
-    distances[j, nearest_facilities[i, j]]
+  results[[distance_col]] <- sapply(1:nrow(obesity_joined_school_sports_data),
+  function(i) {
+    if (length(nearest_facilities[[i]]) >= j) {
+      # Return the distance to the jth nearest facility in meters
+      as.numeric(distances[i, nearest_facilities[[i]][j]])
+    } else {
+      NA
+    }
   })
 }
-```
+
 
 ```
 
