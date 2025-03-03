@@ -714,9 +714,9 @@ globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
 ```
 
 Average number of links (Primary school): 3.428571 
-p-value for Global Moran's I test (Primary school): 0.006533
-p-value for Global Geary's C test (Primary school): 0.005138
-p-value for Global Getis-Ord's G test (Primary school): 0.8745
+p-value for Global Moran's I test (Primary school): 0.005857
+p-value for Global Geary's C test (Primary school): 0.005738
+p-value for Global Getis-Ord's G test (Primary school): 0.8278
 
 Average number of links (Secondary school): 3.285714 
 p-value for Global Moran's I test (Secondary school): 0.5256
@@ -906,9 +906,9 @@ globalG.test(obesity_sec_sch$PREVALENCE, del_lw_B_sec)
 ```
 
 Average number of links (Primary school): 5.823204 
-p-value for Global Moran's I test (Primary school): 4.515e-10
-p-value for Global Geary's C test (Primary school): 9.073e-10
-p-value for Global Getis-Ord's G test (Primary school): 0.05955
+p-value for Global Moran's I test (Primary school): 1.809e-12
+p-value for Global Geary's C test (Primary school): 3.885e-12
+p-value for Global Getis-Ord's G test (Primary school): 0.03254
 
 Average number of links (Secondary school): 5.805556 
 p-value for Global Moran's I test (Secondary school): 0.0001695
@@ -1070,9 +1070,9 @@ globalG.test(obesity_sec_sch$PREVALENCE, soi_lw_B_sec)
 ```
 
 Average number of links (Primary school): 3.082873 
-p-value for Global Moran's I test (Primary school): 2.581e-06
-p-value for Global Geary's C test (Primary school): 2.736e-06
-p-value for Global Getis-Ord's G test (Primary school): 0.05455
+p-value for Global Moran's I test (Primary school): 6.672e-07
+p-value for Global Geary's C test (Primary school): 3.173e-07
+p-value for Global Getis-Ord's G test (Primary school): 0.07193
 
 Average number of links (Secondary school): 2.958333 
 p-value for Global Moran's I test (Secondary school): 0.0004617
@@ -1231,9 +1231,9 @@ globalG.test(obesity_sec_sch$PREVALENCE, knn1_lw_B_sec)
 ```
 
 Average number of links (Primary school): 1 
-p-value for Global Moran's I test (Primary school): 0.008449
-p-value for Global Geary's C test (Primary school): 0.04445
-p-value for Global Getis-Ord's G test (Primary school): 0.1256
+p-value for Global Moran's I test (Primary school): 0.004193
+p-value for Global Geary's C test (Primary school): 0.02331
+p-value for Global Getis-Ord's G test (Primary school): 0.09593
 
 Average number of links (Secondary school): 1 
 p-value for Global Moran's I test (Secondary school): 0.0004819
@@ -1390,9 +1390,9 @@ globalG.test(obesity_sec_sch$PREVALENCE, knn2_lw_B_sec)
 ```
 
 Average number of links (Primary school): 2
-p-value for Global Moran's I test (Primary school): 6.805e-05
-p-value for Global Geary's C test (Primary school): 0.000133
-p-value for Global Getis-Ord's G test (Primary school): 0.01034
+p-value for Global Moran's I test (Primary school): 1.474e-05
+p-value for Global Geary's C test (Primary school): 4.17e-05
+p-value for Global Getis-Ord's G test (Primary school): 0.01137
 
 Average number of links (Secondary school): 2
 p-value for Global Moran's I test (Secondary school): 0.003471
@@ -1549,9 +1549,9 @@ globalG.test(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec)
 ```
 
 Average number of links (Primary school): 3
-p-value for Global Moran's I test (Primary school): 2.337e-06
-p-value for Global Geary's C test (Primary school): 1.103e-06
-p-value for Global Getis-Ord's G test (Primary school): 0.005879
+p-value for Global Moran's I test (Primary school): 7.811e-08
+p-value for Global Geary's C test (Primary school): 9.495e-08
+p-value for Global Getis-Ord's G test (Primary school): 0.00337
 
 Average number of links (Secondary school): 3
 p-value for Global Moran's I test (Secondary school): 0.000427
