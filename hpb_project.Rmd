@@ -1002,7 +1002,8 @@ if (require(dbscan, quietly=TRUE)) {
 } else {
   soi_nb = NULL
 }
-soi_lw_pri <- nb2listw(soi_nb_pri)
+pri_map <- tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + pri_sch_map
 
 # by Secondary schools
 if (require(dbscan, quietly=TRUE)) {
@@ -1010,7 +1011,10 @@ if (require(dbscan, quietly=TRUE)) {
 } else {
   soi_nb = NULL
 }
-soi_lw_sec <- nb2listw(soi_nb_sec)
+sec_map <- tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) + sec_sch_map
+
+tmap_arrange(pri_map, sec_map)
 ```
 
 ### Spatial autocorrelation statistics
@@ -1119,37 +1123,38 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Correlogram
+#### Correlogram (does not work)
+Some sub-graphs have 2 or less neighbours
 ```{r}
-# by Primary school
-correl_soi_pri <- sp.correlogram(
-  soi_nb_pri, obesity_pri_sch$PREVALENCE, 
-  order = 3, method = "corr", style = "W")
-correlI_soi_pri <- sp.correlogram(
-  soi_nb_pri, obesity_pri_sch$PREVALENCE, 
-  order = 3, method = "I", style = "W")
-correlC_soi_pri <- sp.correlogram(
-  soi_nb_pri, obesity_pri_sch$PREVALENCE,
-  order = 3, method = "C", style = "W")
-par(mfrow=c(2,3))
-plot(correl_soi_pri, main="Contiguity lag orders: correlation")
-plot(correlI_soi_pri, main="Contiguity lag orders: Moran's I")
-plot(correlC_soi_pri, main="Contiguity lag orders: Geary's C")
-
-# by Secondary school
-correl_soi_sec <- sp.correlogram(
-  soi_nb_sec, obesity_sec_sch$PREVALENCE, 
-  order = 3, method = "corr", style = "W")
-correlI_soi_sec <- sp.correlogram(
-  soi_nb_sec, obesity_sec_sch$PREVALENCE, 
-  order = 3, method = "I", style = "W")
-correlC_soi_sec <- sp.correlogram(
-  soi_nb_sec, obesity_sec_sch$PREVALENCE,
-  order = 3, method = "C", style = "W")
-plot(correl_soi_sec, main="Contiguity lag orders: correlation")
-plot(correlI_soi_sec, main="Contiguity lag orders: Moran's I")
-plot(correlC_soi_sec, main="Contiguity lag orders: Geary's C")
-par(mfrow=c(1,1))
+# # by Primary school
+# correl_soi_pri <- sp.correlogram(
+#   soi_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_soi_pri <- sp.correlogram(
+#   soi_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_soi_pri <- sp.correlogram(
+#   soi_nb_pri, obesity_pri_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# par(mfrow=c(2,3))
+# plot(correl_soi_pri, main="Contiguity lag orders: correlation")
+# plot(correlI_soi_pri, main="Contiguity lag orders: Moran's I")
+# plot(correlC_soi_pri, main="Contiguity lag orders: Geary's C")
+# 
+# # by Secondary school
+# correl_soi_sec <- sp.correlogram(
+#   soi_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_soi_sec <- sp.correlogram(
+#   soi_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_soi_sec <- sp.correlogram(
+#   soi_nb_sec, obesity_sec_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# plot(correl_soi_sec, main="Contiguity lag orders: correlation")
+# plot(correlI_soi_sec, main="Contiguity lag orders: Moran's I")
+# plot(correlC_soi_sec, main="Contiguity lag orders: Geary's C")
+# par(mfrow=c(1,1))
 ```
 
 # K nearest neighbour based analysis
@@ -1280,6 +1285,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram (does not work)
+Some sub-graphs have 2 or less neighbours
 ```{r}
 # # by Primary school
 # correl_knn1_pri <- sp.correlogram(
@@ -1330,31 +1336,6 @@ sec_map <- tm_shape(nb2lines(knn2_nb_sec, coords = st_geometry(obesity_sec_sch))
 
 tmap_arrange(pri_map, sec_map)
 ```
-
-### Spatial autocorrelation statistics
-
-```{r}
-# by Primary schools
-(knn2_lw_pri <- nb2listw(knn2_nb_pri))
-moran.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
-moran.plot(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
-geary.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
-
-# by Secondary schools
-(knn2_lw_sec <- nb2listw(knn2_nb_sec))
-moran.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
-moran.plot(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
-geary.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
-```
-
-Average number of links (Primary school): 2
-p-value for Moran's test (Primary school): 6.805e-05
-p-value for Geary C's test (Primary school): 0.000133
-
-Average number of links (Secondary school): 2
-p-value for Moran's test (Secondary school): 0.003471
-p-value for Geary C's test (Secondary school): 0.03461
-
 
 ### Spatial autocorrelation statistics
 
@@ -1463,6 +1444,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram (does not work)
+Some sub-graphs have 2 or less neighbours
 ```{r}
 # # by Primary school
 # correl_knn2_pri <- sp.correlogram(
@@ -1513,30 +1495,6 @@ sec_map <- tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))
 
 tmap_arrange(pri_map, sec_map)
 ```
-
-### Spatial autocorrelation statistics
-
-```{r}
-# by Primary schools
-(knn3_lw_pri <- nb2listw(knn3_nb_pri))
-moran.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
-moran.plot(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
-geary.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
-
-# by Secondary schools
-(knn3_lw_sec <- nb2listw(knn3_nb_sec))
-moran.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
-moran.plot(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
-geary.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
-```
-
-Average number of links (Primary school): 3
-p-value for Moran's test (Primary school): 2.337e-06
-p-value for Geary C's test (Primary school): 1.103e-06
-
-Average number of links (Secondary school): 3
-p-value for Moran's test (Secondary school): 0.000427
-p-value for Geary C's test (Secondary school): 0.002858
 
 ### Spatial autocorrelation statistics
 
@@ -1645,6 +1603,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram (does not work)
+Some sub-graphs have 2 or less neighbours
 ```{r}
 # # by Primary school
 # correl_knn3_pri <- sp.correlogram(
