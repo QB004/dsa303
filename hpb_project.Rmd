@@ -28,7 +28,7 @@ hmsp_data_sf <-
   read.csv("hmsp_tier_pri_sec.csv") %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
   st_transform(crs = sg_crs) %>% 
-  st_make_valid() 
+  st_make_valid()
 
 # Checking that all CRS are matching
 isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_data_sf)))
@@ -43,12 +43,17 @@ st_crs(hmsp_data_sf)$units
 
 ```{r}
 # Loading General Information of Schools dataset
-schools_info <- 
+school_info <- 
   read_excel("Generalinformationofschools.xlsx", na = c("na", "NA")) %>% 
   select(school_name, dgp_code:mothertongue3_code)
 
 obesity_data <- obesity_data %>% 
-  left_join(schools_info, by = join_by(SCHOOL == school_name))
+  left_join(school_info, by = join_by(SCHOOL == school_name))
+
+# Loading previous year enrolment data
+school_enrolment <-
+  read_excel("enrolment.xlsx", sheet = "primary") %>% 
+  select(-starts_with("intake"), -ENROLMENT24) # drop enrolment24 as obesity_data contains 2024 enrolment data for the full set of schools
 ```
 
 ## Transforming data to be usable for analysis
@@ -61,27 +66,54 @@ obesity_data <- obesity_data %>% mutate(
     LEVEL == "PRIMARY + SECONDARY" & PRI == 0 ~ "SECONDARY",
     TRUE ~ LEVEL
     )
-  )
+  ) %>% select(-c("PRI", "SEC"))
 
-obesity_data_sf <- obesity_data %>% 
+# Convert school_enrolment from wide to long format
+school_enrolment_long <- obesity_data %>% 
+  rename(ENROLMENT24 = ENROLMENT) %>% 
+  select(PT_ID, SCHOOL, ENROLMENT24) %>% 
+  st_drop_geometry() %>% 
+  # join 2024 enrollment data from obesity_data with school_enrolment data
+  left_join(school_enrolment, by = join_by(PT_ID)) %>% 
+  select(-SCHOOL.y) %>% 
+  rename(SCHOOL = SCHOOL.x) %>% 
   pivot_longer(
-    # pivot_longer to separate obesity data columns into a tidy format
-    cols = starts_with("X"),
-    names_to = c("YEAR", "CATEGORY"),
-    names_prefix = "X",
-    names_sep = "_",
-    names_transform = list(YEAR = as.integer),
-    values_to = "COUNT"
-    ) %>% 
-  mutate(
-    # Transform obesity count and school enrollment into an obesity prevalence figure
-    PREVALENCE = COUNT / ENROLMENT
-    )
+    cols = starts_with("ENROLMENT"), 
+    names_to = "YEAR", 
+    values_to = "ENROLMENT"
+    ) %>%
+  # Extract year as numeric
+  mutate(YEAR = as.numeric(gsub("ENROLMENT", "", YEAR)) + 2000) %>% 
+  group_by(PT_ID) %>% 
+  arrange(YEAR, .by_group = T)
+
+# For schools where enrolment data is only available for 2024, replace the NA value in 2023 with the 2024 value. (This is done as most of our spatial analysis is done for the 2023 obesity prevalence data)
+for (i in 1:nrow(school_enrolment_long)) {
+  if (school_enrolment_long[i,3] == 2023 & is.na(school_enrolment_long[i,4])) {
+    school_enrolment_long[i,4] = school_enrolment_long[i+1,4]
+    }
+  }
+
+# Convert obesity_data from wide to long format
+obesity_data_long <- obesity_data %>%
+  pivot_longer(cols = starts_with("X"), 
+               names_to = "YEAR_CATEGORY", 
+               values_to = "COUNT") %>%
+  separate(YEAR_CATEGORY, into = c("YEAR", "CATEGORY"), sep = "_", extra = "merge") %>%
+  # Extract year as numeric
+  mutate(YEAR = as.numeric(gsub("X", "", YEAR))) 
+
+# Transform obesity count and school enrolment into an obesity prevalence figure
+obesity_data_sf <- obesity_data_long %>%
+  select(-ENROLMENT) %>% 
+  full_join(school_enrolment_long, by = c("PT_ID", "SCHOOL", "YEAR")) %>%
+  # Calculate overweight prevalence rate
+  mutate(PREVALENCE = COUNT / ENROLMENT)  
 ```
 
-We filter our data for the most recent year as the enrollment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO), in the most recent year 2023.
+We filter our data for the most recent year as the enrolment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO), in the most recent year 2023.
 
-We remove "FUCHUN SECONDARY SCHOOL" as the enrollment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. We remove all remaining schools with no recorded data in 2023 (only "TANJONG KATONG GIRLS' SCHOOL")
+We remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. We remove all remaining schools with no recorded data in 2023 (only "TANJONG KATONG GIRLS' SCHOOL")
 
 ```{r}
 # for now, filter for 2023 data and overweight and severely overweight
@@ -438,7 +470,7 @@ Generally, we observe greater overweight prevalence levels for schools in the No
 
 ## Obesity prevalence by region
 
-We aggregate overweight counts and school enrollment data by the different delimited regions, and fill in the regions to get visualise overweight prevalence by region.
+We aggregate overweight counts and school enrolment data by the different delimited regions, and fill in the regions to get visualise overweight prevalence by region.
 
 ```{r}
 # Aggregating overweight counts by URA regions
@@ -1643,41 +1675,39 @@ census <- read.csv("census stats.csv") %>%
   mutate(PLN_AREA_N = toupper(PLN_AREA_N))
 
 census_merge <- ura_planning_areas %>%
-  left_join(census)
+  left_join(census) %>%
+  drop_na("Income")
 
-ura_planning_areas_map + tm_shape(census_merge) +
-  tm_polygons(fill = "Income")
-
-ura_planning_areas_map + tm_shape(census_merge) +
-  tm_polygons(fill="Education")
-
-tm_shape(census_merge) + 
-  tm_fill(fill="Income", 
-          fill.scale = tm_scale(breaks = c(6925,8396,9532,11317,16197))
-          ) +
+ura_planning_areas_map + tm_shape(census_merge) + 
+  tm_polygons(fill="Income", 
+              fill.scale = tm_scale(breaks = c(6925,8396,9532,11317,16197))
+              ) +
   tm_title("Breakdown by Household Income")
-tm_shape(census_merge) + 
-  tm_fill(fill="Education", 
-          fill.scale = tm_scale(breaks = c(9.76,10.74,11.25,11.89,14.78))
-          ) +
+
+ura_planning_areas_map + tm_shape(census_merge) + 
+  tm_polygons(fill="Education", 
+              fill.scale = tm_scale(breaks = c(9.76,10.74,11.25,11.89,14.78))
+              ) +
   tm_title("Breakdown by Education Level")
-tm_shape(census_merge) + 
-  tm_fill(fill="Primary", 
-          fill.scale = tm_scale(breaks = c(61,4778,7043,11681,21822))
-          ) +
+
+ura_planning_areas_map + tm_shape(census_merge) + 
+  tm_polygons(fill="Primary", 
+              fill.scale = tm_scale(breaks = c(61,4778,7043,11681,21822))
+              ) +
   tm_title("Breakdown by Pri Students")
-tm_shape(census_merge) + 
-  tm_fill(fill="Secondary", 
-          fill.scale = tm_scale(breaks=c(59,3526,4894,8804,13221))
-          ) +
+
+ura_planning_areas_map + tm_shape(census_merge) + 
+  tm_polygons(fill="Secondary", 
+              fill.scale = tm_scale(breaks=c(59,3526,4894,8804,13221))
+              ) +
   tm_title("Breakdown by Sec Students")
 ```
 
 # Spatial Descriptive Summary Measures of Income (Lucas)
 
 ```{r}
-census_coords <- st_coordinates(census_merge)
-income_mean <- calc_mnc(id = 1, points = census_coords, weighted = T, weights = census_merge$Income)
+census_coords <- st_coordinates(st_point_on_surface(census_merge))
+income_mean <- calc_mnc(id = 1, points = census_coords)
 income_median <- calc_mdc(id = 2, points = census_coords)
 income_mean_median <- rbind(income_mean$LOCATIONS, income_median$LOCATIONS) %>% 
   data.frame() %>% 
@@ -1704,7 +1734,7 @@ income_sde_weighted_line <- income_sde_weighted$LOCATIONS %>%
   st_combine() %>% 
   st_cast("LINESTRING")
 
-income_map <- ura_planning_area_map +
+income_map <- ura_planning_areas_map +
     tm_shape(census_merge, name = "Income") +
     tm_symbols(
         size = "Income",
@@ -1766,7 +1796,7 @@ education_sde_weighted_line <- education_sde_weighted$LOCATIONS %>%
   st_combine() %>% 
   st_cast("LINESTRING")
 
-education_map <- ura_planning_area_map +
+education_map <- ura_planning_areas_map +
     tm_shape(census_merge, name = "Education") +
     tm_symbols(
         size = "Education",
@@ -1972,9 +2002,6 @@ pri_food_map +
   tm_add_legend(type="lines", labels="SDE", lty=1)
 ```
 
-
-
-
 # Sports CCAs in Schools (Qasim)
 
 ```{r}
@@ -1995,14 +2022,7 @@ school_sports_ccas <-
 obesity_joined_school_sports_data <- 
   obesity_data_sf_2023_OSO %>% 
   left_join(school_sports_ccas, by = join_by(SCHOOL == school_name)) %>%
-  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100, #ratio of sports cca per 100 students
-         LEVEL = case_when(
-           LEVEL == "PRIMARY + SECONDARY" & PRI == 1 ~ "PRIMARY",
-           LEVEL == "PRIMARY + SECONDARY" & PRI == 0 ~ "SECONDARY",
-           TRUE ~ LEVEL
-         )
-        ) 
-
+  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) #ratio of sports cca per 100 students
 ```
 
 #Visualising physical sports participation by school level
