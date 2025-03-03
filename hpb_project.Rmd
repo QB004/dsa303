@@ -850,8 +850,36 @@ tmap_arrange(pri_map, sec_map)
 ## MOE clusters
 
 ```{r}
-# moe_clusters_nb_pri <- read.gal("clusters.gal")
-# obesity_moe_clusters_pri <- obesity_moe_clusters %>% filter(LEVEL == "PRIMARY")
+# Function to write a .gal file in the specified format
+write_gal <- function(data, filename) {
+  fileConn <- file(filename, "w")
+  # Write the number of participants
+  writeLines(as.character(nrow(data)), fileConn)
+  # Iterate through each participant
+  for (i in seq_len(nrow(data))) {
+    pt_id <- data$PT_ID[i]
+    # Find neighbors (same CLUSTER, different PT_ID)
+    neighbors <- data$PT_ID[data$CLUSTER == data$CLUSTER[i] & data$PT_ID != pt_id]
+    # Write PT_ID followed by number of neighbors
+    writeLines(paste(as.character(pt_id), length(neighbors)) , fileConn)
+    # Write list of neighbors (if any)
+    if (length(neighbors) > 0) {
+      writeLines(paste(neighbors, collapse = " "), fileConn)
+    }
+  }
+  close(fileConn)
+}
+
+# Write to a .gal file
+moe_clusters_pri <- obesity_pri_sch %>% 
+  st_drop_geometry() %>% 
+  select(PT_ID, SCHOOL, CLUSTER)
+
+write_gal(moe_clusters_pri, "moe_clusters.gal")
+
+moe_clusters_nb_pri <- read.gal("moe_clusters.gal")
+obesity_moe_clusters_pri <- obesity_moe_clusters %>% filter(LEVEL == "PRIMARY")
+
 ```
 
 ### Spatial autocorrelation statistics
