@@ -1017,25 +1017,140 @@ soi_lw_sec <- nb2listw(soi_nb_sec)
 
 ```{r}
 # by Primary schools
-(soi_lw_pri <- nb2listw(soi_nb_pri))
+(soi_lw_pri <- nb2listw(soi_nb_pri, style = "W"))
+soi_lw_B_pri <- nb2listw(soi_nb_pri, style = "B")
 moran.test(obesity_pri_sch$PREVALENCE, soi_lw_pri)
-moran.plot(obesity_pri_sch$PREVALENCE, soi_lw_pri)
+moran.plot(obesity_pri_sch$PREVALENCE, soi_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, soi_lw_pri)
+globalG.test(obesity_pri_sch$PREVALENCE, soi_lw_B_pri)
 
 # by Secondary schools
-(soi_lw_sec <- nb2listw(soi_nb_sec))
+(soi_lw_sec <- nb2listw(soi_nb_sec, style = "W"))
+soi_lw_B_sec <- nb2listw(soi_nb_sec, style = "B")
 moran.test(obesity_sec_sch$PREVALENCE, soi_lw_sec)
-moran.plot(obesity_sec_sch$PREVALENCE, soi_lw_sec)
+moran.plot(obesity_sec_sch$PREVALENCE, soi_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, soi_lw_sec)
+globalG.test(obesity_sec_sch$PREVALENCE, soi_lw_B_sec)
 ```
 
 Average number of links (Primary school): 3.082873 
-p-value for Moran's test (Primary school): 2.581e-06
-p-value for Geary C's test (Primary school): 2.736e-06
+p-value for Global Moran's I test (Primary school): 2.581e-06
+p-value for Global Geary's C test (Primary school): 2.736e-06
+p-value for Global Getis-Ord's G test (Primary school): 0.05455
 
 Average number of links (Secondary school): 2.958333 
-p-value for Moran's test (Secondary school): 0.0004617
-p-value for Geary C's test (Secondary school): 0.0002675
+p-value for Global Moran's I test (Secondary school): 0.0004617
+p-value for Global Geary's C test (Secondary school): 0.0002675
+p-value for Global Getis-Ord's G test (Secondary school): 0.3102
+
+#### Join count analysis
+
+```{r}
+# Setting an overweight cutoff point
+OVERWEIGHT_CUTOFF <- 0.14
+
+# by Primary school
+obesity_pri_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+pri_map <- ura_regions_map + obesity_pri_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+                soi_lw_B_pri) 
+
+# by Secondary school
+obesity_sec_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+sec_map <- ura_regions_map + obesity_sec_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+                soi_lw_B_sec)
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Moran's I statistic
+```{r}
+# by Primary school
+localm_soi_pri <- 
+  localmoran(obesity_pri_sch$PREVALENCE, 
+             soi_lw_pri)
+obesity_pri_sch$LMORANZ <- localm_soi_pri[,4]
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+# by Secondary school
+localm_soi_sec <- 
+  localmoran(obesity_sec_sch$PREVALENCE, 
+             soi_lw_sec)
+obesity_sec_sch$LMORANZ <- localm_soi_sec[,4]
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Getis-Ord's G statistics
+```{r}
+# by Primary school
+obesity_pri_sch$GO_STAT <-
+  localG(obesity_pri_sch$PREVALENCE, 
+         soi_lw_B_pri)
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+# by Secondary school
+obesity_sec_sch$GO_STAT <-
+  localG(obesity_sec_sch$PREVALENCE, 
+         soi_lw_B_sec)
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Correlogram
+```{r}
+# by Primary school
+correl_soi_pri <- sp.correlogram(
+  soi_nb_pri, obesity_pri_sch$PREVALENCE, 
+  order = 3, method = "corr", style = "W")
+correlI_soi_pri <- sp.correlogram(
+  soi_nb_pri, obesity_pri_sch$PREVALENCE, 
+  order = 3, method = "I", style = "W")
+correlC_soi_pri <- sp.correlogram(
+  soi_nb_pri, obesity_pri_sch$PREVALENCE,
+  order = 3, method = "C", style = "W")
+par(mfrow=c(2,3))
+plot(correl_soi_pri, main="Contiguity lag orders: correlation")
+plot(correlI_soi_pri, main="Contiguity lag orders: Moran's I")
+plot(correlC_soi_pri, main="Contiguity lag orders: Geary's C")
+
+# by Secondary school
+correl_soi_sec <- sp.correlogram(
+  soi_nb_sec, obesity_sec_sch$PREVALENCE, 
+  order = 3, method = "corr", style = "W")
+correlI_soi_sec <- sp.correlogram(
+  soi_nb_sec, obesity_sec_sch$PREVALENCE, 
+  order = 3, method = "I", style = "W")
+correlC_soi_sec <- sp.correlogram(
+  soi_nb_sec, obesity_sec_sch$PREVALENCE,
+  order = 3, method = "C", style = "W")
+plot(correl_soi_sec, main="Contiguity lag orders: correlation")
+plot(correlI_soi_sec, main="Contiguity lag orders: Moran's I")
+plot(correlC_soi_sec, main="Contiguity lag orders: Geary's C")
+par(mfrow=c(1,1))
+```
 
 # K nearest neighbour based analysis
 
@@ -1062,25 +1177,140 @@ tmap_arrange(pri_map, sec_map)
 
 ```{r}
 # by Primary schools
-(knn1_lw_pri <- nb2listw(knn1_nb_pri))
+(knn1_lw_pri <- nb2listw(knn1_nb_pri, style = "W"))
+knn1_lw_B_pri <- nb2listw(knn1_nb_pri, style = "B")
 moran.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
-moran.plot(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
+moran.plot(obesity_pri_sch$PREVALENCE, knn1_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
+globalG.test(obesity_pri_sch$PREVALENCE, knn1_lw_B_pri)
 
 # by Secondary schools
-(knn1_lw_sec <- nb2listw(knn1_nb_sec))
+(knn1_lw_sec <- nb2listw(knn1_nb_sec, style = "W"))
+knn1_lw_B_sec <- nb2listw(knn1_nb_sec, style = "B")
 moran.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
-moran.plot(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
+moran.plot(obesity_sec_sch$PREVALENCE, knn1_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
+globalG.test(obesity_sec_sch$PREVALENCE, knn1_lw_B_sec)
 ```
 
 Average number of links (Primary school): 1 
-p-value for Moran's test (Primary school): 0.008449
-p-value for Geary C's test (Primary school): 0.04445
+p-value for Global Moran's I test (Primary school): 0.008449
+p-value for Global Geary's C test (Primary school): 0.04445
+p-value for Global Getis-Ord's G test (Primary school): 0.1256
 
 Average number of links (Secondary school): 1 
-p-value for Moran's test (Secondary school): 0.0004819
-p-value for Geary C's test (Secondary school): 0.004126
+p-value for Global Moran's I test (Secondary school): 0.0004819
+p-value for Global Geary's C test (Secondary school): 0.004126
+p-value for Global Getis-Ord's G test (Secondary school): 0.234
+
+#### Join count analysis
+
+```{r}
+# Setting an overweight cutoff point
+OVERWEIGHT_CUTOFF <- 0.14
+
+# by Primary school
+obesity_pri_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+pri_map <- ura_regions_map + obesity_pri_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+                knn1_lw_B_pri) 
+
+# by Secondary school
+obesity_sec_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+sec_map <- ura_regions_map + obesity_sec_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+                knn1_lw_B_sec)
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Moran's I statistic
+```{r}
+# by Primary school
+localm_knn1_pri <- 
+  localmoran(obesity_pri_sch$PREVALENCE, 
+             knn1_lw_pri)
+obesity_pri_sch$LMORANZ <- localm_knn1_pri[,4]
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+# by Secondary school
+localm_knn1_sec <- 
+  localmoran(obesity_sec_sch$PREVALENCE, 
+             knn1_lw_sec)
+obesity_sec_sch$LMORANZ <- localm_knn1_sec[,4]
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Getis-Ord's G statistics
+```{r}
+# by Primary school
+obesity_pri_sch$GO_STAT <-
+  localG(obesity_pri_sch$PREVALENCE, 
+         knn1_lw_B_pri)
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+# by Secondary school
+obesity_sec_sch$GO_STAT <-
+  localG(obesity_sec_sch$PREVALENCE, 
+         knn1_lw_B_sec)
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Correlogram (does not work)
+```{r}
+# # by Primary school
+# correl_knn1_pri <- sp.correlogram(
+#   knn1_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_knn1_pri <- sp.correlogram(
+#   knn1_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_knn1_pri <- sp.correlogram(
+#   knn1_nb_pri, obesity_pri_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# par(mfrow=c(2,3))
+# plot(correl_knn1_pri, main="Contiguity lag orders: correlation")
+# plot(correlI_knn1_pri, main="Contiguity lag orders: Moran's I")
+# plot(correlC_knn1_pri, main="Contiguity lag orders: Geary's C")
+# 
+# # by Secondary school
+# correl_knn1_sec <- sp.correlogram(
+#   knn1_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_knn1_sec <- sp.correlogram(
+#   knn1_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_knn1_sec <- sp.correlogram(
+#   knn1_nb_sec, obesity_sec_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# plot(correl_knn1_sec, main="Contiguity lag orders: correlation")
+# plot(correlI_knn1_sec, main="Contiguity lag orders: Moran's I")
+# plot(correlC_knn1_sec, main="Contiguity lag orders: Geary's C")
+# par(mfrow=c(1,1))
+```
 
 ## 2 neighbours
 ```{r}
@@ -1125,6 +1355,146 @@ Average number of links (Secondary school): 2
 p-value for Moran's test (Secondary school): 0.003471
 p-value for Geary C's test (Secondary school): 0.03461
 
+
+### Spatial autocorrelation statistics
+
+```{r}
+# by Primary schools
+(knn2_lw_pri <- nb2listw(knn2_nb_pri, style = "W"))
+knn2_lw_B_pri <- nb2listw(knn2_nb_pri, style = "B")
+moran.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
+moran.plot(obesity_pri_sch$PREVALENCE, knn2_lw_pri, main="Moran scatterplot")
+geary.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
+globalG.test(obesity_pri_sch$PREVALENCE, knn2_lw_B_pri)
+
+# by Secondary schools
+(knn2_lw_sec <- nb2listw(knn2_nb_sec, style = "W"))
+knn2_lw_B_sec <- nb2listw(knn2_nb_sec, style = "B")
+moran.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
+moran.plot(obesity_sec_sch$PREVALENCE, knn2_lw_sec, main="Moran scatterplot")
+geary.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
+globalG.test(obesity_sec_sch$PREVALENCE, knn2_lw_B_sec)
+```
+
+Average number of links (Primary school): 2
+p-value for Global Moran's I test (Primary school): 6.805e-05
+p-value for Global Geary's C test (Primary school): 0.000133
+p-value for Global Getis-Ord's G test (Primary school): 0.01034
+
+Average number of links (Secondary school): 2
+p-value for Global Moran's I test (Secondary school): 0.003471
+p-value for Global Geary's C test (Secondary school): 0.03461
+p-value for Global Getis-Ord's G test (Secondary school): 0.2781
+
+#### Join count analysis
+
+```{r}
+# Setting an overweight cutoff point
+OVERWEIGHT_CUTOFF <- 0.14
+
+# by Primary school
+obesity_pri_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+pri_map <- ura_regions_map + obesity_pri_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+                knn2_lw_B_pri) 
+
+# by Secondary school
+obesity_sec_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+sec_map <- ura_regions_map + obesity_sec_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+                knn2_lw_B_sec)
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Moran's I statistic
+```{r}
+# by Primary school
+localm_knn2_pri <- 
+  localmoran(obesity_pri_sch$PREVALENCE, 
+             knn2_lw_pri)
+obesity_pri_sch$LMORANZ <- localm_knn2_pri[,4]
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+# by Secondary school
+localm_knn2_sec <- 
+  localmoran(obesity_sec_sch$PREVALENCE, 
+             knn2_lw_sec)
+obesity_sec_sch$LMORANZ <- localm_knn2_sec[,4]
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Getis-Ord's G statistics
+```{r}
+# by Primary school
+obesity_pri_sch$GO_STAT <-
+  localG(obesity_pri_sch$PREVALENCE, 
+         knn2_lw_B_pri)
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+# by Secondary school
+obesity_sec_sch$GO_STAT <-
+  localG(obesity_sec_sch$PREVALENCE, 
+         knn2_lw_B_sec)
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Correlogram (does not work)
+```{r}
+# # by Primary school
+# correl_knn2_pri <- sp.correlogram(
+#   knn2_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_knn2_pri <- sp.correlogram(
+#   knn2_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_knn2_pri <- sp.correlogram(
+#   knn2_nb_pri, obesity_pri_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# par(mfrow=c(2,3))
+# plot(correl_knn2_pri, main="Contiguity lag orders: correlation")
+# plot(correlI_knn2_pri, main="Contiguity lag orders: Moran's I")
+# plot(correlC_knn2_pri, main="Contiguity lag orders: Geary's C")
+# 
+# # by Secondary school
+# correl_knn2_sec <- sp.correlogram(
+#   knn2_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_knn2_sec <- sp.correlogram(
+#   knn2_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_knn2_sec <- sp.correlogram(
+#   knn2_nb_sec, obesity_sec_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# plot(correl_knn2_sec, main="Contiguity lag orders: correlation")
+# plot(correlI_knn2_sec, main="Contiguity lag orders: Moran's I")
+# plot(correlC_knn2_sec, main="Contiguity lag orders: Geary's C")
+# par(mfrow=c(1,1))
+```
+
 ## 3 neighbours
 ```{r}
 # by Primary schools
@@ -1167,6 +1537,145 @@ p-value for Geary C's test (Primary school): 1.103e-06
 Average number of links (Secondary school): 3
 p-value for Moran's test (Secondary school): 0.000427
 p-value for Geary C's test (Secondary school): 0.002858
+
+### Spatial autocorrelation statistics
+
+```{r}
+# by Primary schools
+(knn3_lw_pri <- nb2listw(knn3_nb_pri, style = "W"))
+knn3_lw_B_pri <- nb2listw(knn3_nb_pri, style = "B")
+moran.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
+moran.plot(obesity_pri_sch$PREVALENCE, knn3_lw_pri, main="Moran scatterplot")
+geary.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
+globalG.test(obesity_pri_sch$PREVALENCE, knn3_lw_B_pri)
+
+# by Secondary schools
+(knn3_lw_sec <- nb2listw(knn3_nb_sec, style = "W"))
+knn3_lw_B_sec <- nb2listw(knn3_nb_sec, style = "B")
+moran.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
+moran.plot(obesity_sec_sch$PREVALENCE, knn3_lw_sec, main="Moran scatterplot")
+geary.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
+globalG.test(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec)
+```
+
+Average number of links (Primary school): 3
+p-value for Global Moran's I test (Primary school): 2.337e-06
+p-value for Global Geary's C test (Primary school): 1.103e-06
+p-value for Global Getis-Ord's G test (Primary school): 0.005879
+
+Average number of links (Secondary school): 3
+p-value for Global Moran's I test (Secondary school): 0.000427
+p-value for Global Geary's C test (Secondary school): 0.002858
+p-value for Global Getis-Ord's G test (Secondary school): 0.3985
+
+#### Join count analysis
+
+```{r}
+# Setting an overweight cutoff point
+OVERWEIGHT_CUTOFF <- 0.14
+
+# by Primary school
+obesity_pri_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+pri_map <- ura_regions_map + obesity_pri_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+                knn3_lw_B_pri) 
+
+# by Secondary school
+obesity_sec_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+sec_map <- ura_regions_map + obesity_sec_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+                knn3_lw_B_sec)
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Moran's I statistic
+```{r}
+# by Primary school
+localm_knn3_pri <- 
+  localmoran(obesity_pri_sch$PREVALENCE, 
+             knn3_lw_pri)
+obesity_pri_sch$LMORANZ <- localm_knn3_pri[,4]
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+# by Secondary school
+localm_knn3_sec <- 
+  localmoran(obesity_sec_sch$PREVALENCE, 
+             knn3_lw_sec)
+obesity_sec_sch$LMORANZ <- localm_knn3_sec[,4]
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Getis-Ord's G statistics
+```{r}
+# by Primary school
+obesity_pri_sch$GO_STAT <-
+  localG(obesity_pri_sch$PREVALENCE, 
+         knn3_lw_B_pri)
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+# by Secondary school
+obesity_sec_sch$GO_STAT <-
+  localG(obesity_sec_sch$PREVALENCE, 
+         knn3_lw_B_sec)
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Correlogram (does not work)
+```{r}
+# # by Primary school
+# correl_knn3_pri <- sp.correlogram(
+#   knn3_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_knn3_pri <- sp.correlogram(
+#   knn3_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_knn3_pri <- sp.correlogram(
+#   knn3_nb_pri, obesity_pri_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# par(mfrow=c(2,3))
+# plot(correl_knn3_pri, main="Contiguity lag orders: correlation")
+# plot(correlI_knn3_pri, main="Contiguity lag orders: Moran's I")
+# plot(correlC_knn3_pri, main="Contiguity lag orders: Geary's C")
+# 
+# # by Secondary school
+# correl_knn3_sec <- sp.correlogram(
+#   knn3_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_knn3_sec <- sp.correlogram(
+#   knn3_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_knn3_sec <- sp.correlogram(
+#   knn3_nb_sec, obesity_sec_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# plot(correl_knn3_sec, main="Contiguity lag orders: correlation")
+# plot(correlI_knn3_sec, main="Contiguity lag orders: Moran's I")
+# plot(correlC_knn3_sec, main="Contiguity lag orders: Geary's C")
+# par(mfrow=c(1,1))
+```
 
 # Income distribution (Lucas)
 
