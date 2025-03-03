@@ -845,50 +845,183 @@ sec_map <- ura_subzones_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-# Cluster based analysis (Social distance) (does not work)
+# Cluster based analysis (Social distance)
 
 ## MOE clusters
 
 ```{r}
-# Function to write a .gal file in the specified format
-write_gal <- function(data, filename) {
-  fileConn <- file(filename, "w")
-  # Write the number of participants
-  writeLines(as.character(nrow(data)), fileConn)
-  # Iterate through each participant
-  for (i in seq_len(nrow(data))) {
-    pt_id <- data$PT_ID[i]
-    # Find neighbors (same CLUSTER, different PT_ID)
-    neighbors <- data$PT_ID[data$CLUSTER == data$CLUSTER[i] & data$PT_ID != pt_id]
-    # Write PT_ID followed by number of neighbors
-    writeLines(paste(as.character(pt_id), length(neighbors)) , fileConn)
-    # Write list of neighbors (if any)
-    if (length(neighbors) > 0) {
-      writeLines(paste(neighbors, collapse = " "), fileConn)
-    }
-  }
-  close(fileConn)
-}
+# # Function to write a .gal file in the specified format
+# write_gal <- function(data, filename) {
+#   fileConn <- file(filename, "w")
+#   # Write the number of participants
+#   writeLines(as.character(nrow(data)), fileConn)
+#   # Iterate through each participant
+#   for (i in seq_len(nrow(data))) {
+#     pt_id <- data$PT_ID[i]
+#     # Find neighbors (same CLUSTER, different PT_ID)
+#     neighbors <- data$PT_ID[data$CLUSTER == data$CLUSTER[i] & data$PT_ID != pt_id]
+#     # Write PT_ID followed by number of neighbors
+#     writeLines(paste(as.character(pt_id), length(neighbors)) , fileConn)
+#     # Write list of neighbors (if any)
+#     if (length(neighbors) > 0) {
+#       writeLines(paste(neighbors, collapse = " "), fileConn)
+#     }
+#   }
+#   close(fileConn)
+# }
+# 
+# # Write to a .gal file
+# moe_clusters_pri <- obesity_pri_sch %>%
+#   st_drop_geometry() %>%
+#   select(PT_ID, SCHOOL, CLUSTER)
+# write_gal(moe_clusters_pri, "moe_clusters_pri.gal")
+# 
+# moe_clusters_sec <- obesity_sec_sch %>%
+#   st_drop_geometry() %>%
+#   select(PT_ID, SCHOOL, CLUSTER)
+# write_gal(moe_clusters_sec, "moe_clusters_sec.gal")
 
-# Write to a .gal file
-moe_clusters_pri <- obesity_pri_sch %>% 
-  st_drop_geometry() %>% 
-  select(PT_ID, SCHOOL, CLUSTER)
-
-write_gal(moe_clusters_pri, "moe_clusters.gal")
-
-moe_clusters_nb_pri <- read.gal("moe_clusters.gal")
-obesity_moe_clusters_pri <- obesity_moe_clusters %>% filter(LEVEL == "PRIMARY")
-
+moe_clusters_nb_pri <- read.gal("moe_clusters_pri.gal", region.id = obesity_pri_sch$PT_ID)
+moe_clusters_nb_sec <- read.gal("moe_clusters_sec.gal", region.id = obesity_sec_sch$PT_ID)
 ```
 
 ### Spatial autocorrelation statistics
 
 ```{r}
-# moe_clusters_lw_pri <- nb2listw(moe_clusters_nb_pri)
-# moran.test(obesity_moe_clusters_pri$PREVALENCE_AGGREGATE, moe_clusters_lw_pri)
-# moran.plot(obesity_moe_clusters_pri$PREVALENCE_AGGREGATE, moe_clusters_lw_pri)
-# geary.test(obesity_moe_clusters_pri$PREVALENCE_AGGREGATE, moe_clusters_lw_pri)
+# by Primary schools
+(moe_clusters_lw_pri <- nb2listw(moe_clusters_nb_pri, style = "W"))
+moe_clusters_lw_B_pri <- nb2listw(moe_clusters_nb_pri, style = "B")
+moran.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri)
+moran.plot(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri, main="Moran scatterplot")
+geary.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri)
+globalG.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_B_pri)
+
+# by Secondary schools
+(moe_clusters_lw_sec <- nb2listw(moe_clusters_nb_sec, style = "W"))
+moe_clusters_lw_B_sec <- nb2listw(moe_clusters_nb_sec, style = "B")
+moran.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec)
+moran.plot(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec, main="Moran scatterplot")
+geary.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec)
+globalG.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_B_sec)
+```
+
+Average number of links (Primary school): 5.657459 
+p-value for Global Moran's I test (Primary school): 0.1608
+p-value for Global Geary's C test (Primary school): 0.1608
+p-value for Global Getis-Ord's G test (Primary school): 0.02355
+
+Average number of links (Secondary school): 4.347222 
+p-value for Global Moran's I test (Secondary school): 0.1768
+p-value for Global Geary's C test (Secondary school): 0.1768
+p-value for Global Getis-Ord's G test (Secondary school): 0.8314
+
+#### Join count analysis
+
+```{r}
+# Setting an overweight cutoff point
+OVERWEIGHT_CUTOFF <- 0.14
+
+# by Primary school
+obesity_pri_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+pri_map <- ura_regions_map + obesity_pri_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+                moe_clusters_lw_B_pri) 
+
+# by Secondary school
+obesity_sec_sch$HIGH_PREVALENCE <- 
+  as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+sec_map <- ura_regions_map + obesity_sec_sch %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "HIGH_PREVALENCE", 
+    
+    size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+                moe_clusters_lw_B_sec)
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Moran's I statistic
+```{r}
+# by Primary school
+localm_moe_clusters_pri <- 
+  localmoran(obesity_pri_sch$PREVALENCE, 
+             moe_clusters_lw_pri)
+obesity_pri_sch$LMORANZ <- localm_moe_clusters_pri[,4]
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+# by Secondary school
+localm_moe_clusters_sec <- 
+  localmoran(obesity_sec_sch$PREVALENCE, 
+             moe_clusters_lw_sec)
+obesity_sec_sch$LMORANZ <- localm_moe_clusters_sec[,4]
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Local Getis-Ord's G statistics
+```{r}
+# by Primary school
+obesity_pri_sch$GO_STAT <-
+  localG(obesity_pri_sch$PREVALENCE, 
+         moe_clusters_lw_B_pri)
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+# by Secondary school
+obesity_sec_sch$GO_STAT <-
+  localG(obesity_sec_sch$PREVALENCE, 
+         moe_clusters_lw_B_sec)
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+tmap_arrange(pri_map, sec_map)
+```
+
+#### Correlogram
+```{r}
+# by Primary school
+correl_moe_clusters_pri <- sp.correlogram(
+  moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
+  order = 3, method = "corr", style = "W")
+correlI_moe_clusters_pri <- sp.correlogram(
+  moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
+  order = 3, method = "I", style = "W")
+correlC_moe_clusters_pri <- sp.correlogram(
+  moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE,
+  order = 3, method = "C", style = "W")
+par(mfrow=c(2,3))
+plot(correl_moe_clusters_pri, main="Contiguity lag orders: correlation")
+plot(correlI_moe_clusters_pri, main="Contiguity lag orders: Moran's I")
+plot(correlC_moe_clusters_pri, main="Contiguity lag orders: Geary's C")
+
+# by Secondary school
+correl_moe_clusters_sec <- sp.correlogram(
+  moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE, 
+  order = 3, method = "corr", style = "W")
+correlI_moe_clusters_sec <- sp.correlogram(
+  moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE, 
+  order = 3, method = "I", style = "W")
+correlC_moe_clusters_sec <- sp.correlogram(
+  moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE,
+  order = 3, method = "C", style = "W")
+plot(correl_moe_clusters_sec, main="Contiguity lag orders: correlation")
+plot(correlI_moe_clusters_sec, main="Contiguity lag orders: Moran's I")
+plot(correlC_moe_clusters_sec, main="Contiguity lag orders: Geary's C")
+par(mfrow=c(1,1))
 ```
 
 # Graph neighbours based analysis
