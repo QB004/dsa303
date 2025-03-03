@@ -1651,22 +1651,22 @@ ura_planning_areas_map + tm_shape(census_merge) +
 ura_planning_areas_map + tm_shape(census_merge) +
   tm_polygons(fill="Education")
 
-tm_shape(combine_data) + 
+tm_shape(census_merge) + 
   tm_fill(fill="Income", 
           fill.scale = tm_scale(breaks = c(6925,8396,9532,11317,16197))
           ) +
   tm_title("Breakdown by Household Income")
-tm_shape(combine_data) + 
+tm_shape(census_merge) + 
   tm_fill(fill="Education", 
           fill.scale = tm_scale(breaks = c(9.76,10.74,11.25,11.89,14.78))
           ) +
   tm_title("Breakdown by Education Level")
-tm_shape(combine_data) + 
+tm_shape(census_merge) + 
   tm_fill(fill="Primary", 
           fill.scale = tm_scale(breaks = c(61,4778,7043,11681,21822))
           ) +
   tm_title("Breakdown by Pri Students")
-tm_shape(combine_data) + 
+tm_shape(census_merge) + 
   tm_fill(fill="Secondary", 
           fill.scale = tm_scale(breaks=c(59,3526,4894,8804,13221))
           ) +
