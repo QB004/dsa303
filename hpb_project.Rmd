@@ -2858,6 +2858,19 @@ for(i in 1:nrow(ura_planning_areas)) {
 
 ```
 
+# Obesity Final Compilation
+
+```{r}
+obesity_overall_data <- 
+  obesity_data_sf_2023_OSO %>% 
+  left_join(school_sports_ccas, by = join_by(SCHOOL == school_name)) %>%
+  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100)
+obesity_overall_data <- obesity_overall_data %>% 
+  left_join(pri_rankings, by = join_by(SCHOOL == School))
+obesity_overall_data <- obesity_overall_data %>% 
+  left_join(sec_rankings, by = join_by(SCHOOL == School))
+```
+
 # Other Useful stuff
 
 ```{r}
