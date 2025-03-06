@@ -1837,9 +1837,10 @@ pri_rankings <- read.csv("pri rankings.csv") %>%
 sec_rankings <- read.csv("sec rankings.csv") %>% 
   mutate(School = toupper(School))
 obesity_data <- obesity_data %>% 
-  left_join(pri_rankings, by = join_by(SCHOOL == school_name))
+  left_join(pri_rankings, by = join_by(SCHOOL == School))
 obesity_data <- obesity_data %>% 
-  left_join(sec_rankings, by = join_by(SCHOOL == school_name))
+  left_join(sec_rankings, by = join_by(SCHOOL == School))
+
 ```
 
 # Income distribution (Lucas)
