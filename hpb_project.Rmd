@@ -1829,6 +1829,19 @@ Some sub-graphs have 2 or less neighbours
 # par(mfrow=c(1,1))
 ```
 
+# Elite metric (Lucas)
+
+```{r}
+pri_rankings <- read.csv("pri rankings.csv") %>% 
+  mutate(School = toupper(School))
+sec_rankings <- read.csv("sec rankings.csv") %>% 
+  mutate(School = toupper(School))
+obesity_data <- obesity_data %>% 
+  left_join(pri_rankings, by = join_by(SCHOOL == school_name))
+obesity_data <- obesity_data %>% 
+  left_join(sec_rankings, by = join_by(SCHOOL == school_name))
+```
+
 # Income distribution (Lucas)
 
 ```{r}
