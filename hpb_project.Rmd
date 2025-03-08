@@ -991,37 +991,37 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Correlogram
+#### Correlogram (does not work)
 ```{r}
-# by Primary school
-correl_moe_clusters_pri <- sp.correlogram(
-  moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
-  order = 3, method = "corr", style = "W")
-correlI_moe_clusters_pri <- sp.correlogram(
-  moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
-  order = 3, method = "I", style = "W")
-correlC_moe_clusters_pri <- sp.correlogram(
-  moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE,
-  order = 3, method = "C", style = "W")
-par(mfrow=c(2,3))
-plot(correl_moe_clusters_pri, main="Contiguity lag orders: correlation")
-plot(correlI_moe_clusters_pri, main="Contiguity lag orders: Moran's I")
-plot(correlC_moe_clusters_pri, main="Contiguity lag orders: Geary's C")
-
-# by Secondary school
-correl_moe_clusters_sec <- sp.correlogram(
-  moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE, 
-  order = 3, method = "corr", style = "W")
-correlI_moe_clusters_sec <- sp.correlogram(
-  moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE, 
-  order = 3, method = "I", style = "W")
-correlC_moe_clusters_sec <- sp.correlogram(
-  moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE,
-  order = 3, method = "C", style = "W")
-plot(correl_moe_clusters_sec, main="Contiguity lag orders: correlation")
-plot(correlI_moe_clusters_sec, main="Contiguity lag orders: Moran's I")
-plot(correlC_moe_clusters_sec, main="Contiguity lag orders: Geary's C")
-par(mfrow=c(1,1))
+# # by Primary school
+# correl_moe_clusters_pri <- sp.correlogram(
+#   moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_moe_clusters_pri <- sp.correlogram(
+#   moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_moe_clusters_pri <- sp.correlogram(
+#   moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# par(mfrow=c(2,3))
+# plot(correl_moe_clusters_pri, main="Contiguity lag orders: correlation")
+# plot(correlI_moe_clusters_pri, main="Contiguity lag orders: Moran's I")
+# plot(correlC_moe_clusters_pri, main="Contiguity lag orders: Geary's C")
+# 
+# # by Secondary school
+# correl_moe_clusters_sec <- sp.correlogram(
+#   moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "corr", style = "W")
+# correlI_moe_clusters_sec <- sp.correlogram(
+#   moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE, 
+#   order = 3, method = "I", style = "W")
+# correlC_moe_clusters_sec <- sp.correlogram(
+#   moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE,
+#   order = 3, method = "C", style = "W")
+# plot(correl_moe_clusters_sec, main="Contiguity lag orders: correlation")
+# plot(correlI_moe_clusters_sec, main="Contiguity lag orders: Moran's I")
+# plot(correlC_moe_clusters_sec, main="Contiguity lag orders: Geary's C")
+# par(mfrow=c(1,1))
 ```
 
 # Graph neighbours based analysis
