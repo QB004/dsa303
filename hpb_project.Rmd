@@ -2429,67 +2429,117 @@ print(cca_planning_avg_map)
 
 
 
-###################################WIP™####################################
+
 ```{r}
-#WORK IN PROGRESS
-
-#bivariate chloropleth for obesity prevalence and physical sports participation?
-
 
 library(classInt);library(dplyr)
 
-# 1️⃣ Select the two variables for the bivariate map
+#Select the two variables for the bivariate map
 obesity_sports_data <- obesity_joined_school_sports_data %>% 
   filter(!is.na(sports_cca_per_100), !is.na(PREVALENCE)) %>%
   select(SCHOOL,LEVEL, sports_cca_per_100, PREVALENCE, geometry)
+
+#primary school
 
 pri_obesity_sports <- obesity_sports_data %>%
   filter(LEVEL == "PRIMARY") %>%
   select(-LEVEL)
 
-pri_cca_prevalence <-obesity_sports_data %>% st_join(ura_planning_areas, pri_obesity_sports) %>% 
+pri_cca_prevalence <- st_join(ura_planning_areas, pri_obesity_sports) %>% 
   group_by(PLN_AREA_N) %>% 
   summarise(
-    sports_cca_per_100 = mean(sports_cca_per_100, na.rm = T),
-    PREVALENCE = mean(PREVALENCE, na.rm = T),
-    geometry = st_union(geometry)
+    avg_cca_ratio = mean(sports_cca_per_100, na.rm = T),
+    avg_prevalence = mean(PREVALENCE, na.rm = T),
   ) %>%
-  filter(!is.na(sports_cca_per_100), !is.na(PREVALENCE))
+  filter(!is.na(avg_cca_ratio), !is.na(avg_prevalence))
 
-# 2️⃣ Classify both variables into 3 categories (low, medium, high)
-obesity_sports_data <- obesity_sports_data %>%
+
+#Classify both variables into 3 categories (low, medium, high)
+pri_bc <- pri_cca_prevalence %>%
   mutate(
-    sports_cat = cut(sports_cca_per_100, 
-                     breaks = classIntervals(sports_cca_per_100, 3, style = "quantile")$brks, 
+    sports_cat = cut(avg_cca_ratio, 
+                     breaks = classIntervals(avg_cca_ratio, 3, style = "quantile")$brks, 
                      labels = c("Low", "Medium", "High"), 
                      include.lowest = TRUE),
-    obesity_cat = cut(PREVALENCE, 
-                      breaks = classIntervals(PREVALENCE, 3, style = "quantile")$brks, 
+    obesity_cat = cut(avg_prevalence, 
+                      breaks = classIntervals(avg_prevalence, 3, style = "quantile")$brks, 
                       labels = c("Low", "Medium", "High"), 
                       include.lowest = TRUE)
   )
 
-# 3️⃣ Combine the two classifications into one
-obesity_sports_data <- obesity_sports_data %>%
+#Combine the two classifications into one
+pri_bc <- pri_bc %>%
   mutate(bivariate_class = paste(sports_cat, obesity_cat, sep = "_"))
 
-# 4️⃣ Define a bivariate color scheme (3x3 grid)
+
 bivariate_colors <- c(
   "Low_Low" = "#e8e8e8", "Medium_Low" = "#b4d3e4", "High_Low" = "#8bb5d1",
   "Low_Medium" = "#e4b4b4", "Medium_Medium" = "#b4b4b4", "High_Medium" = "#8b8b8b",
   "Low_High" = "#d18b8b", "Medium_High" = "#b58b8b", "High_High" = "#8b8b8b"
 )
 
-# 5️⃣ Create the bivariate choropleth map
-bivariate_map <-ura_subzones_map +
-  tm_shape(obesity_sports_data) +
-  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories") +
-  tm_layout(legend.position = c("right", "bottom"))
 
-# 6️⃣ Print the map
-bivariate_map
+pri_bivariate_map <-ura_planning_areas_map +
+  tm_shape(pri_bc) +
+  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories (CCA - Obesity)") +
+  tm_layout(legend.position = c("right", "bottom")) +
+  tm_title("Bivariate Map of Sports CCAs and Obesity Prevalence by URA Planning Areas (Primary Schools)")
 
 
+pri_bivariate_map
+
+
+
+
+# Secondary school bivariate map
+
+
+sec_obesity_sports <- obesity_sports_data %>%
+  filter(LEVEL == "SECONDARY") %>%
+  select(-LEVEL)
+
+sec_cca_prevalence <- st_join(ura_planning_areas, sec_obesity_sports) %>% 
+  group_by(PLN_AREA_N) %>% 
+  summarise(
+    avg_cca_ratio = mean(sports_cca_per_100, na.rm = T),
+    avg_prevalence = mean(PREVALENCE, na.rm = T),
+  ) %>%
+  filter(!is.na(avg_cca_ratio), !is.na(avg_prevalence))
+
+
+#Classify both variables into 3 categories (low, medium, high)
+sec_bc <- sec_cca_prevalence %>%
+  mutate(
+    sports_cat = cut(avg_cca_ratio, 
+                     breaks = classIntervals(avg_cca_ratio, 3, style = "quantile")$brks, 
+                     labels = c("Low", "Medium", "High"), 
+                     include.lowest = TRUE),
+    obesity_cat = cut(avg_prevalence, 
+                      breaks = classIntervals(avg_prevalence, 3, style = "quantile")$brks, 
+                      labels = c("Low", "Medium", "High"), 
+                      include.lowest = TRUE)
+  )
+
+#Combine the two classifications into one
+sec_bc <- sec_bc %>%
+  mutate(bivariate_class = paste(sports_cat, obesity_cat, sep = "_"))
+
+
+bivariate_colors <- c(
+  "Low_Low" = "#e8e8e8", "Medium_Low" = "#b4d3e4", "High_Low" = "#8bb5d1",
+  "Low_Medium" = "#e4b4b4", "Medium_Medium" = "#b4b4b4", "High_Medium" = "#8b8b8b",
+  "Low_High" = "#d18b8b", "Medium_High" = "#b58b8b", "High_High" = "#8b8b8b"
+)
+
+
+sec_bivariate_map <-ura_planning_areas_map +
+  tm_shape(sec_bc) +
+  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories (CCA - Obesity)") +
+  tm_layout(legend.position = c("right", "bottom")) +
+  tm_title("Bivariate Map of Sports CCAs and Obesity Prevalence by URA Planning Areas (Secondary Schools)")
+
+
+sec_bivariate_map
 ```
 
 
