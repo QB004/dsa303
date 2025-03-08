@@ -45,7 +45,8 @@ st_crs(hmsp_data_sf)$units
 # Loading General Information of Schools dataset
 school_info <- 
   read_excel("Generalinformationofschools.xlsx", na = c("na", "NA")) %>% 
-  select(school_name, dgp_code:mothertongue3_code)
+  # dropped variables are repeated in other data frames or not useful for our analysis
+  select(school_name, dgp_code:mothertongue3_code, -zone_code, -mainlevel_code) 
 
 obesity_data <- obesity_data %>% 
   left_join(school_info, by = join_by(SCHOOL == school_name))
@@ -616,6 +617,9 @@ moe_cluster_map + obesity_moe_clusters %>%
   tm_title("Overweight prevalence by MOE clusters") +
   tm_facets_wrap(by = "LEVEL")
 ```
+
+## Spatial clustering of obesity
+To consider spatial clustering of obesity in schools, we need to define how schools are connect spatially (what are each schools' neighbours). We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3). We determined that spatial clustering is best observed under Delauney triangulation.
 
 # Region based analysis (Contiguous neighbouring regions)
 
@@ -1829,6 +1833,7 @@ Some sub-graphs have 2 or less neighbours
 # par(mfrow=c(1,1))
 ```
 
+
 # Elite metric (Lucas)
 
 ```{r}
@@ -1836,10 +1841,10 @@ pri_rankings <- read.csv("pri rankings.csv") %>%
   mutate(School = toupper(School))
 sec_rankings <- read.csv("sec rankings.csv") %>% 
   mutate(School = toupper(School))
-obesity_data <- obesity_data %>% 
-  left_join(pri_rankings, by = join_by(SCHOOL == School))
-obesity_data <- obesity_data %>% 
-  left_join(sec_rankings, by = join_by(SCHOOL == School))
+# obesity_data <- obesity_data %>% 
+#   left_join(pri_rankings, by = join_by(SCHOOL == School))
+# obesity_data <- obesity_data %>% 
+#   left_join(sec_rankings, by = join_by(SCHOOL == School))
 
 ```
 
@@ -2646,7 +2651,8 @@ cca_nb_one <- knn2nb(knearneigh(schools_coords, k=1))
 w <- nb2listw(cca_nb_one, style="W", zero.policy=TRUE)
 
 ##############################################################################################
-lag_sports <- lag.listw(w, cca_vs_obesity$z_sports_cca_ratio)
+lag_sports <- lag.listw(w, cca_vs_obesity$z_sports_cca_ratio) 
+
 moran_sports <- moran.test(cca_vs_obesity$z_sports_cca_ratio, listw=w, y=lag_sports)
 
 moran_obesity_sports <- moran.test(cca_vs_obesity$z_obesity, 
@@ -2972,10 +2978,11 @@ facility_density_map
 obesity_overall_data <- 
   obesity_data_sf_2023_OSO %>% 
   left_join(school_sports_ccas, by = join_by(SCHOOL == school_name)) %>%
-  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100)
-obesity_overall_data <- obesity_overall_data %>% 
-  left_join(pri_rankings, by = join_by(SCHOOL == School))
-obesity_overall_data <- obesity_overall_data %>% 
+  select(-school_section) %>% 
+  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) %>% 
+  
+
+  left_join(pri_rankings, by = join_by(SCHOOL == School)) %>% 
   left_join(sec_rankings, by = join_by(SCHOOL == School))
 ```
 
