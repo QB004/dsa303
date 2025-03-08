@@ -2425,6 +2425,21 @@ cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>%
 
 print(cca_planning_avg_map)
 
+
+
+
+
+
+
+#raw cca avg for COMBINED schools
+combined_cca_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
+  group_by(PLN_AREA_N) %>% 
+  summarise(
+    RATIO_AGG = mean(sports_cca_per_100, na.rm = T),
+    geometry = st_union(geometry)
+    ) %>%
+  filter(!is.na(RATIO_AGG))
+
 ```
 
 
