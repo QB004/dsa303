@@ -2175,6 +2175,74 @@ pri_food_map +
   tm_add_legend(type="symbols", labels="Spatial median", shape = 0) +
   tm_add_legend(type="lines", labels="SDD", lty=2) + 
   tm_add_legend(type="lines", labels="SDE", lty=1)
+#Bivariate Moran's I
+obesity_pri_food
+coords_pri_sch <- st_coordinates(obesity_pri_food)
+knn_nb_pri_sch_food <- knn2nb(knearneigh(coords_pri_sch, k = 3))
+wts_pri_sch_food <- nb2listw(knn_nb_pri_sch_food, style = "W")
+morans_bi_pri_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_pri_food), listw = wts_pri_sch_food)
+morans_bi_pri_food  #P-value = 4.071e-08, hence there is a significant relationship between obesity prevalence and number of food outlets
+
+
+obesity_sec_food
+coords_sec_sch <- st_coordinates(obesity_sec_food)
+knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_sec_sch, k = 3))
+wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
+morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
+morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
+
+
+```
+
+#Distance of the nearest food option to each school
+```{r} 
+#Write function to compute distance to nearest food option, along with outlet_type
+library(geosphere)
+
+find_nearest_food_options <- function(schools_sf, food_options_sf) {
+
+  if (st_crs(schools_sf) != st_crs(food_options_sf)) {
+    stop("CRS of schools_sf and food_options_sf must be the same.")
+  }
+
+  distances <- st_distance(schools_sf, food_options_sf)
+
+  nearest_indices <- apply(distances, 1, which.min)
+
+  nearest_distances <- apply(distances, 1, min)
+
+  nearest_outlet_types <- food_options_sf$outlet[nearest_indices]
+
+    result_sf <- schools_sf %>%
+    mutate(
+      distance_to_nearest_food_option = as.numeric(nearest_distances),
+      outlet_type = nearest_outlet_types
+    ) %>%
+    select(SCHOOL, distance_to_nearest_food_option, outlet_type, geometry)
+  
+  print(result_sf)
+}
+
+
+nearest_outlet_distance = find_nearest_food_options(school_sf, food)
+nearest_outlet_distance
+
+#Combine data into original sf object
+food_combined_sf = obesity_data_sf_2023_OSO %>%
+  st_join(nearest_outlet_distance[,c(2,3)], by = "SCHOOL")
+
+#Plot graph 
+ura_regions_map +
+  tm_shape(food_combined_sf) +
+  tm_symbols(size = 0.5, fill = "distance_to_nearest_food_option")
+
+
+food_combined_sf
+coords_dist <- st_coordinates(food_combined_sf)
+knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
+wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
+morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
+morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
 ```
 
 
