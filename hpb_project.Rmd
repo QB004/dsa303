@@ -2177,6 +2177,9 @@ pri_food_map +
   tm_add_legend(type="lines", labels="SDE", lty=1)
 ```
 
+
+
+
 # Sports CCAs in Schools (Qasim)
 
 ```{r}
@@ -2753,7 +2756,7 @@ pri_dus_avg_distance_map <- ura_planning_areas_map + pri_dus_avg_distance %>%
     ) +
   tm_title("Average Distance to Nearest DUS Sports Facility from Primary Schools")
 
-print(dus_avg_distance_map)
+print(pri_dus_avg_distance_map)
 
 
 
@@ -2784,9 +2787,45 @@ sec_dus_avg_distance_map <- ura_planning_areas_map + sec_dus_avg_distance %>%
 print(sec_dus_avg_distance_map)
 
 
+```
+```{r}
+
+facility_by_area <- st_join(ura_planning_areas, dual_use_facilities) %>% 
+  group_by(PLN_AREA_N) %>% 
+  filter(!is.na(OBJECTID)) %>%
+  select(PLN_AREA_N, OBJECTID) 
+
+facility_by_area <- facility_by_area %>%
+  group_by(PLN_AREA_N) %>%
+  summarise(facility_count = n())
+
+facility_by_area$area_km2 <- as.numeric(st_area(facility_by_area)) / 1e6
+
+facility_by_area$facility_density <- facility_by_area$facility_count / facility_by_area$area_km2
 
 
+facility_density_map <- ura_planning_areas_map + facility_by_area %>% 
+  tm_shape(name = "DUS Sports Facility Density by URA Planning Area") +
+  tm_polygons(
+    fill = "facility_density",
+    fill.scale = tm_scale(values = "brewer.rd_yl_gn"), 
+    fill.legend = tm_legend(
+      title = "DUS Facilities per km²",
+      orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) +
+  tm_title("DUS Sports Facility Density by URA Planning Area")
 
+
+facility_density_map
+
+```
+
+
+# Kernel Density Estimation
+```{r}
 install.packages("spatstat")
 install.packages("raster")
 
