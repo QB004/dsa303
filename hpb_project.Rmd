@@ -2237,7 +2237,7 @@ pri_cca_map <- ura_planning_areas_map+
 
 pri_cca_map 
 
-pri_cca_data %>% summary()
+
 
 # Spatial descriptive summary measures of physical sports participation by primary school
 
@@ -2331,8 +2331,7 @@ sec_cca_map <- ura_planning_areas_map +
 
 sec_cca_map
 
-sec_cca_data %>% summary()
-# Spatial descriptive summary measures of physical sports participation by primary school
+
 
 # Mean centre, standard deviation distance, standard deviation ellipse
 sec_cca_mean <- calc_mnc(id = 1, points = st_coordinates(sec_cca_data))
@@ -2430,7 +2429,7 @@ print(cca_planning_avg_map)
 
 
 
-
+#BIVARIATE CHLOROPLETH MAPS FOR CCA RATIO VS PREVALENCE
 ```{r}
 
 library(classInt);library(dplyr)
@@ -2609,7 +2608,9 @@ tm_shape(results_sf) +
 ```
 
 
-# Sports Fields and Facilities (Qasim)
+
+
+# Sports Fields and Facilities
 ```{r}
 # Loading sports facilities data
 sports_facilities_file <- "SportSGSportFacilities.geojson"
@@ -2712,26 +2713,16 @@ sec_dus_map
 
 ```
 
-# K Nearest Neighbours
 
-# K nearest neighbour based analysis 
+
+
+# K Nearest Neighbours
 
 #NEAREST SPORTS FACILITY TO SCHOOL
 
 ## 1 neighbour
 
 ```{r}
-# K nearest neighbour based analysis 
-
-#NEAREST SPORTS FACILITY TO SCHOOL
-
-
-## 1 neighbour
-
-
-
-class(dual_use_facilities)
-
 
 # Calculate distances
 distances <- st_distance(obesity_joined_school_sports_data, dual_use_facilities)
