@@ -2926,6 +2926,9 @@ print(sec_dus_avg_distance_map)
 
 
 ```
+
+
+# Facility Density by URA Planning Area
 ```{r}
 
 facility_by_area <- st_join(ura_planning_areas, dual_use_facilities) %>% 
