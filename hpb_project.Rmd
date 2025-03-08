@@ -2224,7 +2224,7 @@ find_nearest_food_options <- function(schools_sf, food_options_sf) {
 }
 
 
-nearest_outlet_distance = find_nearest_food_options(school_sf, food)
+nearest_outlet_distance = find_nearest_food_options(obesity_data_sf_2023_OSO, food)
 nearest_outlet_distance
 
 #Combine data into original sf object
