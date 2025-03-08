@@ -2441,7 +2441,20 @@ library(classInt);library(dplyr)
 # 1️⃣ Select the two variables for the bivariate map
 obesity_sports_data <- obesity_joined_school_sports_data %>% 
   filter(!is.na(sports_cca_per_100), !is.na(PREVALENCE)) %>%
-  select(geometry, sports_cca_per_100, PREVALENCE)
+  select(SCHOOL,LEVEL, sports_cca_per_100, PREVALENCE, geometry)
+
+pri_obesity_sports <- obesity_sports_data %>%
+  filter(LEVEL == "PRIMARY") %>%
+  select(-LEVEL)
+
+pri_cca_prevalence <-obesity_sports_data %>% st_join(ura_planning_areas, pri_obesity_sports) %>% 
+  group_by(PLN_AREA_N) %>% 
+  summarise(
+    sports_cca_per_100 = mean(sports_cca_per_100, na.rm = T),
+    PREVALENCE = mean(PREVALENCE, na.rm = T),
+    geometry = st_union(geometry)
+  ) %>%
+  filter(!is.na(sports_cca_per_100), !is.na(PREVALENCE))
 
 # 2️⃣ Classify both variables into 3 categories (low, medium, high)
 obesity_sports_data <- obesity_sports_data %>%
@@ -2824,78 +2837,6 @@ facility_density_map
 ```
 
 
-# Kernel Density Estimation
-```{r}
-install.packages("spatstat")
-install.packages("raster")
-
-library(spatstat)   # For KDE calculation
-library(raster)     # For raster conversion
-
-
-# Step 2: Ensure all data have the same CRS
-schools <- st_transform(schools, st_crs(ura_planning_areas))
-sports_facilities <- st_transform(sports_facilities, st_crs(ura_planning_areas))
-
-# Step 3: Calculate KDE for each planning area
-answers <- list()
-kde_rasters <- list()
-
-# Get the name of the column that contains the planning area names
-# Adjust this to match your actual column name
-PLN_AREA_N <- "name"  # Change this to your column name like "PA_NAME" or similar
-
-for(i in 1:nrow(ura_planning_areas)) {
-  # Extract current planning area
-  current_area <- ura_planning_areas[i,]
-  area_name <- current_area[[PLN_AREA_N]]
-  
-  # Filter schools and facilities within this planning area
-  area_schools <- schools[st_within(schools, current_area) %>% lengths > 0,]
-  area_facilities <- sports_facilities[st_within(sports_facilities, current_area) %>% lengths > 0,]
-  
-  # Skip areas with too few facilities for meaningful KDE
-  if(nrow(area_facilities) < 3) {
-    cat("Skipping", area_name, "- insufficient facilities (", nrow(area_facilities), ")\n")
-    next
-  }
-  
-  # Create a window for KDE based on planning area boundary
-  area_window <- as.owin(current_area)
-  
-  # Convert facilities to point pattern
-  facilities_coords <- st_coordinates(area_facilities)
-  facilities_ppp <- ppp(
-    x = facilities_coords[,1], 
-    y = facilities_coords[,2], 
-    window = area_window
-  )
-  
-  # Calculate KDE with appropriate bandwidth
-  # Adjust sigma based on your data's units and density
-  kde <- density(facilities_ppp, sigma = 1000, edge = TRUE)
-  
-  # Convert to raster for mapping
-  kde_raster <- raster(kde)
-  crs(kde_raster) <- st_crs(ura_planning_areas)$proj4string
-  
-  # Store raster
-  kde_rasters[[area_name]] <- kde_raster
-  
-  # Get density values at school locations if there are schools in this area
-  if(nrow(area_schools) > 0) {
-    schools_coords <- st_coordinates(area_schools)
-    density_at_schools <- extract(kde_raster, schools_coords)
-    
-    # Add to schools data
-    area_schools$kde_value <- density_at_schools
-    
-    # Store results
-    answers[[area_name]] <- area_schools
-  }
-}
-
-```
 
 # Obesity Final Compilation
 
