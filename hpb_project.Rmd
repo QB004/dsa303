@@ -2396,10 +2396,11 @@ sec_cca_map_sde
 
 ###################################################################
 
-
+```
 
 
 # Aggregating sports cca ratio counts by URA planning area
+```{r}
 cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
   group_by(PLN_AREA_N, LEVEL) %>% 
   summarise(
