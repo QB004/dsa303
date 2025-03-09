@@ -2987,9 +2987,6 @@ facility_density_map
 ## Joining data variables
 ```{r}
 # Selecting relevant columns
-school_sports_ccas_data <- school_sports_ccas %>%
-  select(-school_section)
-
 census_merge_data <- census_merge %>% 
   st_drop_geometry() %>% 
   select(PLN_AREA_N, Income, Education) 
@@ -3003,23 +3000,34 @@ num_food_outlets_data <-
     select(st_drop_geometry(obesity_sec_food), PT_ID, num_food_outlets)
     )
 
+school_sports_ccas_data <- school_sports_ccas %>%
+  select(-school_section)
+
+nearest_dus_data <- 
+  rbind(
+    select(st_drop_geometry(pri_nearest_dus), school_id, distance_1),
+    select(st_drop_geometry(sec_nearest_dus), school_id, distance_1)
+  ) %>% 
+  rename(distance_to_nearest_dus = distance_1)
+
 # Joining data frames
 obesity_overall_data <-
   obesity_data_sf_2023_OSO %>% 
-  left_join(school_sports_ccas_data, by = join_by(SCHOOL == school_name)) %>%
-  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) %>%
-  select(-physical_sports_count) %>% 
   st_join(ura_planning_areas) %>% 
   left_join(census_merge_data, by = join_by(PLN_AREA_N)) %>% 
   left_join(school_rankings, by = join_by(SCHOOL == School)) %>% 
   left_join(nearest_outlet_distance_data, by = join_by(SCHOOL)) %>% 
   left_join(num_food_outlets_data, by = join_by(PT_ID)) %>% 
+  left_join(school_sports_ccas_data, by = join_by(SCHOOL == school_name)) %>%
+  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) %>%
+  select(-physical_sports_count) %>% 
+  left_join(nearest_dus_data, by = join_by(PT_ID == school_id)) %>% 
   st_drop_geometry() %>% 
   mutate(across(
     c(LEVEL, type_code, nature_code, session_code, sap_ind, autonomous_ind, 
       gifted_ind, ip_ind, special, is_popular_sch, outlet_type)
     , as.factor
-    ))
+    )) 
 
 obesity_overall_data %>% 
   filter(LEVEL == "PRIMARY") %>% 
@@ -3091,8 +3099,9 @@ corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
 ```
 
 **For Primary Schools**
-Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and 
+Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
 
+-   Distance to nearest dual-use sports facility (distance_to_nearest_dus),
 -   Government school status (is_govt_sch),
 -   Co-ed school status (is_coed_sch)
 -   Single session school status (is_single_sess)
@@ -3111,8 +3120,9 @@ Further, there is a negative linear relationship between overweight prevalence (
 -   Special school status: SAP or GEP (is_special_sch).
 
 **For Secondary Schools**
-Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and 
+Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
 
+-   Distance to nearest dual-use sports facility (distance_to_nearest_dus),
 -   Government school status (is_govt_sch),
 -   Co-ed school status (is_coed_sch).
 
