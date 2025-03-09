@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
 # Data loading, cleaning and transformation
 
 ## Loading the data
@@ -1838,14 +1843,19 @@ Some sub-graphs have 2 or less neighbours
 
 ```{r}
 pri_rankings <- read.csv("pri rankings.csv") %>% 
-  mutate(School = toupper(School))
+  mutate(School = toupper(School)) %>% 
+  rename(is_popular_school = Balloting.2C) %>% 
+  select(School, is_popular_school)
 sec_rankings <- read.csv("sec rankings.csv") %>% 
-  mutate(School = toupper(School))
+  mutate(School = toupper(School)) %>% 
+  rename(is_popular_school = Quartile.1) %>% 
+  select(School, is_popular_school)
 # obesity_data <- obesity_data %>% 
-#   left_join(pri_rankings, by = join_by(SCHOOL == School))
+#   
 # obesity_data <- obesity_data %>% 
 #   left_join(sec_rankings, by = join_by(SCHOOL == School))
 
+school_rankings <- rbind(pri_rankings, sec_rankings)
 ```
 
 # Income distribution (Lucas)
@@ -2972,19 +2982,77 @@ facility_density_map
 
 
 
-# Obesity Final Compilation
+# Modelling obesity in Singapore schools
+
+## Joining data variables
+```{r}
+school_sports_ccas_data <- school_sports_ccas %>%
+  select(-school_section)
+
+census_merge_data <- census_merge %>% 
+  st_drop_geometry() %>% 
+  select(PLN_AREA_N, Income, Education) 
+
+nearest_outlet_distance_data <- nearest_outlet_distance %>% 
+  st_drop_geometry()
+
+num_food_outlets_data <- 
+  rbind(
+    select(st_drop_geometry(obesity_pri_food), PT_ID, num_food_outlets),
+    select(st_drop_geometry(obesity_sec_food), PT_ID, num_food_outlets)
+    )
+
+obesity_overall_data <-
+  obesity_data_sf_2023_OSO %>% 
+  left_join(school_sports_ccas_data, by = join_by(SCHOOL == school_name)) %>%
+  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) %>% 
+  st_join(ura_planning_areas) %>% 
+  left_join(census_merge_data, by = join_by(PLN_AREA_N)) %>% 
+  left_join(school_rankings, by = join_by(SCHOOL == School)) %>% 
+  left_join(nearest_outlet_distance_data, by = join_by(SCHOOL)) %>% 
+  left_join(num_food_outlets_data, by = join_by(PT_ID)) %>% 
+  st_drop_geometry()
+```
+
+## Correlation analysis
+
+We must ensure that the predictors are correlated with the dependent variable and uncorrelated with each other (there is no multicollinearity). Correlation among predictors cause problems as interpretations become difficult as everything changes when one predictor changes. In addition collinearity makes inferences less reliable (power of tests are reduced).
 
 ```{r}
-obesity_overall_data <- 
-  obesity_data_sf_2023_OSO %>% 
-  left_join(school_sports_ccas, by = join_by(SCHOOL == school_name)) %>%
-  select(-school_section) %>% 
-  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) %>% 
-  
-
-  left_join(pri_rankings, by = join_by(SCHOOL == School)) %>% 
-  left_join(sec_rankings, by = join_by(SCHOOL == School))
+# Convert selected columns to numeric (handling factors correctly)
+obesity_num_data <- obesity_overall_data[, c(20:22, 24, 26:27, 29:30, 32, 34)] 
+rmat <- cor(obesity_num_data)
+corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
+               upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
 ```
+
+Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between median housing value (medv) and the
+
+-   proportion of land zoned for large residential projects (zn),
+
+-   average number of rooms (rm),
+
+-   proximity to employment districts (dis), and
+
+-   the proportion of African American (B).
+
+Further, there is a negative linear relationship between medv and the
+
+-   crime rate (crim).
+
+-   proportion of non-consumer businesses (indus).
+
+-   nitrogen oxides concentration (nox).
+
+-   proportion of older units (age).
+
+-   proximity to highways (rad).
+
+-   property tax (tax).
+
+-   pupil to teacher ratio (ptratio).
+
+-   proportion of lower status occupants (lstat).
 
 # Other Useful stuff
 
