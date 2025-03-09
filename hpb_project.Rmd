@@ -1,7 +1,7 @@
 ---
 output: html_document
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 # Data loading, cleaning and transformation
 
@@ -119,7 +119,7 @@ obesity_data_sf <- obesity_data_long %>%
 
 We filter our data for the most recent year as the enrolment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO), in the most recent year 2023.
 
-We remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. We remove all remaining schools with no recorded data in 2023 (only "TANJONG KATONG GIRLS' SCHOOL")
+We remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. For schools with no recorded data in 2023 (only "TANJONG KATONG GIRLS' SCHOOL")
 
 ```{r}
 # for now, filter for 2023 data and overweight and severely overweight
@@ -1844,12 +1844,12 @@ Some sub-graphs have 2 or less neighbours
 ```{r}
 pri_rankings <- read.csv("pri rankings.csv") %>% 
   mutate(School = toupper(School)) %>% 
-  rename(is_popular_school = Balloting.2C) %>% 
-  select(School, is_popular_school)
+  rename(is_popular_sch = Balloting.2C) %>% 
+  select(School, is_popular_sch)
 sec_rankings <- read.csv("sec rankings.csv") %>% 
   mutate(School = toupper(School)) %>% 
-  rename(is_popular_school = Quartile.1) %>% 
-  select(School, is_popular_school)
+  rename(is_popular_sch = Quartile.1) %>% 
+  select(School, is_popular_sch)
 # obesity_data <- obesity_data %>% 
 #   
 # obesity_data <- obesity_data %>% 
@@ -2660,25 +2660,50 @@ cca_vs_obesity$z_sports_cca_ratio <- scale(cca_vs_obesity$sports_cca_ratio)
 cca_nb_one <- knn2nb(knearneigh(schools_coords, k=1))
 w <- nb2listw(cca_nb_one, style="W", zero.policy=TRUE)
 
-
-
-
-#TO TEST FOR SPATIAL AUTOCORRELATION
 ##############################################################################################
-obesity_pri_food
-coords_pri_sch <- st_coordinates(obesity_pri_food)
-knn_nb_pri_sch_food <- knn2nb(knearneigh(coords_pri_sch, k = 3))
-wts_pri_sch_food <- nb2listw(knn_nb_pri_sch_food, style = "W")
-morans_bi_pri_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_pri_food), listw = wts_pri_sch_food)
-morans_bi_pri_food  #P-value = 4.071e-08, hence there is a significant relationship between obesity prevalence and number of food outlets
+lag_sports <- lag.listw(w, cca_vs_obesity$z_sports_cca_ratio) 
 
+moran_sports <- moran.test(cca_vs_obesity$z_sports_cca_ratio, listw=w, y=lag_sports)
 
-obesity_sec_food
-coords_sec_sch <- st_coordinates(obesity_sec_food)
-knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_sec_sch, k = 3))
-wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
-morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
-####################################################################################
+moran_obesity_sports <- moran.test(cca_vs_obesity$z_obesity, 
+                                  lag.listw(w, cca_vs_obesity$z_sports_cca_ratio))
+
+moran_sports_obesity <- moran.test(cca_vs_obesity$z_sports_cca_ratio, 
+                                  lag.listw(w, cca_vs_obesity$z_obesity))
+##################################################################################################
+# Print results
+print("Bivariate Moran's I: Obesity vs. Spatial Lag of Sports Clubs")
+print(moran_obesity_sports)
+print("Bivariate Moran's I: Sports Clubs vs. Spatial Lag of Obesity")
+print(moran_sports_obesity)
+
+# Create Moran scatterplot
+plot(cca_vs_obesity$z_obesity, lag.listw(w, cca_vs_obesity$z_sports_cca_ratio),
+     xlab="Obesity Prevalence (standardized)",
+     ylab="Spatial Lag of Sports Club Ratio",
+     main="Bivariate Moran's I Scatterplot")
+abline(lm(lag.listw(w, cca_vs_obesity$z_sports) ~ analysis_data$z_obesity), col="red")
+abline(h=0, v=0, lty=2)
+
+# Calculate Local Bivariate Moran's I
+local_biv_moran <- localmoran.bivand(analysis_data$z_obesity, 
+                                    lag.listw(w, analysis_data$z_sports))
+
+# Create a copy of the original sf object for mapping results
+results_sf <- obesity_joined_sports_data
+results_sf$local_biv_moran <- local_biv_moran[,1]
+results_sf$p_value <- local_biv_moran[,5]
+results_sf$significant <- ifelse(results_sf$p_value < 0.05, "Significant", "Not Significant")
+
+# Map the local bivariate Moran's I values
+tm_shape(results_sf) +
+  tm_fill("local_biv_moran", 
+          title="Local Bivariate Moran's I", 
+          style="quantile", 
+          palette="RdBu",
+          midpoint=0) +
+  tm_borders() +
+  tm_layout(title="Spatial Association between Obesity and Sports Clubs")
 ```
 
 
@@ -2961,6 +2986,7 @@ facility_density_map
 
 ## Joining data variables
 ```{r}
+# Selecting relevant columns
 school_sports_ccas_data <- school_sports_ccas %>%
   select(-school_section)
 
@@ -2977,16 +3003,66 @@ num_food_outlets_data <-
     select(st_drop_geometry(obesity_sec_food), PT_ID, num_food_outlets)
     )
 
+# Joining data frames
 obesity_overall_data <-
   obesity_data_sf_2023_OSO %>% 
   left_join(school_sports_ccas_data, by = join_by(SCHOOL == school_name)) %>%
-  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) %>% 
+  mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) %>%
+  select(-physical_sports_count) %>% 
   st_join(ura_planning_areas) %>% 
   left_join(census_merge_data, by = join_by(PLN_AREA_N)) %>% 
   left_join(school_rankings, by = join_by(SCHOOL == School)) %>% 
   left_join(nearest_outlet_distance_data, by = join_by(SCHOOL)) %>% 
   left_join(num_food_outlets_data, by = join_by(PT_ID)) %>% 
-  st_drop_geometry()
+  st_drop_geometry() %>% 
+  mutate(across(
+    c(LEVEL, type_code, nature_code, session_code, sap_ind, autonomous_ind, 
+      gifted_ind, ip_ind, special, is_popular_sch, outlet_type)
+    , as.factor
+    ))
+
+obesity_overall_data %>% 
+  filter(LEVEL == "PRIMARY") %>% 
+  summary()
+
+obesity_overall_data %>% 
+  filter(LEVEL == "SECONDARY") %>% 
+  summary()
+
+# Converting categorical data to dummy variables
+
+obesity_model_data <- obesity_overall_data %>% 
+  mutate(
+    # government schools = 1, non-govt (govt-aided, independent, specialsed) = 0
+    is_govt_sch = ifelse(type_code == "GOVERNMENT SCHOOL", 1, 0),
+    # co-ed schools = 1, non-coed (boys or girls schools) = 0
+    is_coed_sch = ifelse(nature_code == "CO-ED SCHOOL", 1, 0),
+    # single session schools = 1, non-single sess (double or full day) = 0
+    is_single_sess = ifelse(session_code == "SINGLE SESSION", 1, 0),
+    # SAP schools = 1, non-SAP = 0
+    is_sap_sch = ifelse(sap_ind == "Yes", 1, 0),
+    # autonomous schools = 1, non-autonomous schools = 0
+    is_autonomous_sch = ifelse(autonomous_ind == "Yes", 1, 0),
+    # gifted schools = 1, non-gifted schools = 0
+    is_gifted_sch = ifelse(gifted_ind == "Yes", 1, 0),
+    # integrated programme schools = 1, non-IP schools = 0
+    is_ip_sch = ifelse(ip_ind == "Yes", 1, 0),
+    # special schools = 1, non-special schools = 0
+    is_special_sch = ifelse(special == "Yes", 1, 0),
+    # popular schools = 1, non-popular schools = 0
+    is_popular_sch = ifelse(is_popular_sch == "Y", 1, 0)
+    )
+
+# separating into primary and secondary schools
+obesity_model_pri <- obesity_model_data %>% 
+  filter(LEVEL == "PRIMARY") %>% 
+  select(PREVALENCE, where(is.numeric), -c(PT_ID, GROUP_ID, YEAR)) %>% 
+  # no integrated programme and too few autonomous primary schools
+  select(-is_ip_sch, -is_autonomous_sch)
+
+obesity_model_sec <- obesity_model_data %>% 
+  filter(LEVEL == "SECONDARY") %>% 
+  select(PREVALENCE, where(is.numeric), -c(PT_ID, GROUP_ID, YEAR))
 ```
 
 ## Correlation analysis
@@ -2994,40 +3070,67 @@ obesity_overall_data <-
 We must ensure that the predictors are correlated with the dependent variable and uncorrelated with each other (there is no multicollinearity). Correlation among predictors cause problems as interpretations become difficult as everything changes when one predictor changes. In addition collinearity makes inferences less reliable (power of tests are reduced).
 
 ```{r}
-# Convert selected columns to numeric (handling factors correctly)
-obesity_num_data <- obesity_overall_data[, c(20:22, 24, 26:27, 29:30, 32, 34)] 
-rmat <- cor(obesity_num_data)
+# for primary schools
+
+rmat <- cor(obesity_model_pri, use = "complete.obs")
+corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
+               upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
+
+rmat <- cor(obesity_model_pri, use = "pairwise.complete.obs")
+corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
+               upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
+
+# for secondary schoools
+rmat <- cor(obesity_model_sec, use = "complete.obs")
+corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
+               upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
+
+rmat <- cor(obesity_model_sec, use = "pairwise.complete.obs")
 corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
                upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
 ```
 
-Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between median housing value (medv) and the
+**For Primary Schools**
+Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and 
 
--   proportion of land zoned for large residential projects (zn),
+-   Government school status (is_govt_sch),
+-   Co-ed school status (is_coed_sch)
+-   Single session school status (is_single_sess)
 
--   average number of rooms (rm),
+Further, there is a negative linear relationship between overweight prevalence (PREVALENCE) and the
 
--   proximity to employment districts (dis), and
+-   HMSP score (HMSP_Score),
+-   Sports CCAs per 100 students (sports_cca_per_100),
+-   Gross Monthly Income from Work by Planning Area (Income),
+-   Years of Education by Planning Area (Education),
+-   Popular schools by Phase 2C subscription (is_popular_sch),
+-   Distance from school to the nearest external food option (distance_to_nearest_food_option),
+-   Number of food outlets within a 1km radius of school (num_food_outlets),
+-   SAP school status (is_sap_sch),
+-   GEP school status (is_gifted_sch),
+-   Special school status: SAP or GEP (is_special_sch).
 
--   the proportion of African American (B).
+**For Secondary Schools**
+Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and 
 
-Further, there is a negative linear relationship between medv and the
+-   Government school status (is_govt_sch),
+-   Co-ed school status (is_coed_sch).
 
--   crime rate (crim).
+Further, there is a negative linear relationship between overweight prevalence (PREVALENCE) and the
 
--   proportion of non-consumer businesses (indus).
-
--   nitrogen oxides concentration (nox).
-
--   proportion of older units (age).
-
--   proximity to highways (rad).
-
--   property tax (tax).
-
--   pupil to teacher ratio (ptratio).
-
--   proportion of lower status occupants (lstat).
+-   HMSP score (HMSP_Score),
+-   Sports CCAs per 100 students (sports_cca_per_100),
+-   Gross Monthly Income from Work by Planning Area (Income),
+-   Years of Education by Planning Area (Education),
+-   Popular schools by cutoff score (is_popular_sch),
+-   Distance from school to the nearest external food option (distance_to_nearest_food_option),
+-   Number of food outlets within a 1km radius of school (num_food_outlets),
+-   Single session school status (is_single_sess),
+-   SAP school status (is_sap_sch),
+-   Autonomous school status (is_autonomous_sch),
+-   GEP school status (is_gifted_sch),
+-   IP school status (is_ip_sch),
+-   Special school status: SAP, GEP, Autonomous or IP (is_special_sch).
 
 # Other Useful stuff
 
