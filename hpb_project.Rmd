@@ -2660,50 +2660,25 @@ cca_vs_obesity$z_sports_cca_ratio <- scale(cca_vs_obesity$sports_cca_ratio)
 cca_nb_one <- knn2nb(knearneigh(schools_coords, k=1))
 w <- nb2listw(cca_nb_one, style="W", zero.policy=TRUE)
 
+
+
+
+#TO TEST FOR SPATIAL AUTOCORRELATION
 ##############################################################################################
-lag_sports <- lag.listw(w, cca_vs_obesity$z_sports_cca_ratio) 
+obesity_pri_food
+coords_pri_sch <- st_coordinates(obesity_pri_food)
+knn_nb_pri_sch_food <- knn2nb(knearneigh(coords_pri_sch, k = 3))
+wts_pri_sch_food <- nb2listw(knn_nb_pri_sch_food, style = "W")
+morans_bi_pri_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_pri_food), listw = wts_pri_sch_food)
+morans_bi_pri_food  #P-value = 4.071e-08, hence there is a significant relationship between obesity prevalence and number of food outlets
 
-moran_sports <- moran.test(cca_vs_obesity$z_sports_cca_ratio, listw=w, y=lag_sports)
 
-moran_obesity_sports <- moran.test(cca_vs_obesity$z_obesity, 
-                                  lag.listw(w, cca_vs_obesity$z_sports_cca_ratio))
-
-moran_sports_obesity <- moran.test(cca_vs_obesity$z_sports_cca_ratio, 
-                                  lag.listw(w, cca_vs_obesity$z_obesity))
-##################################################################################################
-# Print results
-print("Bivariate Moran's I: Obesity vs. Spatial Lag of Sports Clubs")
-print(moran_obesity_sports)
-print("Bivariate Moran's I: Sports Clubs vs. Spatial Lag of Obesity")
-print(moran_sports_obesity)
-
-# Create Moran scatterplot
-plot(cca_vs_obesity$z_obesity, lag.listw(w, cca_vs_obesity$z_sports_cca_ratio),
-     xlab="Obesity Prevalence (standardized)",
-     ylab="Spatial Lag of Sports Club Ratio",
-     main="Bivariate Moran's I Scatterplot")
-abline(lm(lag.listw(w, cca_vs_obesity$z_sports) ~ analysis_data$z_obesity), col="red")
-abline(h=0, v=0, lty=2)
-
-# Calculate Local Bivariate Moran's I
-local_biv_moran <- localmoran.bivand(analysis_data$z_obesity, 
-                                    lag.listw(w, analysis_data$z_sports))
-
-# Create a copy of the original sf object for mapping results
-results_sf <- obesity_joined_sports_data
-results_sf$local_biv_moran <- local_biv_moran[,1]
-results_sf$p_value <- local_biv_moran[,5]
-results_sf$significant <- ifelse(results_sf$p_value < 0.05, "Significant", "Not Significant")
-
-# Map the local bivariate Moran's I values
-tm_shape(results_sf) +
-  tm_fill("local_biv_moran", 
-          title="Local Bivariate Moran's I", 
-          style="quantile", 
-          palette="RdBu",
-          midpoint=0) +
-  tm_borders() +
-  tm_layout(title="Spatial Association between Obesity and Sports Clubs")
+obesity_sec_food
+coords_sec_sch <- st_coordinates(obesity_sec_food)
+knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_sec_sch, k = 3))
+wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
+morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
+####################################################################################
 ```
 
 
