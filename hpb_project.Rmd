@@ -3095,7 +3095,7 @@ select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch,-is_ip_sch,-is_autonomous_s
 lm.all_sec<- lm(PREVALENCE~.,data=obesity_model_analysis_sec)
 summary(lm.all_sec)
 ```
-For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistcally significant variables include is_coed_sch (p-value <0.01), is_coed_sch (p-value<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value<0.1)
+For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistcally significant variables include is_coed_sch (p-value <0.01), is_popular_sch (p-value<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value<0.1)
 For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value<0.05) and is_popular_sch (p-value<0.1). 
 
 ```{r}
@@ -3157,8 +3157,17 @@ c_bwd_sec <- which.min(regbwd.summary_sec$bic)
 c_bwd_sec
 coef(regfitbwd.all_sec, c_bwd_sec)
 ```
-
-
+Based on the three types of model selection,
+We observe that BSS and Backward selection recommend the same model for primary school variables with 4 terms based on smallest BIC criterion. This model was chosen because it has the fewest number of variables, facilitating simplicity in interpretation.
+The best linear model for obesity prevalence in primary schools is 
+   (Intercept)      Education is_popular_sch    is_govt_sch    is_coed_sch 
+   0.216206288   -0.010604366   -0.009079636    0.014440522    0.017533648 
+This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interesting, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis. 
+We also observe all 3 approaches recommend the same model for secondary school variables with 2 terms based on smallest BIC criterion. 
+The best linear model for obesity prevalence in secondary schools is 
+   (Intercept)      Education is_special_sch 
+   0.247219424   -0.009114996   -0.043620675 
+This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables. 
 
 # Other Useful stuff
 
