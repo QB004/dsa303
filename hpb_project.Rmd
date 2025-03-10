@@ -3083,6 +3083,83 @@ Further, there is a negative linear relationship between overweight prevalence (
 -   IP school status (is_ip_sch),
 -   Special school status: SAP, GEP, Autonomous or IP (is_special_sch).
 
+# Model Creation (LM, BSS, Foward/Backward Selection)
+
+```{r}
+obesity_model_analysis_pri <- obesity_model_pri %>%
+select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch)
+lm.all_pri<- lm(PREVALENCE~.,data=obesity_model_analysis_pri)
+summary(lm.all_pri)
+obesity_model_analysis_sec <- obesity_model_sec %>%
+select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch,-is_ip_sch,-is_autonomous_sch)
+lm.all_sec<- lm(PREVALENCE~.,data=obesity_model_analysis_sec)
+summary(lm.all_sec)
+```
+For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistcally significant variables include is_coed_sch (p-value <0.01), is_coed_sch (p-value<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value<0.1)
+For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value<0.05) and is_popular_sch (p-value<0.1). 
+
+```{r}
+#BSS for Pri
+library(leaps)
+regfitbss.all_pri <- regsubsets(PREVALENCE~., obesity_model_analysis_pri) # run the Best Subset Selection
+regbss.summary_pri <- summary(regfitbss.all_pri)
+res_bss_pri <- which.max(regbss.summary_pri$adjr2)
+res_bss_pri
+coef(regfitbss.all_pri, res_bss_pri)
+c_bss_pri <- which.min(regbss.summary_pri$bic)
+c_bss_pri
+coef(regfitbss.all_pri, c_bss_pri)
+#BSS for Sec
+regfitbss.all_sec <- regsubsets(PREVALENCE~., obesity_model_analysis_sec) # run the Best Subset Selection
+regbss.summary_sec <- summary(regfitbss.all_sec)
+res_bss_sec <- which.max(regbss.summary_sec$adjr2)
+res_bss_sec
+coef(regfitbss.all_sec, res_bss_sec)
+c_bss_sec <- which.min(regbss.summary_sec$bic)
+c_bss_sec
+coef(regfitbss.all_sec, c_bss_sec)
+
+#Forward Selection for Pri
+regfitfwd.all_pri <- regsubsets(PREVALENCE~., obesity_model_analysis_pri,method="forward") # run the Forward Selection
+regfwd.summary_pri <- summary(regfitfwd.all_pri)
+res_fwd_pri <- which.max(regfwd.summary_pri$adjr2)
+res_fwd_pri
+coef(regfitfwd.all_pri, res_fwd_pri)
+c_fwd_pri <- which.min(regfwd.summary_pri$bic)
+c_fwd_pri
+coef(regfitfwd.all_pri, c_fwd_pri)
+#Forward Selection for Sec
+regfitfwd.all_sec <- regsubsets(PREVALENCE~., obesity_model_analysis_sec,method="forward") # run the Forward Selection
+regfwd.summary_sec <- summary(regfitfwd.all_sec)
+res_fwd_sec <- which.max(regfwd.summary_sec$adjr2)
+res_fwd_sec
+coef(regfitfwd.all_sec, res_fwd_sec)
+c_fwd_sec <- which.min(regfwd.summary_sec$bic)
+c_fwd_sec
+coef(regfitfwd.all_sec, c_fwd_sec)
+
+#Backward Selection for Pri
+regfitbwd.all_pri <- regsubsets(PREVALENCE~., obesity_model_analysis_pri,method="backward") # run the Backward Selection
+regbwd.summary_pri <- summary(regfitbwd.all_pri)
+res_bwd_pri <- which.max(regbwd.summary_pri$adjr2)
+res_bwd_pri
+coef(regfitbwd.all_pri, res_bwd_pri)
+c_bwd_pri <- which.min(regbwd.summary_pri$bic)
+c_bwd_pri
+coef(regfitbwd.all_pri, c_bwd_pri)
+#Backward Selection for Sec
+regfitbwd.all_sec <- regsubsets(PREVALENCE~., obesity_model_analysis_sec,method="backward") # run the Backward Selection
+regbwd.summary_sec <- summary(regfitbwd.all_sec)
+res_bwd_sec <- which.max(regbwd.summary_sec$adjr2)
+res_bwd_sec
+coef(regfitbwd.all_sec, res_bwd_sec)
+c_bwd_sec <- which.min(regbwd.summary_sec$bic)
+c_bwd_sec
+coef(regfitbwd.all_sec, c_bwd_sec)
+```
+
+
+
 # Other Useful stuff
 
 ```{r}
