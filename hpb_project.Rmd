@@ -623,8 +623,6 @@ moe_cluster_map + obesity_moe_clusters %>%
   tm_facets_wrap(by = "LEVEL")
 ```
 
-## Spatial clustering of obesity
-To consider spatial clustering of obesity in schools, we need to define how schools are connect spatially (what are each schools' neighbours). We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3). We determined that spatial clustering is best observed under Delauney triangulation.
 
 # Region based analysis (Contiguous neighbouring regions)
 
@@ -890,8 +888,26 @@ tmap_arrange(pri_map, sec_map)
 #   select(PT_ID, SCHOOL, CLUSTER)
 # write_gal(moe_clusters_sec, "moe_clusters_sec.gal")
 
-moe_clusters_nb_pri <- read.gal("moe_clusters_pri.gal", region.id = obesity_pri_sch$PT_ID)
-moe_clusters_nb_sec <- read.gal("moe_clusters_sec.gal", region.id = obesity_sec_sch$PT_ID)
+# # Does not work
+# obesity_moe_clusters_pri <- obesity_moe_clusters %>% filter(LEVEL == "PRIMARY")
+# moe_clusters_nb_pri <- 
+#   read.gal("moe_clusters_pri.gal", region.id = obesity_pri_sch$PT_ID)
+# moe_clusters_nb_line_pri <- moe_clusters_nb_pri %>% 
+#   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_pri)))
+# pri_map <- moe_clusters_map +
+#   moe_clusters_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
+#   st_point_on_surface(st_geometry(obesity_moe_clusters_pri)) %>% tm_shape() + tm_symbols()
+# 
+# obesity_moe_clusters_sec <- obesity_moe_clusters %>% filter(LEVEL == "SECONDARY")
+# moe_clusters_nb_sec <- 
+#   read.gal("moe_clusters_sec.gal", region.id = obesity_sec_sch$PT_ID)
+# moe_clusters_nb_line_sec <- moe_clusters_nb_sec %>% 
+#   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_sec)))
+# sec_map <- moe_clusters_map +
+#   moe_clusters_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
+#   st_point_on_surface(st_geometry(obesity_moe_clusters_sec)) %>% tm_shape() + tm_symbols()
+# 
+# tmap_arrange(pri_map, sec_map)
 ```
 
 ### Spatial autocorrelation statistics
@@ -1292,18 +1308,26 @@ localm_soi_pri <-
   localmoran(obesity_pri_sch$PREVALENCE, 
              soi_lw_pri)
 obesity_pri_sch$LMORANZ <- localm_soi_pri[,4]
-pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+soi_pri_map <- 
+  tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + 
+  pri_sch_map +
+  tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
   tm_title("Local Moran's I Z-Statistic")
-
+  
 # by Secondary school
 localm_soi_sec <- 
   localmoran(obesity_sec_sch$PREVALENCE, 
              soi_lw_sec)
 obesity_sec_sch$LMORANZ <- localm_soi_sec[,4]
-sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+soi_sec_map <- 
+  tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) +
+  sec_sch_map +
+  tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
   tm_title("Local Moran's I Z-Statistic")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(soi_pri_map, soi_sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
@@ -1330,10 +1354,10 @@ Some sub-graphs have 2 or less neighbours
 ```{r}
 # # by Primary school
 # correl_soi_pri <- sp.correlogram(
-#   soi_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   soi_nb_pri, obesity_pri_sch$PREVALENCE,
 #   order = 3, method = "corr", style = "W")
 # correlI_soi_pri <- sp.correlogram(
-#   soi_nb_pri, obesity_pri_sch$PREVALENCE, 
+#   soi_nb_pri, obesity_pri_sch$PREVALENCE,
 #   order = 3, method = "I", style = "W")
 # correlC_soi_pri <- sp.correlogram(
 #   soi_nb_pri, obesity_pri_sch$PREVALENCE,
@@ -1836,6 +1860,40 @@ Some sub-graphs have 2 or less neighbours
 # plot(correlI_knn3_sec, main="Contiguity lag orders: Moran's I")
 # plot(correlC_knn3_sec, main="Contiguity lag orders: Geary's C")
 # par(mfrow=c(1,1))
+```
+
+# Conclusions from analysis of spatial clustering of obesity
+
+To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (what are each schools' neighbours). We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3) in the following sections.
+
+Based on the Moran's I statistics, Delauney triangulation neigbours reported the lowest p-values, suggesting that there was significant spatial clustering following Delauney triangulation clusters. 
+
+However, due to the arbitrary neighbour links introduced by Delauney triangulation (e.g. schools along the borders of Singapore were indicated as neighbours even when they were very far apart), we determined that Sphere of Influence was the better choice to model neighbour links instead.
+
+```{r}
+# by Primary school
+localm_soi_pri <- 
+  localmoran(obesity_pri_sch$PREVALENCE, 
+             soi_lw_pri)
+obesity_pri_sch$LMORANZ <- localm_soi_pri[,4]
+pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+# by Secondary school
+localm_soi_sec <- 
+  localmoran(obesity_sec_sch$PREVALENCE, 
+             soi_lw_sec)
+obesity_sec_sch$LMORANZ <- localm_soi_sec[,4]
+sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_title("Local Moran's I Z-Statistic")
+
+tmap_arrange(pri_map, sec_map)
+
+# Identified clusters in Primary schools 
+obesity_pri_sch %>% filter(LMORANZ >= 3)
+
+# Identified clusters in Secondary schools
+obesity_sec_sch %>% filter(LMORANZ >= 3)
 ```
 
 
@@ -3083,7 +3141,7 @@ Further, there is a negative linear relationship between overweight prevalence (
 -   IP school status (is_ip_sch),
 -   Special school status: SAP, GEP, Autonomous or IP (is_special_sch).
 
-# Model Creation (LM, BSS, Foward/Backward Selection)
+## Model Creation (LM, BSS, Foward/Backward Selection)
 
 ```{r}
 obesity_model_analysis_pri <- obesity_model_pri %>%
@@ -3095,7 +3153,8 @@ select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch,-is_ip_sch,-is_autonomous_s
 lm.all_sec<- lm(PREVALENCE~.,data=obesity_model_analysis_sec)
 summary(lm.all_sec)
 ```
-For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistcally significant variables include is_coed_sch (p-value <0.01), is_popular_sch (p-value<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value<0.1)
+
+For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistically significant variables include is_coed_sch (p-value <0.01), is_popular_sch (p-value<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value<0.1)
 For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value<0.05) and is_popular_sch (p-value<0.1). 
 
 ```{r}
@@ -3157,16 +3216,22 @@ c_bwd_sec <- which.min(regbwd.summary_sec$bic)
 c_bwd_sec
 coef(regfitbwd.all_sec, c_bwd_sec)
 ```
+
 Based on the three types of model selection,
 We observe that BSS and Backward selection recommend the same model for primary school variables with 4 terms based on smallest BIC criterion. This model was chosen because it has the fewest number of variables, facilitating simplicity in interpretation.
+
 The best linear model for obesity prevalence in primary schools is 
    (Intercept)      Education is_popular_sch    is_govt_sch    is_coed_sch 
    0.216206288   -0.010604366   -0.009079636    0.014440522    0.017533648 
-This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interesting, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis. 
+
+This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis. 
+
 We also observe all 3 approaches recommend the same model for secondary school variables with 2 terms based on smallest BIC criterion. 
+
 The best linear model for obesity prevalence in secondary schools is 
    (Intercept)      Education is_special_sch 
-   0.247219424   -0.009114996   -0.043620675 
+   0.247219424   -0.009114996   -0.043620675
+
 This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables. 
 
 # Other Useful stuff
