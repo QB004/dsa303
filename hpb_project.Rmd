@@ -1947,13 +1947,18 @@ school_rankings <- rbind(pri_rankings, sec_rankings)
 # Income distribution (Lucas)
 
 ```{r}
+# missing MUSEUM & NEWTON planning areas, so we will fill in with OTHERS data
+census_add <- data.frame(
+  PLN_AREA_N = c("MUSEUM", "NEWTON"),
+  Total = c(12233, 12233),
+  Income = c(12376, 12376),
+  Education = c(12.58, 12.58),
+  Primary = c(1693, 1693), 
+  Secondary = c(1125, 1125))
+
 census <- read.csv("census stats.csv") %>% 
   mutate(PLN_AREA_N = toupper(PLN_AREA_N)) %>% 
-  # missing MUSEUM & NEWTON planning areas, so we will fill in with OTHERS data
-  rbind(
-    c("MUSEUM", "12233", "12376", "12.58", "1693", "1125"),
-    c("NEWTON", "12233", "12376", "12.58", "1693", "1125")
-    )
+  bind_rows(census_add)
 
 census_merge <- ura_planning_areas %>%
   left_join(census) %>%
