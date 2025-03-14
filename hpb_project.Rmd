@@ -3224,6 +3224,12 @@ coef(regfitbwd.all_sec, res_bwd_sec)
 c_bwd_sec <- which.min(regbwd.summary_sec$bic)
 c_bwd_sec
 coef(regfitbwd.all_sec, c_bwd_sec)
+ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
+summary(ols_sec)
+coef(ols_sec)
+ols_pri<-lm(PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri)
+summary(ols_pri)
+coef(ols_pri)
 ```
 
 Based on the three types of model selection,
@@ -3231,7 +3237,7 @@ We observe that BSS and Backward selection recommend the same model for primary 
 
 The best linear model for obesity prevalence in primary schools is 
    (Intercept)      Education is_popular_sch    is_govt_sch    is_coed_sch 
-   0.216206288   -0.010604366   -0.009079636    0.014440522    0.017533648 
+    0.21094278    -0.01003655    -0.01062369     0.01403196     0.01713016 
 
 This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis. 
 
@@ -3239,15 +3245,14 @@ We also observe all 3 approaches recommend the same model for secondary school v
 
 The best linear model for obesity prevalence in secondary schools is 
    (Intercept)      Education is_special_sch 
-   0.247219424   -0.009114996   -0.043620675
+    0.25547845    -0.01003888    -0.05027655 
 
 This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables. 
 
 #Generating Best Fit OLS Model and Doing Usual Checks (Sec)
 
 ```{r}
-ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
-summary(ols_sec)
+
 res_sec = residuals(ols_sec)
 plot(obesity_model_analysis_sec$Education, res_sec, 
      main = "Residual Plot", 
@@ -3259,11 +3264,8 @@ plot(obesity_model_analysis_sec$is_special_sch, res_sec,
      ylab = "Residuals",
      xlab = "is_special_sch")
 cor(obesity_model_analysis_sec$is_special_sch, res_sec)
-length(ols_sec)
-summary(ols_sec)
-dim(obesity_model_analysis_sec)
-ols_pri<-lm(PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri)
-summary(ols_pri)
+
+
 
 ```
 
