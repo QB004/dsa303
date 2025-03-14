@@ -3012,6 +3012,17 @@ obesity_overall_data <-
   obesity_data_sf_2023_OSO %>% 
   st_join(ura_planning_areas) %>% 
   left_join(census_merge_data, by = join_by(PLN_AREA_N)) %>% 
+  mutate(
+    # missing income and education data for schools in MUSEUM & NEWTON planning areas, so fill those with RIVER VALLEY data
+    Income = ifelse(
+      PLN_AREA_N %in% c("MUSEUM", "NEWTON"),
+      6925,
+      Income),
+    Education = ifelse(
+      PLN_AREA_N %in% c("MUSEUM", "NEWTON"),
+      9.76,
+      Education)
+    ) %>% 
   left_join(school_rankings, by = join_by(SCHOOL == School)) %>% 
   left_join(nearest_outlet_distance_data, by = join_by(SCHOOL)) %>% 
   left_join(num_food_outlets_data, by = join_by(PT_ID)) %>% 
