@@ -266,14 +266,14 @@ ura_subzones_map <- tm_shape(ura_subzones, name = "URA subzones") + tm_polygons(
 # MOE zones map
 moe_zones <- obesity_data %>% group_by(ZONE) %>% 
   summarise(geometry = st_union(geometry)) %>% st_convex_hull()
-moe_zone_map <- tm_shape(moe_zones, name = "MOE zones") + tm_polygons(
+moe_zones_map <- tm_shape(moe_zones, name = "MOE zones") + tm_polygons(
   col = "grey", fill = "ZONE", fill_alpha = 0.25, 
   fill.legend = tm_legend(title = "MOE School Zones"))
 
 # MOE clusters map
 moe_clusters <- obesity_data %>% group_by(CLUSTER) %>% 
   summarise(geometry = st_union(geometry)) %>% st_convex_hull()
-moe_cluster_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
+moe_clusters_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
   col = "grey", fill = "CLUSTER", fill_alpha = 0.25, 
   fill.legend = tm_legend_hide())
 ```
@@ -312,7 +312,7 @@ school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prev
 
 # Overview of overweight prevalence levels in Singapore schools
 ura_regions_map + ura_planning_areas_map + ura_subzones_map + 
-  moe_zone_map + moe_cluster_map +
+  moe_zones_map + moe_clusters_map +
   school_obesity_map +
   tm_title("Overview of overweight prevalence in Singapore schools")
 ```
@@ -362,7 +362,7 @@ pri_sch_sde_weighted_line <- pri_sch_sde_weighted$LOCATIONS %>%
   st_combine() %>% 
   st_cast("LINESTRING")
 
-pri_sch_map <- ura_regions_map +
+pri_sch_map <- 
   tm_shape(obesity_pri_sch, name = "Overweight prevalence") +
   tm_symbols(
     size = "PREVALENCE",
@@ -434,7 +434,7 @@ sec_sch_sde_weighted_line <- sec_sch_sde_weighted$LOCATIONS %>%
   st_combine() %>% 
   st_cast("LINESTRING")
 
-sec_sch_map <- ura_regions_map +
+sec_sch_map <- 
   tm_shape(obesity_sec_sch, name = "Overweight prevalence") +
   tm_symbols(
     shape = 22,
@@ -570,7 +570,7 @@ obesity_moe_zones <-
     geometry = st_union(geometry)
     )
 
-moe_zone_map +
+moe_zones_map +
   tm_legend_hide() + 
   obesity_moe_zones %>% 
   tm_shape(name = "Overweight prevalence") +
@@ -602,7 +602,7 @@ obesity_moe_clusters <-
     geometry = st_union(geometry)
     )
 
-moe_cluster_map + obesity_moe_clusters %>% 
+moe_clusters_map + obesity_moe_clusters %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
@@ -623,8 +623,7 @@ moe_cluster_map + obesity_moe_clusters %>%
   tm_facets_wrap(by = "LEVEL")
 ```
 
-
-# Region based analysis (Contiguous neighbouring regions)
+# Region based analysis (Contiguous region neighbours)
 
 There are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
 
@@ -638,7 +637,7 @@ ura_regions_nb_line_pri <- ura_regions_nb_pri %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_regions_pri)))
 pri_map <- ura_regions_map +
   ura_regions_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
-  st_point_on_surface(st_geometry(obesity_ura_regions_pri)) %>% tm_shape() + tm_symbols()
+  st_point_on_surface(st_geometry(obesity_ura_regions_pri)) %>% tm_shape() + tm_symbols(size = 0.5)
 
 # by Secondary school
 obesity_ura_regions_sec <- obesity_ura_regions %>% filter(LEVEL == "SECONDARY")
@@ -647,7 +646,7 @@ ura_regions_nb_line_sec <- ura_regions_nb_sec %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_regions_sec)))
 sec_map <- ura_regions_map +
   ura_regions_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
-  st_point_on_surface(st_geometry(obesity_ura_regions_sec)) %>% tm_shape() + tm_symbols()
+  st_point_on_surface(st_geometry(obesity_ura_regions_sec)) %>% tm_shape() + tm_symbols(size = 0.5)
 
 tmap_arrange(pri_map, sec_map)
 ```
@@ -670,9 +669,23 @@ ura_planning_areas_nb_pri <- read.gal("ura_planning_areas_nb_pri.gal")
 ura_planning_areas_nb_line_pri <- ura_planning_areas_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)))
 pri_map <- ura_planning_areas_map +
-  ura_planning_areas_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
+  obesity_ura_planning_areas_pri %>% tm_shape() +
+  tm_polygons(
+    fill = "PREVALENCE_AGGREGATE",
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "brewer.yl_or_rd"
+      ), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence",
+      # orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) + 
+  ura_planning_areas_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) +
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)) %>% 
-  tm_shape() + tm_symbols()
+  tm_shape() + tm_symbols(size = 0.5)
 
 # by Secondary school
 obesity_ura_planning_areas_sec <- obesity_ura_planning_areas %>% 
@@ -689,9 +702,23 @@ ura_planning_areas_nb_sec <- read.gal("ura_planning_areas_nb_sec.gal")
 ura_planning_areas_nb_line_sec <- ura_planning_areas_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_sec)))
 sec_map <- ura_planning_areas_map +
-  ura_planning_areas_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
+  obesity_ura_planning_areas_sec %>% tm_shape() +
+  tm_polygons(
+    fill = "PREVALENCE_AGGREGATE",
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "brewer.yl_or_rd"
+      ), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence",
+      # orientation = "landscape", 
+      position = c("BOTTOM", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    ) + 
+  ura_planning_areas_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) +
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_sec)) %>% 
-  tm_shape() + tm_symbols()
+  tm_shape() + tm_symbols(size = 0.5)
 
 tmap_arrange(pri_map, sec_map)
 ```
@@ -839,7 +866,7 @@ ura_subzones_nb_line_pri <- ura_subzones_nb_pri %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_subzones_pri)))
 pri_map <- ura_subzones_map +
   ura_subzones_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
-  st_point_on_surface(st_geometry(obesity_ura_subzones_pri)) %>% tm_shape() + tm_symbols()
+  st_point_on_surface(st_geometry(obesity_ura_subzones_pri)) %>% tm_shape() + tm_symbols(size = 0.5)
 
 obesity_ura_subzones_sec <- obesity_ura_subzones %>% filter(LEVEL == "SECONDARY")
 ura_subzones_nb_sec <- obesity_ura_subzones_sec %>% poly2nb(queen = T)
@@ -847,67 +874,68 @@ ura_subzones_nb_line_sec <- ura_subzones_nb_sec %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_subzones_sec)))
 sec_map <- ura_subzones_map +
   ura_subzones_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
-  st_point_on_surface(st_geometry(obesity_ura_subzones_sec)) %>% tm_shape() + tm_symbols()
+  st_point_on_surface(st_geometry(obesity_ura_subzones_sec)) %>% tm_shape() + tm_symbols(size = 0.5)
 
 tmap_arrange(pri_map, sec_map)
 ```
 
+
 # Cluster based analysis (Social distance)
 
-## MOE clusters
+## Contiguous neighbours by MOE clusters
 
 ```{r}
-# # Function to write a .gal file in the specified format
-# write_gal <- function(data, filename) {
-#   fileConn <- file(filename, "w")
-#   # Write the number of participants
-#   writeLines(as.character(nrow(data)), fileConn)
-#   # Iterate through each participant
-#   for (i in seq_len(nrow(data))) {
-#     pt_id <- data$PT_ID[i]
-#     # Find neighbors (same CLUSTER, different PT_ID)
-#     neighbors <- data$PT_ID[data$CLUSTER == data$CLUSTER[i] & data$PT_ID != pt_id]
-#     # Write PT_ID followed by number of neighbors
-#     writeLines(paste(as.character(pt_id), length(neighbors)) , fileConn)
-#     # Write list of neighbors (if any)
-#     if (length(neighbors) > 0) {
-#       writeLines(paste(neighbors, collapse = " "), fileConn)
-#     }
-#   }
-#   close(fileConn)
-# }
-# 
-# # Write to a .gal file
-# moe_clusters_pri <- obesity_pri_sch %>%
-#   st_drop_geometry() %>%
-#   select(PT_ID, SCHOOL, CLUSTER)
-# write_gal(moe_clusters_pri, "moe_clusters_pri.gal")
-# 
-# moe_clusters_sec <- obesity_sec_sch %>%
-#   st_drop_geometry() %>%
-#   select(PT_ID, SCHOOL, CLUSTER)
-# write_gal(moe_clusters_sec, "moe_clusters_sec.gal")
+# Function to write a .gal file in the specified format
+write_gal <- function(data, filename) {
+  fileConn <- file(filename, "w")
+  # Write the number of participants
+  writeLines(as.character(nrow(data)), fileConn)
+  # Iterate through each participant
+  for (i in seq_len(nrow(data))) {
+    pt_id <- data$PT_ID[i]
+    # Find neighbors (same CLUSTER, different PT_ID)
+    neighbors <- data$PT_ID[data$CLUSTER == data$CLUSTER[i] & data$PT_ID != pt_id]
+    # Write PT_ID followed by number of neighbors
+    writeLines(paste(as.character(pt_id), length(neighbors)) , fileConn)
+    # Write list of neighbors (if any)
+    if (length(neighbors) > 0) {
+      writeLines(paste(neighbors, collapse = " "), fileConn)
+    }
+  }
+  close(fileConn)
+}
 
-# # Does not work
-# obesity_moe_clusters_pri <- obesity_moe_clusters %>% filter(LEVEL == "PRIMARY")
-# moe_clusters_nb_pri <- 
-#   read.gal("moe_clusters_pri.gal", region.id = obesity_pri_sch$PT_ID)
-# moe_clusters_nb_line_pri <- moe_clusters_nb_pri %>% 
-#   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_pri)))
-# pri_map <- moe_clusters_map +
-#   moe_clusters_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
-#   st_point_on_surface(st_geometry(obesity_moe_clusters_pri)) %>% tm_shape() + tm_symbols()
-# 
-# obesity_moe_clusters_sec <- obesity_moe_clusters %>% filter(LEVEL == "SECONDARY")
-# moe_clusters_nb_sec <- 
-#   read.gal("moe_clusters_sec.gal", region.id = obesity_sec_sch$PT_ID)
-# moe_clusters_nb_line_sec <- moe_clusters_nb_sec %>% 
-#   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_sec)))
-# sec_map <- moe_clusters_map +
-#   moe_clusters_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
-#   st_point_on_surface(st_geometry(obesity_moe_clusters_sec)) %>% tm_shape() + tm_symbols()
-# 
-# tmap_arrange(pri_map, sec_map)
+# Write to a .gal file
+moe_clusters_pri <- obesity_pri_sch %>%
+  st_drop_geometry() %>%
+  select(PT_ID, SCHOOL, CLUSTER)
+write_gal(moe_clusters_pri, "moe_clusters_pri.gal")
+
+moe_clusters_sec <- obesity_sec_sch %>%
+  st_drop_geometry() %>%
+  select(PT_ID, SCHOOL, CLUSTER)
+write_gal(moe_clusters_sec, "moe_clusters_sec.gal")
+
+obesity_moe_clusters_pri <- obesity_pri_sch %>% filter(LEVEL == "PRIMARY")
+moe_clusters_nb_pri <-
+  read.gal("moe_clusters_pri.gal", region.id = obesity_pri_sch$PT_ID)
+moe_clusters_nb_line_pri <- moe_clusters_nb_pri %>%
+  nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_pri)))
+pri_map <- moe_clusters_map +
+  moe_clusters_nb_line_pri %>% tm_shape() + tm_lines(lwd = 0.5) +
+  pri_sch_map
+
+
+obesity_moe_clusters_sec <- obesity_sec_sch %>% filter(LEVEL == "SECONDARY")
+moe_clusters_nb_sec <-
+  read.gal("moe_clusters_sec.gal", region.id = obesity_sec_sch$PT_ID)
+moe_clusters_nb_line_sec <- moe_clusters_nb_sec %>%
+  nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_sec)))
+sec_map <- moe_clusters_map +
+  moe_clusters_nb_line_sec %>% tm_shape() + tm_lines(lwd = 0.5) +
+  sec_sch_map
+
+tmap_arrange(pri_map, sec_map)
 ```
 
 ### Spatial autocorrelation statistics
@@ -1920,7 +1948,12 @@ school_rankings <- rbind(pri_rankings, sec_rankings)
 
 ```{r}
 census <- read.csv("census stats.csv") %>% 
-  mutate(PLN_AREA_N = toupper(PLN_AREA_N))
+  mutate(PLN_AREA_N = toupper(PLN_AREA_N)) %>% 
+  # missing MUSEUM & NEWTON planning areas, so we will fill in with OTHERS data
+  rbind(
+    c("MUSEUM", "12233", "12376", "12.58", "1693", "1125"),
+    c("NEWTON", "12233", "12376", "12.58", "1693", "1125")
+    )
 
 census_merge <- ura_planning_areas %>%
   left_join(census) %>%
@@ -2265,7 +2298,7 @@ wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 # morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
 ```
 
-#Distance of the nearest food option to each school
+# Distance of the nearest food option to each school
 ```{r} 
 #Write function to compute distance to nearest food option, along with outlet_type
 library(geosphere)
@@ -2342,7 +2375,7 @@ obesity_joined_school_sports_data <-
   mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) #ratio of sports cca per 100 students
 ```
 
-#Visualising physical sports participation by school level
+# Visualising physical sports participation by school level
 
 ###########################PRIMARY SCHOOL####################################
 
@@ -2583,7 +2616,7 @@ combined_cca_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_dat
 
 
 
-#BIVARIATE CHLOROPLETH MAPS FOR CCA RATIO VS PREVALENCE
+# BIVARIATE CHLOROPLETH MAPS FOR CCA RATIO VS PREVALENCE
 ```{r}
 
 library(classInt);library(dplyr)
@@ -2814,7 +2847,7 @@ sec_dus_map
 
 # K Nearest Neighbours
 
-#NEAREST SPORTS FACILITY TO SCHOOL
+# NEAREST SPORTS FACILITY TO SCHOOL
 
 ## 1 neighbour
 
@@ -2986,16 +3019,15 @@ facility_density_map
 # Selecting relevant columns
 census_merge_data <- census_merge %>% 
   st_drop_geometry() %>% 
-  select(PLN_AREA_N, Income, Education) 
+  select(PLN_AREA_N, Income, Education)
 
 nearest_outlet_distance_data <- nearest_outlet_distance %>% 
   st_drop_geometry()
 
-num_food_outlets_data <- 
-  rbind(
-    select(st_drop_geometry(obesity_pri_food), PT_ID, num_food_outlets),
-    select(st_drop_geometry(obesity_sec_food), PT_ID, num_food_outlets)
-    )
+num_food_outlets_data <- rbind(
+  select(st_drop_geometry(obesity_pri_food), PT_ID, num_food_outlets),
+  select(st_drop_geometry(obesity_sec_food), PT_ID, num_food_outlets)
+  )
 
 school_sports_ccas_data <- school_sports_ccas %>%
   select(-school_section)
@@ -3004,25 +3036,14 @@ nearest_dus_data <-
   rbind(
     select(st_drop_geometry(pri_nearest_dus), school_id, distance_1),
     select(st_drop_geometry(sec_nearest_dus), school_id, distance_1)
-  ) %>% 
+    ) %>% 
   rename(distance_to_nearest_dus = distance_1)
 
 # Joining data frames
 obesity_overall_data <-
   obesity_data_sf_2023_OSO %>% 
   st_join(ura_planning_areas) %>% 
-  left_join(census_merge_data, by = join_by(PLN_AREA_N)) %>% 
-  mutate(
-    # missing income and education data for schools in MUSEUM & NEWTON planning areas, so fill those with RIVER VALLEY data
-    Income = ifelse(
-      PLN_AREA_N %in% c("MUSEUM", "NEWTON"),
-      6925,
-      Income),
-    Education = ifelse(
-      PLN_AREA_N %in% c("MUSEUM", "NEWTON"),
-      9.76,
-      Education)
-    ) %>% 
+  left_join(census_merge_data, by = join_by(PLN_AREA_N)) %>%
   left_join(school_rankings, by = join_by(SCHOOL == School)) %>% 
   left_join(nearest_outlet_distance_data, by = join_by(SCHOOL)) %>% 
   left_join(num_food_outlets_data, by = join_by(PT_ID)) %>% 
@@ -3033,8 +3054,8 @@ obesity_overall_data <-
   st_drop_geometry() %>% 
   mutate(across(
     c(LEVEL, type_code, nature_code, session_code, sap_ind, autonomous_ind, 
-      gifted_ind, ip_ind, special, is_popular_sch, outlet_type)
-    , as.factor
+      gifted_ind, ip_ind, special, is_popular_sch, outlet_type), 
+    as.factor
     )) 
 
 obesity_overall_data %>% 
@@ -3087,42 +3108,35 @@ We must ensure that the predictors are correlated with the dependent variable an
 
 ```{r}
 # for primary schools
-
-rmat <- cor(obesity_model_pri, use = "complete.obs")
-corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
-               upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
-
 rmat <- cor(obesity_model_pri, use = "pairwise.complete.obs")
 corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
                upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
 
 # for secondary schoools
-rmat <- cor(obesity_model_sec, use = "complete.obs")
-corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
-               upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
-
-rmat <- cor(obesity_model_sec, use = "pairwise.complete.obs")
+rmat <- cor(obesity_model_sec, use = "pairwise.complete.obs") 
 corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
                upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
 ```
 
+We used pairwise complete observations as the sports_cca_per_100 had many missing rows.
+
 **For Primary Schools**
 Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
 
--   Distance to nearest dual-use sports facility (distance_to_nearest_dus),
+-   Number of food outlets within a 1km radius of school (num_food_outlets),
 -   Government school status (is_govt_sch),
--   Co-ed school status (is_coed_sch)
--   Single session school status (is_single_sess)
+-   Co-ed school status (is_coed_sch),
+-   Single session school status (is_single_sess).
 
-Further, there is a negative linear relationship between overweight prevalence (PREVALENCE) and the
+Furthermore, there is a negative linear relationship between overweight prevalence (PREVALENCE) and the
 
 -   HMSP score (HMSP_Score),
 -   Sports CCAs per 100 students (sports_cca_per_100),
+-   Distance to nearest dual-use sports facility (distance_to_nearest_dus),
 -   Gross Monthly Income from Work by Planning Area (Income),
 -   Years of Education by Planning Area (Education),
 -   Popular schools by Phase 2C subscription (is_popular_sch),
 -   Distance from school to the nearest external food option (distance_to_nearest_food_option),
--   Number of food outlets within a 1km radius of school (num_food_outlets),
 -   SAP school status (is_sap_sch),
 -   GEP school status (is_gifted_sch),
 -   Special school status: SAP or GEP (is_special_sch).
@@ -3130,14 +3144,15 @@ Further, there is a negative linear relationship between overweight prevalence (
 **For Secondary Schools**
 Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
 
--   Distance to nearest dual-use sports facility (distance_to_nearest_dus),
 -   Government school status (is_govt_sch),
--   Co-ed school status (is_coed_sch).
+-   Co-ed school status (is_coed_sch),
+-   Single session school status (is_single_sess).
 
-Further, there is a negative linear relationship between overweight prevalence (PREVALENCE) and the
+Furthermore, there is a negative linear relationship between overweight prevalence (PREVALENCE) and the
 
 -   HMSP score (HMSP_Score),
 -   Sports CCAs per 100 students (sports_cca_per_100),
+-   Distance to nearest dual-use sports facility (distance_to_nearest_dus),
 -   Gross Monthly Income from Work by Planning Area (Income),
 -   Years of Education by Planning Area (Education),
 -   Popular schools by cutoff score (is_popular_sch),
@@ -3154,11 +3169,11 @@ Further, there is a negative linear relationship between overweight prevalence (
 
 ```{r}
 obesity_model_analysis_pri <- obesity_model_pri %>%
-select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch)
+  select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch)
 lm.all_pri<- lm(PREVALENCE~.,data=obesity_model_analysis_pri)
 summary(lm.all_pri)
 obesity_model_analysis_sec <- obesity_model_sec %>%
-select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch,-is_ip_sch,-is_autonomous_sch)
+  select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch,-is_ip_sch,-is_autonomous_sch)
 lm.all_sec<- lm(PREVALENCE~.,data=obesity_model_analysis_sec)
 summary(lm.all_sec)
 ```
@@ -3224,12 +3239,6 @@ coef(regfitbwd.all_sec, res_bwd_sec)
 c_bwd_sec <- which.min(regbwd.summary_sec$bic)
 c_bwd_sec
 coef(regfitbwd.all_sec, c_bwd_sec)
-ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
-summary(ols_sec)
-coef(ols_sec)
-ols_pri<-lm(PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri)
-summary(ols_pri)
-coef(ols_pri)
 ```
 
 Based on the three types of model selection,
@@ -3237,7 +3246,7 @@ We observe that BSS and Backward selection recommend the same model for primary 
 
 The best linear model for obesity prevalence in primary schools is 
    (Intercept)      Education is_popular_sch    is_govt_sch    is_coed_sch 
-    0.21094278    -0.01003655    -0.01062369     0.01403196     0.01713016 
+   0.216206288   -0.010604366   -0.009079636    0.014440522    0.017533648 
 
 This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis. 
 
@@ -3245,14 +3254,15 @@ We also observe all 3 approaches recommend the same model for secondary school v
 
 The best linear model for obesity prevalence in secondary schools is 
    (Intercept)      Education is_special_sch 
-    0.25547845    -0.01003888    -0.05027655 
+   0.247219424   -0.009114996   -0.043620675
 
 This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables. 
 
-#Generating Best Fit OLS Model and Doing Usual Checks (Sec)
+## Generating Best Fit OLS Model and Doing Usual Checks (Sec)
 
 ```{r}
-
+ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
+summary(ols_sec)
 res_sec = residuals(ols_sec)
 plot(obesity_model_analysis_sec$Education, res_sec, 
      main = "Residual Plot", 
@@ -3264,8 +3274,11 @@ plot(obesity_model_analysis_sec$is_special_sch, res_sec,
      ylab = "Residuals",
      xlab = "is_special_sch")
 cor(obesity_model_analysis_sec$is_special_sch, res_sec)
-
-
+length(ols_sec)
+summary(ols_sec)
+dim(obesity_model_analysis_sec)
+ols_pri<-lm(PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri)
+summary(ols_pri)
 
 ```
 
