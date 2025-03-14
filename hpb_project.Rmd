@@ -742,7 +742,7 @@ obesity_ura_planning_areas_pri$HIGH_PREVALENCE <-
 pri_map <- ura_regions_map + obesity_ura_planning_areas_pri %>% 
   tm_shape(name = "Overweight prevalence") + tm_polygons(fill = "HIGH_PREVALENCE") +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_ura_planning_areas_pri$HIGH_PREVALENCE, 
+joincount.multi(obesity_ura_planning_areas_pri$HIGH_PREVALENCE, 
                 ura_planning_areas_lw_B_pri) 
 
 # by Secondary school
@@ -751,7 +751,7 @@ obesity_ura_planning_areas_sec$HIGH_PREVALENCE <-
 sec_map <- ura_regions_map + obesity_ura_planning_areas_sec %>% 
   tm_shape(name = "Overweight prevalence") + tm_polygons(fill = "HIGH_PREVALENCE") +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_ura_planning_areas_sec$HIGH_PREVALENCE, 
+joincount.multi(obesity_ura_planning_areas_sec$HIGH_PREVALENCE, 
                 ura_planning_areas_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map)
@@ -956,7 +956,7 @@ pri_map <- ura_regions_map + obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
                 moe_clusters_lw_B_pri) 
 
 # by Secondary school
@@ -970,7 +970,7 @@ sec_map <- ura_regions_map + obesity_sec_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
                 moe_clusters_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map)
@@ -1117,7 +1117,7 @@ pri_map <- ura_regions_map + obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
                 del_lw_B_pri) 
 
 # by Secondary school
@@ -1131,7 +1131,7 @@ sec_map <- ura_regions_map + obesity_sec_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
                 del_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map)
@@ -1281,7 +1281,7 @@ pri_map <- ura_regions_map + obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
                 soi_lw_B_pri) 
 
 # by Secondary school
@@ -1295,7 +1295,7 @@ sec_map <- ura_regions_map + obesity_sec_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
                 soi_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map)
@@ -1450,7 +1450,7 @@ pri_map <- ura_regions_map + obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
                 knn1_lw_B_pri) 
 
 # by Secondary school
@@ -1464,7 +1464,7 @@ sec_map <- ura_regions_map + obesity_sec_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
                 knn1_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map)
@@ -1609,7 +1609,7 @@ pri_map <- ura_regions_map + obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
                 knn2_lw_B_pri) 
 
 # by Secondary school
@@ -1623,7 +1623,7 @@ sec_map <- ura_regions_map + obesity_sec_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
                 knn2_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map)
@@ -1768,7 +1768,7 @@ pri_map <- ura_regions_map + obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
                 knn3_lw_B_pri) 
 
 # by Secondary school
@@ -1782,7 +1782,7 @@ sec_map <- ura_regions_map + obesity_sec_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
-jois_special_schount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
                 knn3_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map)
@@ -1916,7 +1916,7 @@ sec_rankings <- read.csv("sec rankings.csv") %>%
 school_rankings <- rbind(pri_rankings, sec_rankings)
 ```
 
-# is_special_schome distribution (Lucas)
+# Income distribution (Lucas)
 
 ```{r}
 census <- read.csv("census stats.csv") %>% 
@@ -1924,13 +1924,13 @@ census <- read.csv("census stats.csv") %>%
 
 census_merge <- ura_planning_areas %>%
   left_join(census) %>%
-  drop_na("is_special_schome")
+  drop_na("Income")
 
 ura_planning_areas_map + tm_shape(census_merge) + 
-  tm_polygons(fill="is_special_schome", 
+  tm_polygons(fill="Income", 
               fill.scale = tm_scale(breaks = c(6925,8396,9532,11317,16197))
               ) +
-  tm_title("Breakdown by Household is_special_schome")
+  tm_title("Breakdown by Household Income")
 
 ura_planning_areas_map + tm_shape(census_merge) + 
   tm_polygons(fill="Education", 
@@ -1951,67 +1951,67 @@ ura_planning_areas_map + tm_shape(census_merge) +
   tm_title("Breakdown by Sec Students")
 ```
 
-# Spatial Descriptive Summary Measures of is_special_schome (Lucas)
+# Spatial Descriptive Summary Measures of Income (Lucas)
 
 ```{r}
 census_coords <- st_coordinates(st_point_on_surface(census_merge))
-is_special_schome_mean <- calc_mnc(id = 1, points = census_coords)
-is_special_schome_median <- calc_mdc(id = 2, points = census_coords)
-is_special_schome_mean_median <- rbind(is_special_schome_mean$LOCATIONS, is_special_schome_median$LOCATIONS) %>% 
+income_mean <- calc_mnc(id = 1, points = census_coords)
+income_median <- calc_mdc(id = 2, points = census_coords)
+income_mean_median <- rbind(income_mean$LOCATIONS, income_median$LOCATIONS) %>% 
   data.frame() %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs)
-is_special_schome_mean_median$id = c("Weighted mean", "Weighted median")
+income_mean_median$id = c("Weighted mean", "Weighted median")
 
-is_special_schome_sdd <- calc_sdd(id = 3, points = census_coords)
-is_special_schome_sdd_line <- is_special_schome_sdd$LOCATIONS %>% 
+income_sdd <- calc_sdd(id = 3, points = census_coords)
+income_sdd_line <- income_sdd$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
   st_cast("LINESTRING")
 
-is_special_schome_sde <- calc_sde(id = 4, points = census_coords)
-is_special_schome_sde_line <- is_special_schome_sde$LOCATIONS %>% 
+income_sde <- calc_sde(id = 4, points = census_coords)
+income_sde_line <- income_sde$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
   st_cast("LINESTRING")
 
-is_special_schome_sde_weighted <- calc_sde(
-  id = 5, calccentre = T, weighted = T, weights = census_merge$is_special_schome,
+income_sde_weighted <- calc_sde(
+  id = 5, calccentre = T, weighted = T, weights = census_merge$Income,
   points = census_coords)
-is_special_schome_sde_weighted_line <- is_special_schome_sde_weighted$LOCATIONS %>% 
+income_sde_weighted_line <- income_sde_weighted$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
   st_cast("LINESTRING")
 
-is_special_schome_map <- ura_planning_areas_map +
-    tm_shape(census_merge, name = "is_special_schome") +
+income_map <- ura_planning_areas_map +
+    tm_shape(census_merge, name = "Income") +
     tm_symbols(
-        size = "is_special_schome",
+        size = "Income",
         size.scale = tm_scale_continuous(values.scale = 0.8),
         size.legend = tm_legend_hide(),
-        fill = "is_special_schome", 
+        fill = "Income", 
         # a green-red diverging scale to indicate severity of overweight prevalence
         fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
         fill.legend = tm_legend(
-            title = "is_special_schome Distribution",
+            title = "Income Distribution",
             orientation = "landscape", 
             position = c("BOTTOM", "LEFT"),
             item.height = 0.5, item.width = 2.1
         )
     ) + 
-    tm_shape(is_special_schome_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
-    tm_shape(is_special_schome_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
-    tm_shape(is_special_schome_sde_weighted_line, name = "weighted SDE") + 
+    tm_shape(income_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
+    tm_shape(income_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+    tm_shape(income_sde_weighted_line, name = "weighted SDE") + 
     tm_lines(col = "red", lwd = 2, lty = 3) +
-    tm_shape(is_special_schome_mean_median, name = "Summary measures") + tm_dots(
+    tm_shape(income_mean_median, name = "Summary measures") + tm_dots(
         size = 0.5, shape = "id", fill = "white", 
         shape.legend = tm_legend("Summary measures")
     ) + 
     tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
     tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
     tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
-    tm_title("is_special_schome Distribution across SG Planning Areas")
+    tm_title("Income Distribution across SG Planning Areas")
 
-print(is_special_schome_map)
+print(income_map)
 ```
 
 # Spatial Descriptive Summary Measures of Education Years (Lucas)
@@ -2261,10 +2261,8 @@ obesity_sec_food
 coords_sec_sch <- st_coordinates(obesity_sec_food)
 knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_sec_sch, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
-morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
-morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
-
-
+# morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
+# morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
 ```
 
 #Distance of the nearest food option to each school
@@ -2314,8 +2312,8 @@ food_combined_sf
 coords_dist <- st_coordinates(food_combined_sf)
 knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
-morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
-morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
+# morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
+# morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
 ```
 
 
@@ -2616,11 +2614,11 @@ pri_bc <- pri_cca_prevalence %>%
     sports_cat = cut(avg_cca_ratio, 
                      breaks = classIntervals(avg_cca_ratio, 3, style = "quantile")$brks, 
                      labels = c("Low", "Medium", "High"), 
-                     is_special_schlude.lowest = TRUE),
+                     include.lowest = TRUE),
     obesity_cat = cut(avg_prevalence, 
                       breaks = classIntervals(avg_prevalence, 3, style = "quantile")$brks, 
                       labels = c("Low", "Medium", "High"), 
-                      is_special_schlude.lowest = TRUE)
+                      include.lowest = TRUE)
   )
 
 #Combine the two classifications into one
@@ -2669,11 +2667,11 @@ sec_bc <- sec_cca_prevalence %>%
     sports_cat = cut(avg_cca_ratio, 
                      breaks = classIntervals(avg_cca_ratio, 3, style = "quantile")$brks, 
                      labels = c("Low", "Medium", "High"), 
-                     is_special_schlude.lowest = TRUE),
+                     include.lowest = TRUE),
     obesity_cat = cut(avg_prevalence, 
                       breaks = classIntervals(avg_prevalence, 3, style = "quantile")$brks, 
                       labels = c("Low", "Medium", "High"), 
-                      is_special_schlude.lowest = TRUE)
+                      include.lowest = TRUE)
   )
 
 #Combine the two classifications into one
@@ -2988,7 +2986,7 @@ facility_density_map
 # Selecting relevant columns
 census_merge_data <- census_merge %>% 
   st_drop_geometry() %>% 
-  select(PLN_AREA_N, is_special_schome, Education) 
+  select(PLN_AREA_N, Income, Education) 
 
 nearest_outlet_distance_data <- nearest_outlet_distance %>% 
   st_drop_geometry()
@@ -3109,7 +3107,7 @@ Further, there is a negative linear relationship between overweight prevalence (
 
 -   HMSP score (HMSP_Score),
 -   Sports CCAs per 100 students (sports_cca_per_100),
--   Gross Monthly is_special_schome from Work by Planning Area (is_special_schome),
+-   Gross Monthly Income from Work by Planning Area (Income),
 -   Years of Education by Planning Area (Education),
 -   Popular schools by Phase 2C subscription (is_popular_sch),
 -   Distance from school to the nearest external food option (distance_to_nearest_food_option),
@@ -3129,7 +3127,7 @@ Further, there is a negative linear relationship between overweight prevalence (
 
 -   HMSP score (HMSP_Score),
 -   Sports CCAs per 100 students (sports_cca_per_100),
--   Gross Monthly is_special_schome from Work by Planning Area (is_special_schome),
+-   Gross Monthly Income from Work by Planning Area (Income),
 -   Years of Education by Planning Area (Education),
 -   Popular schools by cutoff score (is_popular_sch),
 -   Distance from school to the nearest external food option (distance_to_nearest_food_option),
@@ -3154,8 +3152,8 @@ lm.all_sec<- lm(PREVALENCE~.,data=obesity_model_analysis_sec)
 summary(lm.all_sec)
 ```
 
-For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistically significant variables is_special_schlude is_coed_sch (p-value <0.01), is_popular_sch (p-value<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value<0.1)
-For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables is_special_schlude the intercept (p-value<0.05) and is_popular_sch (p-value<0.1). 
+For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistically significant variables include is_coed_sch (p-value <0.01), is_popular_sch (p-value<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value<0.1)
+For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value<0.05) and is_popular_sch (p-value<0.1). 
 
 ```{r}
 #BSS for Pri
@@ -3224,7 +3222,7 @@ The best linear model for obesity prevalence in primary schools is
    (Intercept)      Education is_popular_sch    is_govt_sch    is_coed_sch 
    0.216206288   -0.010604366   -0.009079636    0.014440522    0.017533648 
 
-This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also is_special_schluded in the best linear model despite not being statistically significant in the earlier analysis. 
+This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis. 
 
 We also observe all 3 approaches recommend the same model for secondary school variables with 2 terms based on smallest BIC criterion. 
 
