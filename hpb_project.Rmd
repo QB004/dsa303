@@ -3244,6 +3244,10 @@ coef(regfitbwd.all_sec, res_bwd_sec)
 c_bwd_sec <- which.min(regbwd.summary_sec$bic)
 c_bwd_sec
 coef(regfitbwd.all_sec, c_bwd_sec)
+ols_pri<-lm(PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri)
+summary(ols_pri)
+ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
+summary(ols_sec)
 ```
 
 Based on the three types of model selection,
@@ -3263,11 +3267,33 @@ The best linear model for obesity prevalence in secondary schools is
 
 This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables. 
 
+## Generating Spatial Models and Spatial Tests (Pri)
+
+```{r}
+library(spatialreg)
+pri_sar = spautolm(formula = PREVALENCE ~ 1, data=obesity_model_analysis_pri, listw=del_lw_pri)
+summary(pri_sar)
+pri_slm = lagsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
+summary(pri_slm)
+pri_sem = errorsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
+summary(pri_sem)
+pri_sarar = sacsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
+summary(pri_sarar)
+library(spdep)
+lm.LMtests(ols_pri, listw=del_lw_pri, test="all")
+LR.Sarlm(pri_sem,pri_sarar)
+LR.Sarlm(pri_slm,pri_sarar)
+LR.Sarlm(pri_slm,pri_sar)
+LR1.Sarlm(pri_slm)
+LR1.Sarlm(pri_sem)
+```
+pri_slm best spatial model
+
+
 ## Generating Best Fit OLS Model and Doing Usual Checks (Sec)
 
 ```{r}
-ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
-summary(ols_sec)
+
 res_sec = residuals(ols_sec)
 plot(obesity_model_analysis_sec$Education, res_sec, 
      main = "Residual Plot", 
@@ -3282,8 +3308,7 @@ cor(obesity_model_analysis_sec$is_special_sch, res_sec)
 length(ols_sec)
 summary(ols_sec)
 dim(obesity_model_analysis_sec)
-ols_pri<-lm(PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri)
-summary(ols_pri)
+
 
 ```
 
