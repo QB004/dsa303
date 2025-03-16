@@ -5,12 +5,15 @@ editor_options:
 ---
 # Data loading, cleaning and transformation
 
+## Loading libraries to work with spatial data
+
+```{r}
+library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(spatialreg); library(corrplot); library(readxl); library(gridExtra); library(imputeTS); library(seasonal); library(fpp2); library(urca); library(vars); library(trend)
+```
+
 ## Loading the data
 
 ```{r}
-# Loading libraries to work with spatial data
-library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(corrplot); library(readxl)
-
 # Loading Singapore URA subzone boundary data
 sg_ura_boundaries <- 
   st_read("MasterPlan2014SubzoneBoundaryWebSHP/MP14_SUBZONE_WEB_PL.shp") %>% 
@@ -3267,81 +3270,195 @@ The best linear model for obesity prevalence in secondary schools is
 
 This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables. 
 
-## Generating Spatial Models and Spatial Tests (Pri)
+## Residual checks for OLS model
+
+### Residual analysis for Primary Schools
 
 ```{r}
-library(spatialreg)
-pri_sar = spautolm(formula = PREVALENCE ~ 1, data=obesity_model_analysis_pri, listw=del_lw_pri)
-summary(pri_sar)
-pri_slm = lagsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
-summary(pri_slm)
-pri_sem = errorsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
-summary(pri_sem)
-pri_sarar = sacsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
-summary(pri_sarar)
-library(spdep)
-lm.LMtests(ols_pri, listw=del_lw_pri, test="all")
-LR.Sarlm(pri_sem,pri_sarar)
-LR.Sarlm(pri_slm,pri_sarar)
-LR.Sarlm(pri_slm,pri_sar)
-LR1.Sarlm(pri_slm)
-LR1.Sarlm(pri_sem)
-BIC(pri_slm);BIC(pri_sem);BIC(ols_pri)
-AIC(pri_slm);AIC(pri_sem);AIC(ols_pri)
+# Generating residuals for OLS model
+res_pri = residuals(ols_pri)
+
+# Plotting residuals on independent variables used in OLS model
+plot(obesity_model_analysis_pri$Education, res_pri, 
+     main = "Residual Plot", 
+     ylab = "Residuals",
+     xlab = "Education")
+cor(obesity_model_analysis_pri$Education, res_pri)
+
+plot(obesity_model_analysis_pri$is_popular_sch, res_pri, 
+     main = "Residual Plot", 
+     ylab = "Residuals",
+     xlab = "is_special_sch")
+cor(obesity_model_analysis_pri$is_popular_sch, res_pri)
+
+plot(obesity_model_analysis_pri$is_govt_sch, res_pri, 
+     main = "Residual Plot", 
+     ylab = "Residuals",
+     xlab = "is_special_sch")
+cor(obesity_model_analysis_pri$is_govt_sch, res_pri)
+
+plot(obesity_model_analysis_pri$is_coed_sch, res_pri, 
+     main = "Residual Plot", 
+     ylab = "Residuals",
+     xlab = "is_special_sch")
+cor(obesity_model_analysis_pri$is_coed_sch, res_pri)
+
+length(ols_pri)
+summary(ols_pri)
+dim(obesity_model_analysis_pri)
 ```
-Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see that when SLM is the alternative the p-value is small (0.01429) which is sufficient evidence at 5% significance level that the alternative SLM is more suitable. On the other hand, when SEM is the alternative, the p-value is larger at 0.05814, so there is insufficient evidence at 5% significance level to reject OLS. 
-This is further supported by the LM test results, where adjRSlag has a much smaller p-value of 0.06073 as compared to adjRSerr p-value of 0.6956. This suggests the SLM is more suitable than SEM, though the significance of SLM relative to OLS may be difficult to determine at 5% significance level from this test alone.
-Finally, considering the AIC and BIC values, we see pri_slm has marginally smaller AIC and BIC values than both SEM and OLS.
-This brings us to our conclusion that SLM is the most suitable spatial model for modelling obesity prevalence in primary schools. 
 
-## Generating Spatial Models and Spatial Tests (Sec)
+### Residual analysis for Secondary Schools
 
 ```{r}
-library(spatialreg)
-pri_sar = spautolm(formula = PREVALENCE ~ 1, data=obesity_model_analysis_pri, listw=del_lw_pri)
-summary(pri_sar)
-pri_slm = lagsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
-summary(pri_slm)
-pri_sem = errorsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
-summary(pri_sem)
-pri_sarar = sacsarlm(formula = PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obesity_model_analysis_pri, listw=del_lw_pri)
-summary(pri_sarar)
-library(spdep)
-lm.LMtests(ols_pri, listw=del_lw_pri, test="all")
-LR.Sarlm(pri_sem,pri_sarar)
-LR.Sarlm(pri_slm,pri_sarar)
-LR.Sarlm(pri_slm,pri_sar)
-LR1.Sarlm(pri_slm)
-LR1.Sarlm(pri_sem)
-BIC(pri_slm);BIC(pri_sem);BIC(ols_pri)
-AIC(pri_slm);AIC(pri_sem);AIC(ols_pri)
-```
-Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see in both tests where SLM and SEM are alternatives that the p-value is much larger than 0.05, showing there is insufficient evidence at 5% significance level to reject the null OLS. 
-This is further supported by the LM test results, where adjRSlag and adjRSerr p-values are very large. This suggests the OLS may be a more suitable model than the spatial models SLM and SEM.
-Finally, considering the AIC and BIC values, we see ols_sec has smaller AIC and BIC values than both SEM and OLS.
-This brings us to our conclusion that OLS is the most suitable for modelling obesity prevalence in primary schools, more so than any type of spatial model. 
-
-## Generating Best Fit OLS Model and Doing Usual Checks (Sec)
-
-```{r}
-
+# Generating residuals for OLS model
 res_sec = residuals(ols_sec)
+
+# Plotting residuals on independent variables used in OLS model
 plot(obesity_model_analysis_sec$Education, res_sec, 
      main = "Residual Plot", 
      ylab = "Residuals",
      xlab = "Education")
 cor(obesity_model_analysis_sec$Education, res_sec)
+
 plot(obesity_model_analysis_sec$is_special_sch, res_sec, 
      main = "Residual Plot", 
      ylab = "Residuals",
      xlab = "is_special_sch")
 cor(obesity_model_analysis_sec$is_special_sch, res_sec)
+
 length(ols_sec)
 summary(ols_sec)
 dim(obesity_model_analysis_sec)
-
-
 ```
+
+## Generating Spatial Models and Spatial Tests 
+
+### Spatial Models (Primary Schools)
+
+```{r}
+# Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
+pri_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_pri, 
+                    listw = del_lw_pri)
+summary(pri_sar) # Lambda: 0.51079, p-value: 3.1092e-08 
+
+pri_slm <- lagsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch, 
+  data = obesity_model_analysis_pri, listw = del_lw_pri)
+summary(pri_slm) # Rho: 0.22439, p-value: 0.014291
+
+pri_sem <- errorsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
+  data = obesity_model_analysis_pri, listw = del_lw_pri)
+summary(pri_sem) # Lambda: 0.23191, p-value: 0.05814
+
+pri_sarar <- sacsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
+  data = obesity_model_analysis_pri, listw = del_lw_pri)
+summary(pri_sarar) 
+# Rho: 0.36004, p-value: 0.0073521; Lambda: -0.24314, p-value: 0.25526
+```
+
+### Spatial Tests for model comparison (Primary Schools)
+
+```{r}
+# Lagrange Multiplier tests
+
+lm.LMtests(ols_pri, listw = del_lw_pri, test = "all") 
+# RSerr = 3.5693, df = 1, p-value = 0.05886
+# RSlag = 6.9336, df = 1, p-value = 0.008459
+# adjRSerr = 0.15306, df = 1, p-value = 0.6956
+# adjRSlag = 3.5174, df = 1, p-value = 0.06073
+# SARMA = 7.0867, df = 2, p-value = 0.02892
+
+# Likelihood Ratio tests
+
+LR.Sarlm(pri_sem, pri_sarar) # p-value = 0.07339
+LR.Sarlm(pri_slm, pri_sarar) # p-value = 0.3731
+LR.Sarlm(pri_slm, pri_sar) # p-value < 2.2e-16
+LR.Sarlm(pri_sem, pri_sar) # p-value = 4.441e-16
+
+LR1.Sarlm(pri_slm) # p-value = 0.01429
+LR1.Sarlm(pri_sem) # p-value = 0.05814
+
+# Comparing AIC 
+AIC(pri_slm) # -923.8595
+AIC(pri_sem) # -921.4472
+AIC(ols_pri) # -919.8576
+
+# Comparing BIC
+BIC(pri_slm) # -901.47
+BIC(pri_sem) # -899.0578
+BIC(ols_pri) # -900.6666
+```
+
+Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see that when SLM is the alternative the p-value is small (0.01429) which is sufficient evidence at 5% significance level that the alternative SLM is more suitable. On the other hand, when SEM is the alternative, the p-value is larger (0.05814), so there is insufficient evidence at 5% significance level to reject OLS. 
+This is further supported by the LM test results, where adjRSlag has a much smaller p-value of 0.06073 as compared to adjRSerr p-value of 0.6956. This suggests the SLM is more suitable than SEM, though the significance of SLM relative to OLS may be difficult to determine at 5% significance level from this test alone.
+Finally, considering the AIC and BIC values, we see pri_slm has marginally smaller AIC and BIC values than both SEM and OLS.
+This brings us to our conclusion that SLM is the most suitable spatial model for modelling obesity prevalence in primary schools. 
+
+### Spatial Models (Secondary Schools)
+
+```{r}
+# Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
+sec_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_sec, 
+                    listw = del_lw_sec)
+summary(sec_sar) # Lambda: 0.34546, p-value: 0.0031651 
+
+sec_slm <- lagsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch, 
+  data = obesity_model_analysis_sec, listw = del_lw_sec)
+summary(sec_slm) # Rho: 0.1198, p-value: 0.26376
+
+sec_sem <- errorsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
+  data = obesity_model_analysis_sec, listw = del_lw_sec)
+summary(sec_sem) # Lambda: 0.11874, p-value: 0.3936
+
+sec_sarar <- sacsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
+  data = obesity_model_analysis_sec, listw = del_lw_sec)
+summary(sec_sarar) 
+# Rho: 0.16199, p-value: 0.3618; Lambda: -0.068583, p-value: 0.7756
+```
+
+### Spatial Tests for model comparison (Secondary Schools)
+
+```{r}
+# Lagrange Multiplier tests
+
+lm.LMtests(ols_sec, listw = del_lw_sec, test = "all") 
+# RSerr = 1.392, df = 1, p-value = 0.2381
+# RSlag = 2.1613, df = 1, p-value = 0.1415
+# adjRSerr = 0.0060261, df = 1, p-value = 0.9381
+# adjRSlag = 0.77534, df = 1, p-value = 0.3786
+# SARMA = 2.1674, df = 2, p-value = 0.3383
+
+# Likelihood Ratio tests
+
+LR.Sarlm(sec_sem, sec_sarar) # p-value = 0.4452
+LR.Sarlm(sec_slm, sec_sarar) # p-value = 0.8036
+LR.Sarlm(sec_slm, sec_sar) # p-value = 3.331e-15
+LR.Sarlm(sec_sem, sec_sar) # p-value = 4.33e-15
+
+LR1.Sarlm(sec_slm) # p-value = 0.2638
+LR1.Sarlm(sec_sem) # p-value = 0.3936
+
+# Comparing AIC 
+AIC(sec_slm) # -598.4831
+AIC(sec_sem) # -597.962
+AIC(ols_sec) # -601.9956
+
+# Comparing BIC
+BIC(sec_slm) # -577.6944
+BIC(sec_sem) # -577.1733
+BIC(ols_sec) # -590.1164
+```
+
+Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see in both tests where SLM and SEM are alternatives that the p-value is much larger than 0.05, showing there is insufficient evidence at 5% significance level to reject the null OLS. 
+This is further supported by the LM test results, where adjRSlag and adjRSerr p-values are very large. This suggests the OLS may be a more suitable model than the spatial models SLM and SEM.
+Finally, considering the AIC and BIC values, we see ols_sec has smaller AIC and BIC values than both SEM and OLS.
+This brings us to our conclusion that OLS is the most suitable for modelling obesity prevalence in primary schools, more so than any type of spatial model. 
 
 ## Time series
 ```{r}
@@ -3425,12 +3542,10 @@ oso_hist_geom = oso_hist_geom_full %>%
 ura_regions_map +
   tm_shape(oso_hist_geom) +
   tm_symbols(size = 0.5, fill = "z_change")
+```
 
 # Other Useful stuff
 
-```
-
-#Other important stuff
 ```{r}
 tmap_mode("view") #interactive map
 tmap_mode("plot") #static map
