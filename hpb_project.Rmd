@@ -3343,8 +3343,94 @@ dim(obesity_model_analysis_sec)
 
 ```
 
+## Time series
+```{r}
+library(tidyverse)
+library(imputeTS)  # For interpolation
+library(fpp2)
+library(gridExtra)
+library(seasonal)
+library(urca)
+library(vars)
+library(trend)
+library(readxl)
+library(dplyr)
+
+oso_pri_hist = read_excel("oso_primary.xlsx")
+
+oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
+  drop_na()
+  
+
+oso_pri_hist_long <- oso_pri_hist_years %>%
+  pivot_longer(
+    cols = matches("^\\d"),   # Select columns where names start with a number
+    names_to = "year",
+    values_to = "oso"
+  ) %>%
+  mutate(year = as.integer(paste0("20", str_extract(year, "^\\d{2}"))))  
+
+
+oso_pri_hist_long %>%
+  group_by(SCHOOL) %>%
+  mutate(enrolment = na_interpolation(oso, option = "spline")) %>%
+  ungroup()
+
+
+oso_hist_int = oso_pri_hist_long %>%
+  group_by(SCHOOL) %>%
+  complete(year = full_seq(year, 1)) %>%  # Adds missing years with NA values
+  mutate(oso = na_interpolation(oso, option = "spline"),
+         oso_int = na_interpolation(oso, option = "spline")) %>%
+  ungroup() 
+
+
+
+#Get the Z-scores
+# Compute z-scores before and after 2019
+oso_hist_int = oso_hist_int %>%
+  group_by(year) %>%  # Group by year
+  mutate(
+    mean_oso = mean(oso_int, na.rm = TRUE),
+    sd_oso = sd(oso_int, na.rm = TRUE),
+    z_score = (oso_int - mean_oso) / sd_oso
+  ) %>%
+  ungroup()
+
+# Label the periods
+oso_hist_int_2 <- oso_hist_int %>%
+  mutate(period = ifelse(year <= 2019, "Before 2019", "After 2019"))
+
+z_scores_summary <- oso_hist_int_2 %>%
+  group_by(SCHOOL, period) %>%
+  summarise(avg_z = mean(z_score, na.rm = TRUE)) %>%
+  ungroup()
+
+z_scores_change= z_scores_summary %>%
+  pivot_wider(names_from = period, values_from = avg_z) %>%
+  mutate(z_change =`After 2019` - `Before 2019`) %>%
+  dplyr::select(c(1,4))
+
+
+# Merge with spatial data
+oso_hist_geom_full = obesity_data_sf_2023_OSO_new %>%
+  inner_join(z_scores_change, by = "SCHOOL")
+
+oso_hist_geom = oso_hist_geom_full %>%
+  dplyr::select(c("SCHOOL", "geometry", "z_change"))
+
+
+# School obesity map plot (z-score change)
+
+ura_regions_map +
+  tm_shape(oso_hist_geom) +
+  tm_symbols(size = 0.5, fill = "z_change")
+
 # Other Useful stuff
 
+```
+
+#Other important stuff
 ```{r}
 tmap_mode("view") #interactive map
 tmap_mode("plot") #static map
