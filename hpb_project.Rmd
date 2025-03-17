@@ -8,7 +8,7 @@ editor_options:
 ## Loading libraries to work with spatial data
 
 ```{r}
-library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(spatialreg); library(corrplot)
+library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(spatialreg); library(corrplot); library(readxl); library(dplyr)
 ```
 
 ## Loading the data
@@ -231,11 +231,6 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_
 cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
 
 ```
-
-```{r}
-
-```
-
 
 # Singapore maps
 
