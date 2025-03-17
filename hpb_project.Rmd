@@ -3334,24 +3334,24 @@ dim(obesity_model_analysis_sec)
 ```{r}
 # Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
 pri_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_pri, 
-                    listw = del_lw_pri)
-summary(pri_sar) # Lambda: 0.51079, p-value: 3.1092e-08 
+                    listw = soi_lw_pri)
+summary(pri_sar) # Lambda: 0.34009, p-value: 7.2031e-06
 
 pri_slm <- lagsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch, 
-  data = obesity_model_analysis_pri, listw = del_lw_pri)
-summary(pri_slm) # Rho: 0.22439, p-value: 0.014291
+  data = obesity_model_analysis_pri, listw = soi_lw_pri)
+summary(pri_slm) # Rho: 0.14194, p-value: 0.04966
 
 pri_sem <- errorsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
-  data = obesity_model_analysis_pri, listw = del_lw_pri)
-summary(pri_sem) # Lambda: 0.23191, p-value: 0.05814
+  data = obesity_model_analysis_pri, listw = soi_lw_pri)
+summary(pri_sem) # Lambda: 0.11517, p-value: 0.17252
 
 pri_sarar <- sacsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
-  data = obesity_model_analysis_pri, listw = del_lw_pri)
+  data = obesity_model_analysis_pri, listw = soi_lw_pri)
 summary(pri_sarar) 
-# Rho: 0.36004, p-value: 0.0073521; Lambda: -0.24314, p-value: 0.25526
+# Rho: 0.29499, p-value: 0.11725; Lambda: -0.21663, p-value: 0.16879
 ```
 
 ### Spatial Tests for model comparison (Primary Schools)
@@ -3359,31 +3359,31 @@ summary(pri_sarar)
 ```{r}
 # Lagrange Multiplier tests
 
-lm.LMtests(ols_pri, listw = del_lw_pri, test = "all") 
-# RSerr = 3.5693, df = 1, p-value = 0.05886
-# RSlag = 6.9336, df = 1, p-value = 0.008459
-# adjRSerr = 0.15306, df = 1, p-value = 0.6956
-# adjRSlag = 3.5174, df = 1, p-value = 0.06073
-# SARMA = 7.0867, df = 2, p-value = 0.02892
+lm.LMtests(ols_pri, listw = soi_lw_pri, test = "all") 
+# RSerr = 1.8749, df = 1, p-value = 0.1709
+# RSlag = 3.8848, df = 1, p-value = 0.04873
+# adjRSerr = 0.4243, df = 1, p-value = 0.5148
+# adjRSlag = 2.4342, df = 1, p-value = 0.1187
+# SARMA = 4.3091, df = 2, p-value = 0.116
 
 # Likelihood Ratio tests
 
-LR.Sarlm(pri_sem, pri_sarar) # p-value = 0.07339
-LR.Sarlm(pri_slm, pri_sarar) # p-value = 0.3731
+LR.Sarlm(pri_sem, pri_sarar) # p-value = 0.07437
+LR.Sarlm(pri_slm, pri_sarar) # p-value = 0.275
 LR.Sarlm(pri_slm, pri_sar) # p-value < 2.2e-16
-LR.Sarlm(pri_sem, pri_sar) # p-value = 4.441e-16
+LR.Sarlm(pri_sem, pri_sar) # p-value < 2.2e-16
 
-LR1.Sarlm(pri_slm) # p-value = 0.01429
-LR1.Sarlm(pri_sem) # p-value = 0.05814
+LR1.Sarlm(pri_slm) # p-value = 0.04966
+LR1.Sarlm(pri_sem) # p-value = 0.1725
 
 # Comparing AIC 
-AIC(pri_slm) # -923.8595
-AIC(pri_sem) # -921.4472
+AIC(pri_slm) # -921.7105
+AIC(pri_sem) # -919.7185
 AIC(ols_pri) # -919.8576
 
 # Comparing BIC
-BIC(pri_slm) # -901.47
-BIC(pri_sem) # -899.0578
+BIC(pri_slm) # -899.321
+BIC(pri_sem) # -897.329
 BIC(ols_pri) # -900.6666
 ```
 
@@ -3397,24 +3397,24 @@ This brings us to our conclusion that SLM is the most suitable spatial model for
 ```{r}
 # Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
 sec_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_sec, 
-                    listw = del_lw_sec)
-summary(sec_sar) # Lambda: 0.34546, p-value: 0.0031651 
+                    listw = soi_lw_sec)
+summary(sec_sar) # Lambda: 0.27535 LR test value: 9.7115 p-value: 0.0018312 
 
 sec_slm <- lagsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch, 
-  data = obesity_model_analysis_sec, listw = del_lw_sec)
-summary(sec_slm) # Rho: 0.1198, p-value: 0.26376
+  data = obesity_model_analysis_sec, listw = soi_lw_sec)
+summary(sec_slm) # Rho: 0.13841, LR test value: 3.008, p-value: 0.082856
 
 sec_sem <- errorsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
-  data = obesity_model_analysis_sec, listw = del_lw_sec)
-summary(sec_sem) # Lambda: 0.11874, p-value: 0.3936
+  data = obesity_model_analysis_sec, listw = soi_lw_sec)
+summary(sec_sem) # Lambda: 0.1602, LR test value: 2.9939, p-value: 0.083578
 
 sec_sarar <- sacsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
-  data = obesity_model_analysis_sec, listw = del_lw_sec)
+  data = obesity_model_analysis_sec, listw = soi_lw_sec)
 summary(sec_sarar) 
-# Rho: 0.16199, p-value: 0.3618; Lambda: -0.068583, p-value: 0.7756
+# Rho: 0.076366, p-value: 0.63869; Lambda: 0.084001, p-value: 0.65265
 ```
 
 ### Spatial Tests for model comparison (Secondary Schools)
@@ -3422,31 +3422,31 @@ summary(sec_sarar)
 ```{r}
 # Lagrange Multiplier tests
 
-lm.LMtests(ols_sec, listw = del_lw_sec, test = "all") 
-# RSerr = 1.392, df = 1, p-value = 0.2381
-# RSlag = 2.1613, df = 1, p-value = 0.1415
-# adjRSerr = 0.0060261, df = 1, p-value = 0.9381
-# adjRSlag = 0.77534, df = 1, p-value = 0.3786
-# SARMA = 2.1674, df = 2, p-value = 0.3383
+lm.LMtests(ols_sec, listw = soi_lw_sec, test = "all") 
+# RSerr = 0.91006, df = 1, p-value = 0.3401
+# RSlag = 2.2997, df = 1, p-value = 0.1294
+# adjRSerr = 0.60109, df = 1, p-value = 0.4382
+# adjRSlag = 1.9907, df = 1, p-value = 0.1583
+# SARMA = 2.9008, df = 2, p-value = 0.2345
 
 # Likelihood Ratio tests
 
-LR.Sarlm(sec_sem, sec_sarar) # p-value = 0.4452
-LR.Sarlm(sec_slm, sec_sarar) # p-value = 0.8036
-LR.Sarlm(sec_slm, sec_sar) # p-value = 3.331e-15
-LR.Sarlm(sec_sem, sec_sar) # p-value = 4.33e-15
+LR.Sarlm(sec_sem, sec_sarar) # p-value = 0.6651
+LR.Sarlm(sec_slm, sec_sarar) # p-value = 0.6771
+LR.Sarlm(sec_slm, sec_sar) # p-value = 2.331e-15
+LR.Sarlm(sec_sem, sec_sar) # p-value = 2.331e-15
 
-LR1.Sarlm(sec_slm) # p-value = 0.2638
-LR1.Sarlm(sec_sem) # p-value = 0.3936
+LR1.Sarlm(sec_slm) # p-value = 0.08286
+LR1.Sarlm(sec_sem) # p-value = 0.08358
 
 # Comparing AIC 
-AIC(sec_slm) # -598.4831
-AIC(sec_sem) # -597.962
+AIC(sec_slm) # -600.2422
+AIC(sec_sem) # -600.2281
 AIC(ols_sec) # -601.9956
 
 # Comparing BIC
-BIC(sec_slm) # -577.6944
-BIC(sec_sem) # -577.1733
+BIC(sec_slm) # -579.4535
+BIC(sec_sem) # -579.4535
 BIC(ols_sec) # -590.1164
 ```
 
