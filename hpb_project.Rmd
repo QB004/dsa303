@@ -8,7 +8,7 @@ editor_options:
 ## Loading libraries to work with spatial data
 
 ```{r}
-library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(spatialreg); library(corrplot); library(readxl); library(gridExtra); library(imputeTS); library(seasonal); library(fpp2); library(urca); library(vars); library(trend)
+library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(spatialreg); library(corrplot)
 ```
 
 ## Loading the data
@@ -27,14 +27,14 @@ obesity_data <-
   # "#N/A" values converted to "NA" for R to be able to read it
   read.csv("obesity.csv", na.strings = "#N/A") %>% 
   select(-PT_ID.1) %>% 
-  st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
+  st_as_sf(coords = c("longitude","latitude"), crs = 3414) %>% 
   st_transform(crs = sg_crs) %>% 
   st_make_valid()
 
 # Loading cleaned HMSP data from HPB and giving spatial awareness
 hmsp_data_sf <- 
   read.csv("hmsp_tier_pri_sec.csv") %>% 
-  st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
+  st_as_sf(coords = c("longitude","latitude"), crs = 3414) %>% 
   st_transform(crs = sg_crs) %>% 
   st_make_valid()
 
