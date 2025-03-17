@@ -3335,7 +3335,7 @@ dim(obesity_model_analysis_sec)
 # Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
 pri_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_pri, 
                     listw = soi_lw_pri)
-summary(pri_sar) # Lambda: 0.34009, p-value: 7.2031e-06
+summary(pri_sar) # Lambda: 0.34009, p-value: 7.2031e-06 
 
 pri_slm <- lagsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch, 
@@ -3398,17 +3398,17 @@ This brings us to our conclusion that SLM is the most suitable spatial model for
 # Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
 sec_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_sec, 
                     listw = soi_lw_sec)
-summary(sec_sar) # Lambda: 0.27535 LR test value: 9.7115 p-value: 0.0018312 
+summary(sec_sar) # Lambda: 0.27535, p-value: 0.0018312 
 
 sec_slm <- lagsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch, 
   data = obesity_model_analysis_sec, listw = soi_lw_sec)
-summary(sec_slm) # Rho: 0.13841, LR test value: 3.008, p-value: 0.082856
+summary(sec_slm) # Rho: 0.13841, p-value: 0.082856
 
 sec_sem <- errorsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
   data = obesity_model_analysis_sec, listw = soi_lw_sec)
-summary(sec_sem) # Lambda: 0.1602, LR test value: 2.9939, p-value: 0.083578
+summary(sec_sem) # Lambda: 0.1602, p-value: 0.083578
 
 sec_sarar <- sacsarlm(
   formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
