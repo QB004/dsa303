@@ -3529,7 +3529,7 @@ oso_hist_geom_full = obesity_data_sf_2023_OSO_new %>%
   inner_join(z_scores_change, by = "SCHOOL")
 
 oso_hist_geom = oso_hist_geom_full %>%
-  dplyr::select(c("SCHOOL", "geometry", "z_change"))
+  dplyr::select(c("PT_ID", "SCHOOL", "geometry", "z_change"))
 
 
 # School obesity map plot (z-score change)
@@ -3538,6 +3538,157 @@ ura_regions_map +
   tm_shape(oso_hist_geom) +
   tm_symbols(size = 0.5, fill = "z_change")
 ```
+
+
+## Sphere of influence neighbours
+```{r}
+# by Primary schools
+# obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
+del_nb_pri_z <- tri2nb(st_coordinates(oso_hist_geom), 
+                     row.names = oso_hist_geom$PT_ID) 
+pri_map <- tm_shape(nb2lines(del_nb_pri_z, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + pri_sch_map
+
+# by Primary schools
+if (require(dbscan, quietly=TRUE)) {
+  soi_nb_pri_z <- graph2nb(soi.graph(del_nb_pri_z, st_geometry(oso_hist_geom)))
+} else {
+  soi_nb = NULL
+}
+pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom))) +
+  tm_lines(lwd = 2) + pri_sch_map
+```
+
+### Spatial autocorrelation statistics
+
+```{r}
+# by Primary schools
+(soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W"))
+soi_lw_B_pri_z <- nb2listw(soi_nb_pri_z, style = "B")
+moran.test(oso_hist_geom$z_change, soi_lw_pri_z)
+moran.plot(oso_hist_geom$z_change, soi_lw_pri_z, main="Moran scatterplot")
+geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
+
+
+
+```
+
+Average number of links (Primary school): 3.094972  
+p-value for Global Moran's I test (Primary school): 0.5712
+p-value for Global Geary's C test (Primary school): 0.3879
+
+Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019.
+
+#### Join count analysis
+
+```{r}
+# Setting an overweight cutoff point
+Z_CHANGE_CUTOFF_INCREASE <- 1 #increase in obesity levels before and after 2019
+Z_CHANGE_CUTOFF_DECREASE <- -1 #decrease in obesity levels before and after 2019
+
+# by Primary school - with increased obesity levels
+oso_hist_geom1 = oso_hist_geom %>%
+  filter(z_change > 0)
+oso_hist_geom1$z_change_high_increase <- 
+  as.factor(oso_hist_geom1$z_change > Z_CHANGE_CUTOFF_INCREASE)
+pri_map_z_increase <- ura_regions_map + oso_hist_geom1 %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "z_change_high_increase", 
+    size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+
+
+# by Primary school - with decreased obesity levels ##TO ASK PROF: here, the bigger circles are smaller decreases. should i change everything to positive values so that it shows up correctly?
+oso_hist_geom2 = oso_hist_geom %>%
+  filter(z_change < 0)
+oso_hist_geom2$z_change_high_decrease <- 
+  as.factor(oso_hist_geom2$z_change < Z_CHANGE_CUTOFF_DECREASE)
+pri_map_z_decrease <- ura_regions_map + oso_hist_geom2 %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "z_change_high_decrease", 
+    size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+
+
+#example with absolute values
+Z_CHANGE_CUTOFF_DECREASE_1 = 1
+
+oso_hist_geom3 = oso_hist_geom %>%
+  filter(z_change < 0) %>%
+  mutate(z_change = abs(z_change))
+
+oso_hist_geom3$z_change_high_decrease <- 
+  as.factor(oso_hist_geom3$z_change > Z_CHANGE_CUTOFF_DECREASE_1)
+pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "z_change_high_decrease", 
+    size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Join count analysis")
+
+
+#Maps:
+pri_map_z_decrease
+pri_map_z_decrease1
+pri_map_z_increase
+```
+
+#Joint count considering only extremes
+```{r}
+#For increases
+del_nb_pri_z_increase <- tri2nb(st_coordinates(oso_hist_geom1), 
+                     row.names = oso_hist_geom1$PT_ID) 
+pri_map_z_increase <- tm_shape(nb2lines(del_nb_pri_z_increase, coords = st_geometry(oso_hist_geom1))) +
+  tm_lines(lwd = 2) + pri_sch_map
+
+# by Primary schools
+if (require(dbscan, quietly=TRUE)) {
+  soi_nb_pri_z_increase <- graph2nb(soi.graph(del_nb_pri_z_increase, st_geometry(oso_hist_geom1)))
+} else {
+  soi_nb = NULL
+}
+#pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom))) +
+#  tm_lines(lwd = 2) + pri_sch_map
+
+# by Primary schools
+(soi_lw_pri_z_increase <- nb2listw(soi_nb_pri_z_increase, style = "W"))
+soi_lw_B_pri_z_increase <- nb2listw(soi_nb_pri_z_increase, style = "B")
+
+#For decreases
+del_nb_pri_z_decrease <- tri2nb(st_coordinates(oso_hist_geom3), 
+                     row.names = oso_hist_geom3$PT_ID) 
+pri_map_z_decrease <- tm_shape(nb2lines(del_nb_pri_z_decrease, coords = st_geometry(oso_hist_geom3))) +
+  tm_lines(lwd = 2) + pri_sch_map
+
+# by Primary schools
+if (require(dbscan, quietly=TRUE)) {
+  soi_nb_pri_z_decrease <- graph2nb(soi.graph(del_nb_pri_z_decrease, st_geometry(oso_hist_geom3)))
+} else {
+  soi_nb = NULL
+}
+#pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom))) +
+#  tm_lines(lwd = 2) + pri_sch_map
+
+# by Primary schools
+(soi_lw_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "W"))
+soi_lw_B_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "B")
+
+
+#Join count analysis
+joincount.multi(oso_hist_geom3$z_change_high_decrease, 
+                soi_lw_B_pri_z_decrease) 
+joincount.multi(oso_hist_geom1$z_change_high_increase, 
+                soi_lw_B_pri_z_increase) 
+
+```
+Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme decrease in obesity (of <1)
+
+Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of >1)
 
 # Other Useful stuff
 
