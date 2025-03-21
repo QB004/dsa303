@@ -3633,7 +3633,7 @@ pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>%
 
 
 #Maps:
-pri_map_z_decrease
+#pri_map_z_decrease
 pri_map_z_decrease1
 pri_map_z_increase
 ```
