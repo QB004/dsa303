@@ -2094,6 +2094,8 @@ income_map <- ura_planning_areas_map +
 
 print(income_map)
 ```
+At a glance, the planning areas with higher incomes are situated in the southern and central regions. The northern and western planning areas appear to have lower incomes while the eastern planning areas have moderately high incomes.
+For the education variable, planning areas with residents that have more years of education are situated in the southern and central regions. The northern and western planning areas appear to have fewer years of education while the eastern planning areas moderate to high number of years of education.
 
 ## Spatial Descriptive Summary Measures of Education Years (Lucas)
 
