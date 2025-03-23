@@ -224,10 +224,13 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nat
   scale_x_discrete(drop = TRUE) +
   coord_flip() # Flip the coordinates to make it horizontal 
 ```
-We observe that the obesity prevalence for coeds school is noticeably higher than that for boys' and girls' schools. Obesity in boys' schools is also higher than that for girls' schools. 
-It is interesting that higher obesity in single-gender schools than coed schools has been observed in other countries such as South Korea (research study link: https://pmc.ncbi.nlm.nih.gov/articles/PMC4430348/). Possible explanations include a stronger desire for students of both genders to manage their appearance (and in turn, weight) to increase their attractiveness to the opposite gender. 
+We observe that the median obesity prevalence for coed schools is noticeably higher than that for boys' and girls' schools. Median obesity prevalence in boys' schools is also higher than that for girls' schools. The interquartile range for all three types of schools is comparable, but the overall data range of obesity prevalence is much larger for coed schools than girls' or boys' schools. 
+For girls' school, the sole upper bound data outlier is CHIJ St. Joseph's Convent (0.1552). We further observe that this is a North zone secondary school, but among the North zone girls' schools it is a significant outlier as other counterparts have obesity prevalence of around 0.05-0.06 range.
+For coed schools, the sole lower bound data outlier is Anglican High School (0.049065). The three upper bound data outliers are Loyang View Secondary School (0.221809), Pioneer Primary School (0.226236) and Crest Secondary School (0.268613).
+It is interesting that the opposite trend (higher obesity in single-gender schools than coed schools) has been observed in other countries such as South Korea (research study link: https://pmc.ncbi.nlm.nih.gov/articles/PMC4430348/). Possible explanations include a stronger desire for students of both genders to manage their appearance (and in turn, weight) to increase their attractiveness to the opposite gender. 
   
-# OSO rate by Specialised Programs
+## OSO rate by Specialised Programs
+```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special)) +
   geom_boxplot(na.rm = T) +
   labs(title = "Boxplot of prevalence rate by Specialised Programs",
@@ -236,8 +239,13 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special
   theme_minimal() +
   scale_x_discrete(drop = TRUE) +
   coord_flip() # Flip the coordinates to make it horizontal 
+```
+We observe that the median obesity prevalence for non-specialised schools is noticeably higher than that for specialised schools, at almost 5 percentage points. The interquartile range for both types of schools is comparable, but the overall data range of obesity prevalence is much larger for non-specialised than specialised schools at both upper and lower ends of the spectrum. 
+For specialised schools, the sole upper bound data outlier is Dunamn Secondary School (0.155722). It is worth noting that this obesity prevalence value would not be an outlier in the non-specialised school data and is fairly close to the Q3 range for non-specialised schools.
+For non-specialised schools, the sole lower bound data outlier is Anglican High School (0.049065). The three upper bound data outliers are Loyang View Secondary School (0.221809), Pioneer Primary School (0.226236) and Crest Secondary School (0.268613).
 
-# OSO rate by HMSP Tier
+## OSO rate by HMSP Tier
+```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_Tier)) +
   geom_boxplot(na.rm = T) +
   labs(title = "Boxplot of OSO23 rate by HMSP Tier",
@@ -248,8 +256,11 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_
   coord_flip() # Flip the coordinates to make it horizontal 
 
 cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
-
 ```
+We observe that the median obesity prevalence for the B, C, D and E HSMP tiers are within one percentage point of one another (0.12-0.13 range) while the median value of the A tier is much lower at approximately 0.1. The A tier also has a significantly smaller IQR range and total range than other tiers, showing greater consistency in obesity prvalence within HSMP A tier schools (though this is likely also because there are only 8 A tier schools). The other HSMP tiers have similar IQR ranges and total data ranges, though tier B has a much wider Q1 compared to tiers C, D and E despite having similar median values.
+For C tier, the two upper bound outliers are Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613).
+For D tier, the sole outlier is Pioneer Primary School (0.226236).
+For A tier, the sole outlier is Admiralty Secondary School (0.16422), a coed secondary school in the North zone. 
 
 # Singapore maps
 
