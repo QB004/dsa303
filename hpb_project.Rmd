@@ -3690,7 +3690,6 @@ Based on the joint count analysis, there is no significant spatial clustering of
 
 Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of >1)
 
-# Other Useful stuff
 
 ```{r}
 tmap_mode("view") #interactive map
