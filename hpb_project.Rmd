@@ -168,8 +168,10 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
              fill.scale = tm_scale(values = "brewer.set1"), 
              fill.legend = tm_legend(title = "School clusters")) +
   tm_facets_wrap(by = "ZONE")
+```
 
-# OSO rate by school level
+## OSO rate by school level
+```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = LEVEL, y = PREVALENCE, fill = LEVEL)) +
   geom_boxplot(na.rm = T) +
   labs(title = "Boxplot of prevalence rate by School Level",
@@ -177,8 +179,12 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = LEVEL, y = PREVALENCE, fill = LEVEL)) +
        y = "Prevalence Rate") +
   theme_minimal() +
   coord_flip()  # Flip the coordinates to make it horizontal 
+```
+We observe that the median obesity prevalence rate for secondary schools is higher than primary schools. The inter-quartile range for obesity prevalence in secondary schools is considerably larger than that of primary schools, with a larger overall data spread as well.
+The sole outlier for secondary school obesity prevalence is Crest Secondary School, with an extremely high obesity prevalence of 0.268613.
 
-# OSO rate by Zone
+## OSO rate by Zone
+```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = ZONE, y = PREVALENCE, fill = ZONE)) +
   geom_boxplot(na.rm = T) +
   labs(title = "Boxplot of prevalence rate by Zone",
@@ -186,8 +192,13 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = ZONE, y = PREVALENCE, fill = ZONE)) +
        y = "Prevalence Rate") +
   theme_minimal() +
   coord_flip()  # Flip the coordinates to make it horizontal 
+```
+We observe that across all four zones, the median obesity prevalence is comparable at between 10% to 15%. Ranking the median obesity prevalence for the zones, we get North > West > South > East. The inter-quartile ranges and overall data spreads for all four zones are approximately equivalent, though the North zone is the only among the four for the data spread to stretch beyond an obesity prevalence of 0.20 (outliers exclusive). 
+The two outliers for the East zone are East Spring Secondary School (0.193481) and Loyang View Secondary School (0.221809). It is worth noting that East Spring Secondary School being a data outlier can be attributed to the East zone having majority of its schools at lower obesity prevalence rates, for its obesity value would not be considered an outlier if placed in the North or West zones. 
+The sole outlier for the West zone is Crest Secondary School with an extremely high obesity prevalence of 0.268613.
 
-# OSO rate by School Type
+## OSO rate by School Type
+```{r}
 sub = obesity_data_sf_2023_OSO |>
   filter(type_code %in% c("GOVERNMENT SCHOOL", "GOVERNMENT-AIDED SCH"))
 ggplot(sub, aes(x = type_code, y = PREVALENCE, fill = type_code)) +
@@ -197,8 +208,13 @@ ggplot(sub, aes(x = type_code, y = PREVALENCE, fill = type_code)) +
        y = "Prevalence Rate") +
   theme_minimal() +
   coord_flip()  # Flip the coordinates to make it horizontal 
+```
+We observe that the median obesity prevalence for government schools is over 2% higher than government-aided schools. The inter-quartile range for government-aided schools is larger, especially for Q3 which is spread over a larger range.
+The lower bound outliers for government schools are National Junior College (0.056235), Raffles Girls' School (Primary) (0.057807) and Raffles' Girls School (Secondary) (0.061249).
+The upper bound outliers for government schools are East Spring Secondary School (0.193481), Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613).
 
-# OSO rate by Gender Mix
+## OSO rate by Gender Mix
+```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nature_code)) +
   geom_boxplot(na.rm = T) +
   labs(title = "Boxplot of prevalence rate by Gender Mix",
@@ -207,6 +223,9 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nat
   theme_minimal() +
   scale_x_discrete(drop = TRUE) +
   coord_flip() # Flip the coordinates to make it horizontal 
+```
+We observe that the obesity prevalence for coeds school is noticeably higher than that for boys' and girls' schools. Obesity in boys' schools is also higher than that for girls' schools. 
+It is interesting that higher obesity in single-gender schools than coed schools has been observed in other countries such as South Korea (research study link: https://pmc.ncbi.nlm.nih.gov/articles/PMC4430348/). Possible explanations include a stronger desire for students of both genders to manage their appearance (and in turn, weight) to increase their attractiveness to the opposite gender. 
   
 # OSO rate by Specialised Programs
 ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special)) +
