@@ -1317,7 +1317,6 @@ sec_map <- ura_regions_map + obesity_sec_sch %>%
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
     fill = "HIGH_PREVALENCE", 
-    
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis")
@@ -1916,10 +1915,14 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 
 # Identified clusters in Primary schools 
-obesity_pri_sch %>% filter(LMORANZ >= 3)
+obesity_pri_sch %>%
+  st_drop_geometry() %>% 
+  filter(LMORANZ >= 3)
 
 # Identified clusters in Secondary schools
-obesity_sec_sch %>% filter(LMORANZ >= 3)
+obesity_sec_sch %>% 
+  st_drop_geometry() %>%
+  filter(LMORANZ >= 3) 
 ```
 
 
@@ -3496,7 +3499,11 @@ oso_hist_int = oso_pri_hist_long %>%
          oso_int = na_interpolation(oso, option = "spline")) %>%
   ungroup() 
 
-
+# Showing general distribution of OSO in a histogram
+oso_hist_int %>% 
+  filter(year == 2023) %>% 
+  ggplot(aes(x = oso_int)) +
+  geom_histogram() # generally follows a normal distribution
 
 #Get the Z-scores
 # Compute z-scores before and after 2019
@@ -3533,10 +3540,21 @@ oso_hist_geom = oso_hist_geom_full %>%
 
 
 # School obesity map plot (z-score change)
-
 ura_regions_map +
   tm_shape(oso_hist_geom) +
   tm_symbols(size = 0.5, fill = "z_change")
+
+# Schools which saw a 1 standard deviation increase in OSO levels
+oso_hist_geom %>% 
+  st_drop_geometry() %>% 
+  filter(z_change >= 1) %>% 
+  arrange(desc(z_change)) # 10 schools identified
+  
+# Schools which saw a 1 standard deviation decrease in OSO levels
+oso_hist_geom %>% 
+  st_drop_geometry() %>% 
+  filter(z_change <= -1) %>% 
+  arrange(desc(z_change)) # 10 schools identified
 ```
 
 
