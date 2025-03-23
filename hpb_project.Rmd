@@ -1958,6 +1958,13 @@ obesity_sec_sch %>%
 
 # Elite metric (Lucas)
 
+We obtain a Yes/No binary metric based on the popularity of primary & secondary schools in Singapore, which we dub as the "elite" metric. We derive this using the following methodology:
+Primary schools: We take the Phase 2C balloting information from the 2024 Primary 1 Registration Exercise for all 180 primary schools (database link: https://www.moe.gov.sg/primary/p1-registration/past-vacancies-and-balloting-data/). If the number of applicants in Phase 2C is greater than the number of vacancies, the school is marked as popular (Yes) reflecting oversubscribing due to high demand for the school's coveted vacancies. If the number of applicants in Phase 2C is less than or equal to the number of vacancies, the school is marked as not popular (No). Based on this methodology, there are 82 popular schools (Yes) and 98 non-popular schools (No). 
+Secondary schools: We obtain the 2024 secondary school PSLE cutoff points from SG Schooling (https://sgschooling.com/secondary/cop/all.html) in the IP/PG3 (Express) streams. We take the cutoff point for each secondary school if given as a single value, or the highest value in a given point range, ignoring all secondary criteria for the Mother Tongue Grade (D/M/P) to get data for 138 secondary schools. We then calculate the top quartile of cutoff points, which ends up as 13, and label all secondary schools with cutoff points less than or equal to this value as popular schools (Y) and all other schools as non-popular (N). Using this methodology, we obtain 35 popular schools (Y) and 103 non-popular schools (N). For the  secondary schools with no given PSLE cutoff point for 2024, we conduct the following manual adjustments:
+- School of the Arts, NUS High School and School of Science and Technology: These schools only accept admissions by Direct School Admission, so there is no PSLE cutoff range. From our research, these three schools are prestigious in their unique domains with many applicants each year. As such, we labelled these three schools as popular (Y).
+- Crest Secondary School, Assumption Pathway School and Northlight School: These schools offer specialised pathways for experiential and hands-on learning, allowing students to graduate with an ITE Skills certificate. As this is a non-mainstream pathway with only PG1/PG2 streams, we labelled these three schools as non-popular (N).
+In total, we have 144 secondary schools with 38 as popular (Y) and 106 as non-popular (N). 
+
 ```{r}
 pri_rankings <- read.csv("pri rankings.csv") %>% 
   mutate(School = toupper(School)) %>% 
@@ -1975,7 +1982,12 @@ sec_rankings <- read.csv("sec rankings.csv") %>%
 school_rankings <- rbind(pri_rankings, sec_rankings)
 ```
 
-# Income distribution (Lucas)
+#Census Variables
+Next, we consider the Singapore Census of Population 2020 data and bring in two variables: 
+Income: From Table 110 Resident Households by Planning Area of Residence and Monthly Household Income from Work, we sum up the income for each planning area by multiplying the midpoint of a given income range (for example, $9,000 - $9,999 would have a midpoint of $9,500) with the number of residents with that given monthly income range and totalling everything. The only exception to this is the income bracket "$20,000 and Over", of which we took the midpoint value as $25,000. We then obtain the mean income per planning area by dividing this totalled income figure by the total number of residents in each planning area (given in the second column of the data table). 
+Education: From Table 100 Resident Population Aged 15 Years and Over by Planning Area of Residence and Highest Qualification Attained, we sum up the number of years of education in each planning area by multiplying the minimum number of years of education completed (No Qualification = 0,	Primary = 6, Lower Secondary = 8 [6+2], Secondary	= 10 [6+2+2], Post-Secondary (Non-Tertiary)	= 12 [6+2+2+2 assuming JC route], Polytechnic Diploma	= 13 [6+2+2+3 assuming average Polytechnic diploma as 3 year programme], Professional Qualification and Other Diploma = 15 [6+2+2+2+3 assuming JC then 3 year other diploma],	University =16 [6+2+2+2+4 assuming JC then 4 year university degree]) with the number of residents that fall within the relevant maximum education completion category. We then obtain the mean number of years or education per planning area by dividing this totalled education years figure by the total number of residents in each planning area (given in the second column of the data table). 
+ 
+## Preliminary Data Manipulation and Visuals (Lucas)
 
 ```{r}
 # missing MUSEUM & NEWTON planning areas, so we will fill in with OTHERS data
@@ -2020,7 +2032,7 @@ ura_planning_areas_map + tm_shape(census_merge) +
   tm_title("Breakdown by Sec Students")
 ```
 
-# Spatial Descriptive Summary Measures of Income (Lucas)
+## Spatial Descriptive Summary Measures of Income (Lucas)
 
 ```{r}
 census_coords <- st_coordinates(st_point_on_surface(census_merge))
@@ -2083,7 +2095,7 @@ income_map <- ura_planning_areas_map +
 print(income_map)
 ```
 
-# Spatial Descriptive Summary Measures of Education Years (Lucas)
+## Spatial Descriptive Summary Measures of Education Years (Lucas)
 
 ```{r}
 education_mean <- calc_mnc(id = 1, points = census_coords, weighted = T, weights = census_merge$Education)
