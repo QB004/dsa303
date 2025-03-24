@@ -1,17 +1,32 @@
 ---
-output: html_document
+title: Childhood Obesity in Singapore: A Spatial Analysis of Obesity Prevalence and Post-COVID Trends in Schools
+author: Colin, Lucas, Nina, Qasim
+output: 
+  html_document:
+    toc: true
+    number_sections: true
 editor_options: 
   chunk_output_type: console
+  markdown: 
+    wrap: 72
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
 # Data loading, cleaning and transformation
 
-## Loading libraries to work with spatial data
+## Spatial data libraries
 
 ```{r}
 library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep); library(corrplot); library(readxl); library(spatialreg)
 ```
 
-## Loading the data
+To support spatial and statistical analysis, several R libraries were loaded. tidyverse was used for data manipulation, sf for spatial data handling, and tmap for thematic mapping. aspace and spdep enabled spatial analysis, while corrplot visualised correlations. readxl facilitated reading Excel files, and spatialreg supported spatial regression modelling. These libraries ensure a robust analysis of childhood obesity trends in Singapore.
+
+## Loading and joining datasets
 
 ```{r}
 # Loading Singapore URA subzone boundary data
@@ -24,8 +39,7 @@ sg_crs <- st_crs(sg_ura_boundaries)
 
 # Loading cleaned obesity data from HPB and giving spatial awareness
 obesity_data <- 
-  # "#N/A" values converted to "NA" for R to be able to read it
-  read.csv("obesity.csv", na.strings = "#N/A") %>% 
+  read.csv("obesity.csv", na.strings = "#N/A") %>% # "#N/A" values converted to "NA" for R to be able to read it
   select(-PT_ID.1) %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
   st_transform(crs = sg_crs) %>% 
@@ -38,34 +52,40 @@ hmsp_data_sf <-
   st_transform(crs = sg_crs) %>% 
   st_make_valid()
 
-# Checking that all CRS are matching
-isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_data_sf)))
-
-# Checking CRS units
-st_crs(sg_ura_boundaries)$units
-st_crs(obesity_data)$units
-st_crs(hmsp_data_sf)$units
-```
-
-## Joining with relevant datasets
-
-```{r}
 # Loading General Information of Schools dataset
 school_info <- 
   read_excel("Generalinformationofschools.xlsx", na = c("na", "NA")) %>% 
-  # dropped variables are repeated in other data frames or not useful for our analysis
-  select(school_name, dgp_code:mothertongue3_code, -zone_code, -mainlevel_code) 
-
-obesity_data <- obesity_data %>% 
-  left_join(school_info, by = join_by(SCHOOL == school_name))
+  select(school_name, dgp_code:mothertongue3_code, -zone_code, -mainlevel_code) # dropped variables are repeated in other data frames or not useful for our analysis
 
 # Loading previous year enrolment data
 school_enrolment <-
   read_excel("enrolment.xlsx", sheet = "primary") %>% 
   select(-starts_with("intake"), -ENROLMENT24) # drop enrolment24 as obesity_data contains 2024 enrolment data for the full set of schools
+
+# Checking that all CRS are matching
+isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_data_sf)))
+
+# Checking CRS units
+st_crs(sg_ura_boundaries)$units # metres
+st_crs(obesity_data)$units # metres
+st_crs(hmsp_data_sf)$units # metres
+
+# Joining data
+obesity_data <- obesity_data %>% 
+  left_join(school_info, by = join_by(SCHOOL == school_name))
 ```
 
-## Transforming data to be usable for analysis
+To facilitate a spatial analysis of childhood obesity in Singapore, we first loaded the Urban Redevelopment Authority (URA) subzone boundary data using the st_read function. The dataset was processed with st_make_valid() to ensure topological correctness. The coordinate reference system (CRS) of the boundary data was then extracted and stored for consistency across our spatial datasets.
+
+Next, we imported the cleaned obesity and Healthy Meals in Schools Programme (HMSP) datasets provided by the Health Promotion Board (HPB).
+
+The [General Information of Schools](https://data.gov.sg/datasets/d_688b934f82c1059ed0a6993d2a829089/view) dataset contains key information for primary, secondary and pre-university schools, like whether they were government or co-ed schools or had special programmes (SAP, gifted, IP, etc.).
+
+Additionally, we loaded school enrollment data from previous years to examine trends in student populations. The dataset was filtered to retain only relevant variables, with intake-related columns and the 2024 enrollment data excluded since up-to-date enrollment figures were already present in the obesity dataset. This data integration step ensures that our analysis is enriched with school-specific attributes, providing a more comprehensive understanding of how student demographics relate to obesity trends in Singapore.
+
+All datasets were transformed into a spatial object using the st_as_sf() function, with longitude and latitude as coordinates, and reprojected to match the CRS of the URA boundary data. Similarly, we processed the dataset, converting it into a spatial format with the same CRS transformation. To ensure consistency in spatial analysis, we verified that the CRS of all datasets matched. Finally, the CRS units for each dataset were checked to confirm uniformity, ensuring accurate spatial mapping and analysis. These steps were essential for integrating multiple data sources within a consistent spatial framework, allowing for precise geographic visualisation and interpretation of childhood obesity patterns in Singapore.
+
+## Additional data transformations for data analysis
 
 ```{r}
 # Changing "PRIMARY + SECONDARY" level label to match PRI and SEC classification
@@ -86,11 +106,7 @@ school_enrolment_long <- obesity_data %>%
   left_join(school_enrolment, by = join_by(PT_ID)) %>% 
   select(-SCHOOL.y) %>% 
   rename(SCHOOL = SCHOOL.x) %>% 
-  pivot_longer(
-    cols = starts_with("ENROLMENT"), 
-    names_to = "YEAR", 
-    values_to = "ENROLMENT"
-    ) %>%
+  pivot_longer(cols = starts_with("ENROLMENT"), names_to = "YEAR", values_to = "ENROLMENT") %>%
   # Extract year as numeric
   mutate(YEAR = as.numeric(gsub("ENROLMENT", "", YEAR)) + 2000) %>% 
   group_by(PT_ID) %>% 
@@ -118,14 +134,8 @@ obesity_data_sf <- obesity_data_long %>%
   full_join(school_enrolment_long, by = c("PT_ID", "SCHOOL", "YEAR")) %>%
   # Calculate overweight prevalence rate
   mutate(PREVALENCE = COUNT / ENROLMENT)  
-```
 
-We filter our data for the most recent year as the enrolment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO), in the most recent year 2023.
-
-We remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. For schools with no recorded data in 2023 (only "TANJONG KATONG GIRLS' SCHOOL")
-
-```{r}
-# for now, filter for 2023 data and overweight and severely overweight
+# For our analysis, filter for 2023 data and overweight and severely overweight
 obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
   filter(
     YEAR == 2023, CATEGORY == "OSO", 
@@ -135,7 +145,7 @@ obesity_data_sf_2023_OSO <- obesity_data_sf %>%
     !is.na(PREVALENCE)
     )
 
-#Combining prof's data with ours (delete this line pls)
+# Combining prof's data with ours (delete this line pls)
 oso23 = read_csv("Prof's Codes/oso23.csv", show_col_types = FALSE)
 oso23 = oso23 |> drop_na(OSO_pct) 
 
@@ -146,7 +156,13 @@ obesity_data_sf_2023_OSO_new = left_join(obesity_data_sf_2023_OSO, oso23_new, by
 obesity_data_sf_2023_OSO = obesity_data_sf_2023_OSO_new #we can delete this line if necessary and just use obesity_data_sf_2023_oso_new
 ```
 
-# Exploratory data analysis (by Prof)
+The data is further cleaned and transformed into a format that is ready for our spatial data analysis. 
+
+We filter our data for the most recent available year (2023) as the enrolment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO), in the most recent year 2023.
+
+We remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. For schools with no recorded data in 2023 (only "TANJONG KATONG GIRLS' SCHOOL")
+
+# Exploratory Data Analysis 
 
 ```{r}
 tmap_mode("plot")
@@ -171,6 +187,7 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
 ```
 
 ## OSO rate by school level
+
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = LEVEL, y = PREVALENCE, fill = LEVEL)) +
   geom_boxplot(na.rm = T) +
@@ -180,10 +197,11 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = LEVEL, y = PREVALENCE, fill = LEVEL)) +
   theme_minimal() +
   coord_flip()  # Flip the coordinates to make it horizontal 
 ```
-We observe that the median obesity prevalence rate for secondary schools is higher than primary schools. The inter-quartile range for obesity prevalence in secondary schools is considerably larger than that of primary schools, with a larger overall data spread as well.
-The sole outlier for secondary school obesity prevalence is Crest Secondary School, with an extremely high obesity prevalence of 0.268613.
+
+We observe that the median obesity prevalence rate for secondary schools is higher than primary schools. The inter-quartile range for obesity prevalence in secondary schools is considerably larger than that of primary schools, with a larger overall data spread as well. The sole outlier for secondary school obesity prevalence is Crest Secondary School, with an extremely high obesity prevalence of 0.268613.
 
 ## OSO rate by Zone
+
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = ZONE, y = PREVALENCE, fill = ZONE)) +
   geom_boxplot(na.rm = T) +
@@ -193,11 +211,11 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = ZONE, y = PREVALENCE, fill = ZONE)) +
   theme_minimal() +
   coord_flip()  # Flip the coordinates to make it horizontal 
 ```
-We observe that across all four zones, the median obesity prevalence is comparable at between 10% to 15%. Ranking the median obesity prevalence for the zones, we get North > West > South > East. The inter-quartile ranges and overall data spreads for all four zones are approximately equivalent, though the North zone is the only among the four for the data spread to stretch beyond an obesity prevalence of 0.20 (outliers exclusive). 
-The two outliers for the East zone are East Spring Secondary School (0.193481) and Loyang View Secondary School (0.221809). It is worth noting that East Spring Secondary School being a data outlier can be attributed to the East zone having majority of its schools at lower obesity prevalence rates, for its obesity value would not be considered an outlier if placed in the North or West zones. 
-The sole outlier for the West zone is Crest Secondary School with an extremely high obesity prevalence of 0.268613.
+
+We observe that across all four zones, the median obesity prevalence is comparable at between 10% to 15%. Ranking the median obesity prevalence for the zones, we get North \> West \> South \> East. The inter-quartile ranges and overall data spreads for all four zones are approximately equivalent, though the North zone is the only among the four for the data spread to stretch beyond an obesity prevalence of 0.20 (outliers exclusive). The two outliers for the East zone are East Spring Secondary School (0.193481) and Loyang View Secondary School (0.221809). It is worth noting that East Spring Secondary School being a data outlier can be attributed to the East zone having majority of its schools at lower obesity prevalence rates, for its obesity value would not be considered an outlier if placed in the North or West zones. The sole outlier for the West zone is Crest Secondary School with an extremely high obesity prevalence of 0.268613.
 
 ## OSO rate by School Type
+
 ```{r}
 sub = obesity_data_sf_2023_OSO |>
   filter(type_code %in% c("GOVERNMENT SCHOOL", "GOVERNMENT-AIDED SCH"))
@@ -209,11 +227,11 @@ ggplot(sub, aes(x = type_code, y = PREVALENCE, fill = type_code)) +
   theme_minimal() +
   coord_flip()  # Flip the coordinates to make it horizontal 
 ```
-We observe that the median obesity prevalence for government schools is over 2% higher than government-aided schools. The inter-quartile range for government-aided schools is larger, especially for Q3 which is spread over a larger range.
-The lower bound outliers for government schools are National Junior College (0.056235), Raffles Girls' School (Primary) (0.057807) and Raffles' Girls School (Secondary) (0.061249).
-The upper bound outliers for government schools are East Spring Secondary School (0.193481), Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613).
+
+We observe that the median obesity prevalence for government schools is over 2% higher than government-aided schools. The inter-quartile range for government-aided schools is larger, especially for Q3 which is spread over a larger range. The lower bound outliers for government schools are National Junior College (0.056235), Raffles Girls' School (Primary) (0.057807) and Raffles' Girls School (Secondary) (0.061249). The upper bound outliers for government schools are East Spring Secondary School (0.193481), Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613).
 
 ## OSO rate by Gender Mix
+
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nature_code)) +
   geom_boxplot(na.rm = T) +
@@ -224,12 +242,11 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nat
   scale_x_discrete(drop = TRUE) +
   coord_flip() # Flip the coordinates to make it horizontal 
 ```
-We observe that the median obesity prevalence for coed schools is noticeably higher than that for boys' and girls' schools. Median obesity prevalence in boys' schools is also higher than that for girls' schools. The interquartile range for all three types of schools is comparable, but the overall data range of obesity prevalence is much larger for coed schools than girls' or boys' schools. 
-For girls' school, the sole upper bound data outlier is CHIJ St. Joseph's Convent (0.1552). We further observe that this is a North zone secondary school, but among the North zone girls' schools it is a significant outlier as other counterparts have obesity prevalence of around 0.05-0.06 range.
-For coed schools, the sole lower bound data outlier is Anglican High School (0.049065). The three upper bound data outliers are Loyang View Secondary School (0.221809), Pioneer Primary School (0.226236) and Crest Secondary School (0.268613).
-It is interesting that the opposite trend (higher obesity in single-gender schools than coed schools) has been observed in other countries such as South Korea (research study link: https://pmc.ncbi.nlm.nih.gov/articles/PMC4430348/). Possible explanations include a stronger desire for students of both genders to manage their appearance (and in turn, weight) to increase their attractiveness to the opposite gender. 
-  
+
+We observe that the median obesity prevalence for coed schools is noticeably higher than that for boys' and girls' schools. Median obesity prevalence in boys' schools is also higher than that for girls' schools. The interquartile range for all three types of schools is comparable, but the overall data range of obesity prevalence is much larger for coed schools than girls' or boys' schools. For girls' school, the sole upper bound data outlier is CHIJ St. Joseph's Convent (0.1552). We further observe that this is a North zone secondary school, but among the North zone girls' schools it is a significant outlier as other counterparts have obesity prevalence of around 0.05-0.06 range. For coed schools, the sole lower bound data outlier is Anglican High School (0.049065). The three upper bound data outliers are Loyang View Secondary School (0.221809), Pioneer Primary School (0.226236) and Crest Secondary School (0.268613). It is interesting that the opposite trend (higher obesity in single-gender schools than coed schools) has been observed in other countries such as [South Korea](https://pmc.ncbi.nlm.nih.gov/articles/PMC4430348/). Possible explanations include a stronger desire for students of both genders to manage their appearance (and in turn, weight) to increase their attractiveness to the opposite gender.
+
 ## OSO rate by Specialised Programs
+
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special)) +
   geom_boxplot(na.rm = T) +
@@ -240,11 +257,11 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special
   scale_x_discrete(drop = TRUE) +
   coord_flip() # Flip the coordinates to make it horizontal 
 ```
-We observe that the median obesity prevalence for non-specialised schools is noticeably higher than that for specialised schools, at almost 5 percentage points. The interquartile range for both types of schools is comparable, but the overall data range of obesity prevalence is much larger for non-specialised than specialised schools at both upper and lower ends of the spectrum. 
-For specialised schools, the sole upper bound data outlier is Dunamn Secondary School (0.155722). It is worth noting that this obesity prevalence value would not be an outlier in the non-specialised school data and is fairly close to the Q3 range for non-specialised schools.
-For non-specialised schools, the sole lower bound data outlier is Anglican High School (0.049065). The three upper bound data outliers are Loyang View Secondary School (0.221809), Pioneer Primary School (0.226236) and Crest Secondary School (0.268613).
+
+We observe that the median obesity prevalence for non-specialised schools is noticeably higher than that for specialised schools, at almost 5 percentage points. The interquartile range for both types of schools is comparable, but the overall data range of obesity prevalence is much larger for non-specialised than specialised schools at both upper and lower ends of the spectrum. For specialised schools, the sole upper bound data outlier is Dunamn Secondary School (0.155722). It is worth noting that this obesity prevalence value would not be an outlier in the non-specialised school data and is fairly close to the Q3 range for non-specialised schools. For non-specialised schools, the sole lower bound data outlier is Anglican High School (0.049065). The three upper bound data outliers are Loyang View Secondary School (0.221809), Pioneer Primary School (0.226236) and Crest Secondary School (0.268613).
 
 ## OSO rate by HMSP Tier
+
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_Tier)) +
   geom_boxplot(na.rm = T) +
@@ -257,10 +274,8 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_
 
 cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
 ```
-We observe that the median obesity prevalence for the B, C, D and E HSMP tiers are within one percentage point of one another (0.12-0.13 range) while the median value of the A tier is much lower at approximately 0.1. The A tier also has a significantly smaller IQR range and total range than other tiers, showing greater consistency in obesity prvalence within HSMP A tier schools (though this is likely also because there are only 8 A tier schools). The other HSMP tiers have similar IQR ranges and total data ranges, though tier B has a much wider Q1 compared to tiers C, D and E despite having similar median values.
-For C tier, the two upper bound outliers are Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613).
-For D tier, the sole outlier is Pioneer Primary School (0.226236).
-For A tier, the sole outlier is Admiralty Secondary School (0.16422), a coed secondary school in the North zone. 
+
+We observe that the median obesity prevalence for the B, C, D and E HSMP tiers are within one percentage point of one another (0.12-0.13 range) while the median value of the A tier is much lower at approximately 0.1. The A tier also has a significantly smaller IQR range and total range than other tiers, showing greater consistency in obesity prvalence within HSMP A tier schools (though this is likely also because there are only 8 A tier schools). The other HSMP tiers have similar IQR ranges and total data ranges, though tier B has a much wider Q1 compared to tiers C, D and E despite having similar median values. For C tier, the two upper bound outliers are Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613). For D tier, the sole outlier is Pioneer Primary School (0.226236). For A tier, the sole outlier is Admiralty Secondary School (0.16422), a coed secondary school in the North zone.
 
 # Singapore maps
 
@@ -775,15 +790,9 @@ globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
              ura_planning_areas_lw_B_sec)
 ```
 
-Average number of links (Primary school): 3.428571 
-p-value for Global Moran's I test (Primary school): 0.005857
-p-value for Global Geary's C test (Primary school): 0.005738
-p-value for Global Getis-Ord's G test (Primary school): 0.8278
+Average number of links (Primary school): 3.428571 p-value for Global Moran's I test (Primary school): 0.005857 p-value for Global Geary's C test (Primary school): 0.005738 p-value for Global Getis-Ord's G test (Primary school): 0.8278
 
-Average number of links (Secondary school): 3.285714 
-p-value for Global Moran's I test (Secondary school): 0.5256
-p-value for Global Geary's C test (Secondary school): 0.5418
-p-value for Global Getis-Ord's G test (Secondary school): 0.8072
+Average number of links (Secondary school): 3.285714 p-value for Global Moran's I test (Secondary school): 0.5256 p-value for Global Geary's C test (Secondary school): 0.5418 p-value for Global Getis-Ord's G test (Secondary school): 0.8072
 
 #### Join count analysis
 
@@ -813,6 +822,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Moran's I statistic
+
 ```{r}
 # by Primary school
 localm_ura_planning_areas_pri <- 
@@ -834,6 +844,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
+
 ```{r}
 # by Primary school
 obesity_ura_planning_areas_pri$GO_STAT <-
@@ -853,6 +864,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram
+
 ```{r}
 # by Primary school
 correl_planning_areas_pri <- sp.correlogram(
@@ -906,7 +918,6 @@ sec_map <- ura_subzones_map +
 
 tmap_arrange(pri_map, sec_map)
 ```
-
 
 # Cluster based analysis (Social distance)
 
@@ -986,15 +997,9 @@ geary.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_B_sec)
 ```
 
-Average number of links (Primary school): 5.657459 
-p-value for Global Moran's I test (Primary school): 0.1608
-p-value for Global Geary's C test (Primary school): 0.1608
-p-value for Global Getis-Ord's G test (Primary school): 0.02355
+Average number of links (Primary school): 5.657459 p-value for Global Moran's I test (Primary school): 0.1608 p-value for Global Geary's C test (Primary school): 0.1608 p-value for Global Getis-Ord's G test (Primary school): 0.02355
 
-Average number of links (Secondary school): 4.347222 
-p-value for Global Moran's I test (Secondary school): 0.1768
-p-value for Global Geary's C test (Secondary school): 0.1768
-p-value for Global Getis-Ord's G test (Secondary school): 0.8314
+Average number of links (Secondary school): 4.347222 p-value for Global Moran's I test (Secondary school): 0.1768 p-value for Global Geary's C test (Secondary school): 0.1768 p-value for Global Getis-Ord's G test (Secondary school): 0.8314
 
 #### Join count analysis
 
@@ -1033,6 +1038,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Moran's I statistic
+
 ```{r}
 # by Primary school
 localm_moe_clusters_pri <- 
@@ -1054,6 +1060,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
+
 ```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
@@ -1073,6 +1080,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram (does not work)
+
 ```{r}
 # # by Primary school
 # correl_moe_clusters_pri <- sp.correlogram(
@@ -1147,15 +1155,9 @@ geary.test(obesity_sec_sch$PREVALENCE, del_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, del_lw_B_sec)
 ```
 
-Average number of links (Primary school): 5.823204 
-p-value for Global Moran's I test (Primary school): 1.809e-12
-p-value for Global Geary's C test (Primary school): 3.885e-12
-p-value for Global Getis-Ord's G test (Primary school): 0.03254
+Average number of links (Primary school): 5.823204 p-value for Global Moran's I test (Primary school): 1.809e-12 p-value for Global Geary's C test (Primary school): 3.885e-12 p-value for Global Getis-Ord's G test (Primary school): 0.03254
 
-Average number of links (Secondary school): 5.805556 
-p-value for Global Moran's I test (Secondary school): 0.0001695
-p-value for Global Geary's C test (Secondary school): 9.452e-05
-p-value for Global Getis-Ord's G test (Secondary school): 0.2914
+Average number of links (Secondary school): 5.805556 p-value for Global Moran's I test (Secondary school): 0.0001695 p-value for Global Geary's C test (Secondary school): 9.452e-05 p-value for Global Getis-Ord's G test (Secondary school): 0.2914
 
 #### Join count analysis
 
@@ -1194,6 +1196,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Moran's I statistic
+
 ```{r}
 # by Primary school
 localm_del_pri <- 
@@ -1215,6 +1218,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
+
 ```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
@@ -1234,6 +1238,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram
+
 ```{r}
 # by Primary school
 correl_del_pri <- sp.correlogram(
@@ -1265,7 +1270,6 @@ plot(correlI_del_sec, main="Contiguity lag orders: Moran's I")
 plot(correlC_del_sec, main="Contiguity lag orders: Geary's C")
 par(mfrow=c(1,1))
 ```
-
 
 ## Sphere of influence neighbours
 
@@ -1311,15 +1315,9 @@ geary.test(obesity_sec_sch$PREVALENCE, soi_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, soi_lw_B_sec)
 ```
 
-Average number of links (Primary school): 3.082873 
-p-value for Global Moran's I test (Primary school): 6.672e-07
-p-value for Global Geary's C test (Primary school): 3.173e-07
-p-value for Global Getis-Ord's G test (Primary school): 0.07193
+Average number of links (Primary school): 3.082873 p-value for Global Moran's I test (Primary school): 6.672e-07 p-value for Global Geary's C test (Primary school): 3.173e-07 p-value for Global Getis-Ord's G test (Primary school): 0.07193
 
-Average number of links (Secondary school): 2.958333 
-p-value for Global Moran's I test (Secondary school): 0.0004617
-p-value for Global Geary's C test (Secondary school): 0.0002675
-p-value for Global Getis-Ord's G test (Secondary school): 0.3102
+Average number of links (Secondary school): 2.958333 p-value for Global Moran's I test (Secondary school): 0.0004617 p-value for Global Geary's C test (Secondary school): 0.0002675 p-value for Global Getis-Ord's G test (Secondary school): 0.3102
 
 #### Join count analysis
 
@@ -1357,6 +1355,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Moran's I statistic
+
 ```{r}
 # by Primary school
 localm_soi_pri <- 
@@ -1386,6 +1385,7 @@ tmap_arrange(soi_pri_map, soi_sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
+
 ```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
@@ -1405,7 +1405,9 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram (does not work)
+
 Some sub-graphs have 2 or less neighbours
+
 ```{r}
 # # by Primary school
 # correl_soi_pri <- sp.correlogram(
@@ -1441,6 +1443,7 @@ Some sub-graphs have 2 or less neighbours
 # K nearest neighbour based analysis
 
 ## 1 neighbour
+
 ```{r}
 # by Primary schools
 knn1_nb_pri <- obesity_pri_sch %>% 
@@ -1479,15 +1482,9 @@ geary.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, knn1_lw_B_sec)
 ```
 
-Average number of links (Primary school): 1 
-p-value for Global Moran's I test (Primary school): 0.004193
-p-value for Global Geary's C test (Primary school): 0.02331
-p-value for Global Getis-Ord's G test (Primary school): 0.09593
+Average number of links (Primary school): 1 p-value for Global Moran's I test (Primary school): 0.004193 p-value for Global Geary's C test (Primary school): 0.02331 p-value for Global Getis-Ord's G test (Primary school): 0.09593
 
-Average number of links (Secondary school): 1 
-p-value for Global Moran's I test (Secondary school): 0.0004819
-p-value for Global Geary's C test (Secondary school): 0.004126
-p-value for Global Getis-Ord's G test (Secondary school): 0.234
+Average number of links (Secondary school): 1 p-value for Global Moran's I test (Secondary school): 0.0004819 p-value for Global Geary's C test (Secondary school): 0.004126 p-value for Global Getis-Ord's G test (Secondary school): 0.234
 
 #### Join count analysis
 
@@ -1526,6 +1523,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Moran's I statistic
+
 ```{r}
 # by Primary school
 localm_knn1_pri <- 
@@ -1547,6 +1545,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
+
 ```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
@@ -1566,7 +1565,9 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram (does not work)
+
 Some sub-graphs have 2 or less neighbours
+
 ```{r}
 # # by Primary school
 # correl_knn1_pri <- sp.correlogram(
@@ -1600,6 +1601,7 @@ Some sub-graphs have 2 or less neighbours
 ```
 
 ## 2 neighbours
+
 ```{r}
 # by Primary schools
 knn2_nb_pri <- obesity_pri_sch %>% 
@@ -1638,15 +1640,9 @@ geary.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, knn2_lw_B_sec)
 ```
 
-Average number of links (Primary school): 2
-p-value for Global Moran's I test (Primary school): 1.474e-05
-p-value for Global Geary's C test (Primary school): 4.17e-05
-p-value for Global Getis-Ord's G test (Primary school): 0.01137
+Average number of links (Primary school): 2 p-value for Global Moran's I test (Primary school): 1.474e-05 p-value for Global Geary's C test (Primary school): 4.17e-05 p-value for Global Getis-Ord's G test (Primary school): 0.01137
 
-Average number of links (Secondary school): 2
-p-value for Global Moran's I test (Secondary school): 0.003471
-p-value for Global Geary's C test (Secondary school): 0.03461
-p-value for Global Getis-Ord's G test (Secondary school): 0.2781
+Average number of links (Secondary school): 2 p-value for Global Moran's I test (Secondary school): 0.003471 p-value for Global Geary's C test (Secondary school): 0.03461 p-value for Global Getis-Ord's G test (Secondary school): 0.2781
 
 #### Join count analysis
 
@@ -1685,6 +1681,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Moran's I statistic
+
 ```{r}
 # by Primary school
 localm_knn2_pri <- 
@@ -1706,6 +1703,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
+
 ```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
@@ -1725,7 +1723,9 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram (does not work)
+
 Some sub-graphs have 2 or less neighbours
+
 ```{r}
 # # by Primary school
 # correl_knn2_pri <- sp.correlogram(
@@ -1759,6 +1759,7 @@ Some sub-graphs have 2 or less neighbours
 ```
 
 ## 3 neighbours
+
 ```{r}
 # by Primary schools
 knn3_nb_pri <- obesity_pri_sch %>% 
@@ -1797,15 +1798,9 @@ geary.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec)
 ```
 
-Average number of links (Primary school): 3
-p-value for Global Moran's I test (Primary school): 7.811e-08
-p-value for Global Geary's C test (Primary school): 9.495e-08
-p-value for Global Getis-Ord's G test (Primary school): 0.00337
+Average number of links (Primary school): 3 p-value for Global Moran's I test (Primary school): 7.811e-08 p-value for Global Geary's C test (Primary school): 9.495e-08 p-value for Global Getis-Ord's G test (Primary school): 0.00337
 
-Average number of links (Secondary school): 3
-p-value for Global Moran's I test (Secondary school): 0.000427
-p-value for Global Geary's C test (Secondary school): 0.002858
-p-value for Global Getis-Ord's G test (Secondary school): 0.3985
+Average number of links (Secondary school): 3 p-value for Global Moran's I test (Secondary school): 0.000427 p-value for Global Geary's C test (Secondary school): 0.002858 p-value for Global Getis-Ord's G test (Secondary school): 0.3985
 
 #### Join count analysis
 
@@ -1844,6 +1839,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Moran's I statistic
+
 ```{r}
 # by Primary school
 localm_knn3_pri <- 
@@ -1865,6 +1861,7 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Local Getis-Ord's G statistics
+
 ```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
@@ -1884,7 +1881,9 @@ tmap_arrange(pri_map, sec_map)
 ```
 
 #### Correlogram (does not work)
+
 Some sub-graphs have 2 or less neighbours
+
 ```{r}
 # # by Primary school
 # correl_knn3_pri <- sp.correlogram(
@@ -1921,7 +1920,7 @@ Some sub-graphs have 2 or less neighbours
 
 To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (what are each schools' neighbours). We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3) in the following sections.
 
-Based on the Moran's I statistics, Delauney triangulation neigbours reported the lowest p-values, suggesting that there was significant spatial clustering following Delauney triangulation clusters. 
+Based on the Moran's I statistics, Delauney triangulation neigbours reported the lowest p-values, suggesting that there was significant spatial clustering following Delauney triangulation clusters.
 
 However, due to the arbitrary neighbour links introduced by Delauney triangulation (e.g. schools along the borders of Singapore were indicated as neighbours even when they were very far apart), we determined that Sphere of Influence was the better choice to model neighbour links instead.
 
@@ -1955,15 +1954,9 @@ obesity_sec_sch %>%
   filter(LMORANZ >= 3) 
 ```
 
-
 # Elite metric (Lucas)
 
-We obtain a Yes/No binary metric based on the popularity of primary & secondary schools in Singapore, which we dub as the "elite" metric. We derive this using the following methodology:
-Primary schools: We take the Phase 2C balloting information from the 2024 Primary 1 Registration Exercise for all 180 primary schools (database link: https://www.moe.gov.sg/primary/p1-registration/past-vacancies-and-balloting-data/). If the number of applicants in Phase 2C is greater than the number of vacancies, the school is marked as popular (Yes) reflecting oversubscribing due to high demand for the school's coveted vacancies. If the number of applicants in Phase 2C is less than or equal to the number of vacancies, the school is marked as not popular (No). Based on this methodology, there are 82 popular schools (Yes) and 98 non-popular schools (No). 
-Secondary schools: We obtain the 2024 secondary school PSLE cutoff points from SG Schooling (https://sgschooling.com/secondary/cop/all.html) in the IP/PG3 (Express) streams. We take the cutoff point for each secondary school if given as a single value, or the highest value in a given point range, ignoring all secondary criteria for the Mother Tongue Grade (D/M/P) to get data for 138 secondary schools. We then calculate the top quartile of cutoff points, which ends up as 13, and label all secondary schools with cutoff points less than or equal to this value as popular schools (Y) and all other schools as non-popular (N). Using this methodology, we obtain 35 popular schools (Y) and 103 non-popular schools (N). For the  secondary schools with no given PSLE cutoff point for 2024, we conduct the following manual adjustments:
-- School of the Arts, NUS High School and School of Science and Technology: These schools only accept admissions by Direct School Admission, so there is no PSLE cutoff range. From our research, these three schools are prestigious in their unique domains with many applicants each year. As such, we labelled these three schools as popular (Y).
-- Crest Secondary School, Assumption Pathway School and Northlight School: These schools offer specialised pathways for experiential and hands-on learning, allowing students to graduate with an ITE Skills certificate. As this is a non-mainstream pathway with only PG1/PG2 streams, we labelled these three schools as non-popular (N).
-In total, we have 144 secondary schools with 38 as popular (Y) and 106 as non-popular (N). 
+We obtain a Yes/No binary metric based on the popularity of primary & secondary schools in Singapore, which we dub as the "elite" metric. We derive this using the following methodology: Primary schools: We take the Phase 2C balloting information from the 2024 Primary 1 Registration Exercise for all 180 primary schools (database link: <https://www.moe.gov.sg/primary/p1-registration/past-vacancies-and-balloting-data/>). If the number of applicants in Phase 2C is greater than the number of vacancies, the school is marked as popular (Yes) reflecting oversubscribing due to high demand for the school's coveted vacancies. If the number of applicants in Phase 2C is less than or equal to the number of vacancies, the school is marked as not popular (No). Based on this methodology, there are 82 popular schools (Yes) and 98 non-popular schools (No). Secondary schools: We obtain the 2024 secondary school PSLE cutoff points from SG Schooling (<https://sgschooling.com/secondary/cop/all.html>) in the IP/PG3 (Express) streams. We take the cutoff point for each secondary school if given as a single value, or the highest value in a given point range, ignoring all secondary criteria for the Mother Tongue Grade (D/M/P) to get data for 138 secondary schools. We then calculate the top quartile of cutoff points, which ends up as 13, and label all secondary schools with cutoff points less than or equal to this value as popular schools (Y) and all other schools as non-popular (N). Using this methodology, we obtain 35 popular schools (Y) and 103 non-popular schools (N). For the secondary schools with no given PSLE cutoff point for 2024, we conduct the following manual adjustments: - School of the Arts, NUS High School and School of Science and Technology: These schools only accept admissions by Direct School Admission, so there is no PSLE cutoff range. From our research, these three schools are prestigious in their unique domains with many applicants each year. As such, we labelled these three schools as popular (Y). - Crest Secondary School, Assumption Pathway School and Northlight School: These schools offer specialised pathways for experiential and hands-on learning, allowing students to graduate with an ITE Skills certificate. As this is a non-mainstream pathway with only PG1/PG2 streams, we labelled these three schools as non-popular (N). In total, we have 144 secondary schools with 38 as popular (Y) and 106 as non-popular (N).
 
 ```{r}
 pri_rankings <- read.csv("pri rankings.csv") %>% 
@@ -1982,11 +1975,10 @@ sec_rankings <- read.csv("sec rankings.csv") %>%
 school_rankings <- rbind(pri_rankings, sec_rankings)
 ```
 
-#Census Variables
-Next, we consider the Singapore Census of Population 2020 data and bring in two variables: 
-Income: From Table 110 Resident Households by Planning Area of Residence and Monthly Household Income from Work, we sum up the income for each planning area by multiplying the midpoint of a given income range (for example, $9,000 - $9,999 would have a midpoint of $9,500) with the number of residents with that given monthly income range and totalling everything. The only exception to this is the income bracket "$20,000 and Over", of which we took the midpoint value as $25,000. We then obtain the mean income per planning area by dividing this totalled income figure by the total number of residents in each planning area (given in the second column of the data table). 
-Education: From Table 100 Resident Population Aged 15 Years and Over by Planning Area of Residence and Highest Qualification Attained, we sum up the number of years of education in each planning area by multiplying the minimum number of years of education completed (No Qualification = 0,	Primary = 6, Lower Secondary = 8 [6+2], Secondary	= 10 [6+2+2], Post-Secondary (Non-Tertiary)	= 12 [6+2+2+2 assuming JC route], Polytechnic Diploma	= 13 [6+2+2+3 assuming average Polytechnic diploma as 3 year programme], Professional Qualification and Other Diploma = 15 [6+2+2+2+3 assuming JC then 3 year other diploma],	University =16 [6+2+2+2+4 assuming JC then 4 year university degree]) with the number of residents that fall within the relevant maximum education completion category. We then obtain the mean number of years or education per planning area by dividing this totalled education years figure by the total number of residents in each planning area (given in the second column of the data table). 
- 
+# Census Variables Next, we consider the Singapore Census of Population
+
+2020 data and bring in two variables: Income: From Table 110 Resident Households by Planning Area of Residence and Monthly Household Income from Work, we sum up the income for each planning area by multiplying the midpoint of a given income range (for example, \$9,000 - \$9,999 would have a midpoint of \$9,500) with the number of residents with that given monthly income range and totalling everything. The only exception to this is the income bracket "\$20,000 and Over", of which we took the midpoint value as \$25,000. We then obtain the mean income per planning area by dividing this totalled income figure by the total number of residents in each planning area (given in the second column of the data table). Education: From Table 100 Resident Population Aged 15 Years and Over by Planning Area of Residence and Highest Qualification Attained, we sum up the number of years of education in each planning area by multiplying the minimum number of years of education completed (No Qualification = 0, Primary = 6, Lower Secondary = 8 [6+2], Secondary = 10 [6+2+2], Post-Secondary (Non-Tertiary) = 12 [6+2+2+2 assuming JC route], Polytechnic Diploma = 13 [6+2+2+3 assuming average Polytechnic diploma as 3 year programme], Professional Qualification and Other Diploma = 15 [6+2+2+2+3 assuming JC then 3 year other diploma], University =16 [6+2+2+2+4 assuming JC then 4 year university degree]) with the number of residents that fall within the relevant maximum education completion category. We then obtain the mean number of years or education per planning area by dividing this totalled education years figure by the total number of residents in each planning area (given in the second column of the data table).
+
 ## Preliminary Data Manipulation and Visuals (Lucas)
 
 ```{r}
@@ -2031,8 +2023,8 @@ ura_planning_areas_map + tm_shape(census_merge) +
               ) +
   tm_title("Breakdown by Sec Students")
 ```
-For the income variable, the planning areas with higher incomes are situated in the southern and central regions. The northern and western planning areas appear to have lower incomes while the eastern planning areas have moderately high incomes.
-For the education variable, planning areas with residents that have more years of education are situated in the southern and central regions. The northern and western planning areas appear to have fewer years of education while the eastern planning areas moderate to high number of years of education.
+
+For the income variable, the planning areas with higher incomes are situated in the southern and central regions. The northern and western planning areas appear to have lower incomes while the eastern planning areas have moderately high incomes. For the education variable, planning areas with residents that have more years of education are situated in the southern and central regions. The northern and western planning areas appear to have fewer years of education while the eastern planning areas moderate to high number of years of education.
 
 ## Spatial Descriptive Summary Measures of Income (Lucas)
 
@@ -2096,7 +2088,8 @@ income_map <- ura_planning_areas_map +
 
 print(income_map)
 ```
-Analysing the spatial descriptive summary measures for income variable, we observe all spatial measures (spatial mean, spatial median, SDD, SDE and weighted SDE) are directionally skewed towards the southeast, though much more skewed towards the south than the eastern direction. This matches the observation that most of the higher income planning areas are concentrated in the south, with middle range income planning areas in the east. The weighted SDE (red dotted line) being more skewed towards the south than the SDE (black dotted line) further reflects this spatial pattern. 
+
+Analysing the spatial descriptive summary measures for income variable, we observe all spatial measures (spatial mean, spatial median, SDD, SDE and weighted SDE) are directionally skewed towards the southeast, though much more skewed towards the south than the eastern direction. This matches the observation that most of the higher income planning areas are concentrated in the south, with middle range income planning areas in the east. The weighted SDE (red dotted line) being more skewed towards the south than the SDE (black dotted line) further reflects this spatial pattern.
 
 ## Spatial Descriptive Summary Measures of Education Years (Lucas)
 
@@ -2159,8 +2152,8 @@ education_map <- ura_planning_areas_map +
 
 print(education_map)
 ```
-Analysing the spatial descriptive summary measures for education variable, we observe all spatial measures (spatial mean, spatial median, SDD, SDE and weighted SDE) are directionally skewed towards the southeast, though much more skewed towards the south than the eastern direction. Visually comparing with the spatial descriptive measures for the income variable, the spatial mean and median are in approximately the same location (within the same planning area at least) while the SDE and weighted SDE for the education variable are slightly less skewed towards the south than the income variable. This could be because of the nature of the variable since income ranges (max-min = $8,000) have a much larger spread than education years (max - min = 4 years).
-This matches the observation that most of the planning areas with best educated residents are concentrated in the south, with planning areas in the east having more years of education than planning areas in the west. The weighted SDE (red dotted line) being more skewed towards the south than the SDE (black dotted line) further reflects this spatial pattern, although there appears to be less of a southbound skewing effect for the education variable than the income variable.  
+
+Analysing the spatial descriptive summary measures for education variable, we observe all spatial measures (spatial mean, spatial median, SDD, SDE and weighted SDE) are directionally skewed towards the southeast, though much more skewed towards the south than the eastern direction. Visually comparing with the spatial descriptive measures for the income variable, the spatial mean and median are in approximately the same location (within the same planning area at least) while the SDE and weighted SDE for the education variable are slightly less skewed towards the south than the income variable. This could be because of the nature of the variable since income ranges (max-min = \$8,000) have a much larger spread than education years (max - min = 4 years). This matches the observation that most of the planning areas with best educated residents are concentrated in the south, with planning areas in the east having more years of education than planning areas in the west. The weighted SDE (red dotted line) being more skewed towards the south than the SDE (black dotted line) further reflects this spatial pattern, although there appears to be less of a southbound skewing effect for the education variable than the income variable.
 
 # Food and Nutrition (Nina)
 
@@ -2352,7 +2345,8 @@ wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 ```
 
 # Distance of the nearest food option to each school
-```{r} 
+
+```{r}
 #Write function to compute distance to nearest food option, along with outlet_type
 library(geosphere)
 
@@ -2401,9 +2395,6 @@ wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 # morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
 # morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
 ```
-
-
-
 
 # Sports CCAs in Schools (Qasim)
 
@@ -2526,8 +2517,8 @@ pri_cca_map_sde
 
 ```
 
-
 ####################################SECONDARY SCHOOL####################################
+
 ```{r}
 sec_cca_data <- obesity_joined_school_sports_data %>% filter(LEVEL == "SECONDARY", !is.na(sports_cca_per_100))
 
@@ -2622,8 +2613,8 @@ sec_cca_map_sde
 
 ```
 
-
 # Aggregating sports cca ratio counts by URA planning area
+
 ```{r}
 cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
   group_by(PLN_AREA_N, LEVEL) %>% 
@@ -2667,9 +2658,8 @@ combined_cca_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_dat
 
 ```
 
-
-
 # BIVARIATE CHLOROPLETH MAPS FOR CCA RATIO VS PREVALENCE
+
 ```{r}
 
 library(classInt);library(dplyr)
@@ -2782,17 +2772,14 @@ sec_bivariate_map <-ura_planning_areas_map +
 sec_bivariate_map
 ```
 
-
 ```{r}
 
 #cca vs prevalence bivariate morans I
 
 ```
 
-
-
-
 # Sports Fields and Facilities
+
 ```{r}
 # Loading sports facilities data
 sports_facilities_file <- "SportSGSportFacilities.geojson"
@@ -2894,9 +2881,6 @@ sec_dus_map <- ura_planning_areas_map +
 sec_dus_map
 
 ```
-
-
-
 
 # K Nearest Neighbours
 
@@ -3026,8 +3010,8 @@ print(sec_dus_avg_distance_map)
 
 ```
 
-
 # Facility Density by URA Planning Area
+
 ```{r}
 
 facility_by_area <- st_join(ura_planning_areas, dual_use_facilities) %>% 
@@ -3063,11 +3047,10 @@ facility_density_map
 
 ```
 
-
-
 # Modelling obesity in Singapore schools
 
 ## Joining data variables
+
 ```{r}
 # Selecting relevant columns
 census_merge_data <- census_merge %>% 
@@ -3173,8 +3156,7 @@ corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
 
 We used pairwise complete observations as the sports_cca_per_100 had many missing rows.
 
-**For Primary Schools**
-Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
+**For Primary Schools** Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
 
 -   Number of food outlets within a 1km radius of school (num_food_outlets),
 -   Government school status (is_govt_sch),
@@ -3194,8 +3176,7 @@ Furthermore, there is a negative linear relationship between overweight prevalen
 -   GEP school status (is_gifted_sch),
 -   Special school status: SAP or GEP (is_special_sch).
 
-**For Secondary Schools**
-Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
+**For Secondary Schools** Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
 
 -   Government school status (is_govt_sch),
 -   Co-ed school status (is_coed_sch),
@@ -3231,8 +3212,7 @@ lm.all_sec<- lm(PREVALENCE~.,data=obesity_model_analysis_sec)
 summary(lm.all_sec)
 ```
 
-For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistically significant variables include is_coed_sch (p-value <0.01), is_popular_sch (p-value<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value<0.1)
-For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value<0.05) and is_popular_sch (p-value<0.1). 
+For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistically significant variables include is_coed_sch (p-value \<0.01), is_popular_sch (p-value\<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value\<0.1) For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value\<0.05) and is_popular_sch (p-value\<0.1).
 
 ```{r}
 #BSS for Pri
@@ -3298,22 +3278,17 @@ ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
 summary(ols_sec)
 ```
 
-Based on the three types of model selection,
-We observe that BSS and Backward selection recommend the same model for primary school variables with 4 terms based on smallest BIC criterion. This model was chosen because it has the fewest number of variables, facilitating simplicity in interpretation.
+Based on the three types of model selection, We observe that BSS and Backward selection recommend the same model for primary school variables with 4 terms based on smallest BIC criterion. This model was chosen because it has the fewest number of variables, facilitating simplicity in interpretation.
 
-The best linear model for obesity prevalence in primary schools is 
-   (Intercept)      Education is_popular_sch    is_govt_sch    is_coed_sch 
-   0.216206288   -0.010604366   -0.009079636    0.014440522    0.017533648 
+The best linear model for obesity prevalence in primary schools is (Intercept) Education is_popular_sch is_govt_sch is_coed_sch 0.216206288 -0.010604366 -0.009079636 0.014440522 0.017533648
 
-This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis. 
+This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis.
 
-We also observe all 3 approaches recommend the same model for secondary school variables with 2 terms based on smallest BIC criterion. 
+We also observe all 3 approaches recommend the same model for secondary school variables with 2 terms based on smallest BIC criterion.
 
-The best linear model for obesity prevalence in secondary schools is 
-   (Intercept)      Education is_special_sch 
-   0.247219424   -0.009114996   -0.043620675
+The best linear model for obesity prevalence in secondary schools is (Intercept) Education is_special_sch 0.247219424 -0.009114996 -0.043620675
 
-This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables. 
+This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables.
 
 ## Residual checks for OLS model
 
@@ -3377,7 +3352,7 @@ summary(ols_sec)
 dim(obesity_model_analysis_sec)
 ```
 
-## Generating Spatial Models and Spatial Tests 
+## Generating Spatial Models and Spatial Tests
 
 ### Spatial Models (Primary Schools)
 
@@ -3437,10 +3412,7 @@ BIC(pri_sem) # -897.329
 BIC(ols_pri) # -900.6666
 ```
 
-Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see that when SLM is the alternative the p-value is small (0.01429) which is sufficient evidence at 5% significance level that the alternative SLM is more suitable. On the other hand, when SEM is the alternative, the p-value is larger (0.05814), so there is insufficient evidence at 5% significance level to reject OLS. 
-This is further supported by the LM test results, where adjRSlag has a much smaller p-value of 0.06073 as compared to adjRSerr p-value of 0.6956. This suggests the SLM is more suitable than SEM, though the significance of SLM relative to OLS may be difficult to determine at 5% significance level from this test alone.
-Finally, considering the AIC and BIC values, we see pri_slm has marginally smaller AIC and BIC values than both SEM and OLS.
-This brings us to our conclusion that SLM is the most suitable spatial model for modelling obesity prevalence in primary schools. 
+Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see that when SLM is the alternative the p-value is small (0.01429) which is sufficient evidence at 5% significance level that the alternative SLM is more suitable. On the other hand, when SEM is the alternative, the p-value is larger (0.05814), so there is insufficient evidence at 5% significance level to reject OLS. This is further supported by the LM test results, where adjRSlag has a much smaller p-value of 0.06073 as compared to adjRSerr p-value of 0.6956. This suggests the SLM is more suitable than SEM, though the significance of SLM relative to OLS may be difficult to determine at 5% significance level from this test alone. Finally, considering the AIC and BIC values, we see pri_slm has marginally smaller AIC and BIC values than both SEM and OLS. This brings us to our conclusion that SLM is the most suitable spatial model for modelling obesity prevalence in primary schools.
 
 ### Spatial Models (Secondary Schools)
 
@@ -3500,12 +3472,10 @@ BIC(sec_sem) # -579.4535
 BIC(ols_sec) # -590.1164
 ```
 
-Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see in both tests where SLM and SEM are alternatives that the p-value is much larger than 0.05, showing there is insufficient evidence at 5% significance level to reject the null OLS. 
-This is further supported by the LM test results, where adjRSlag and adjRSerr p-values are very large. This suggests the OLS may be a more suitable model than the spatial models SLM and SEM.
-Finally, considering the AIC and BIC values, we see ols_sec has smaller AIC and BIC values than both SEM and OLS.
-This brings us to our conclusion that OLS is the most suitable for modelling obesity prevalence in primary schools, more so than any type of spatial model. 
+Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see in both tests where SLM and SEM are alternatives that the p-value is much larger than 0.05, showing there is insufficient evidence at 5% significance level to reject the null OLS. This is further supported by the LM test results, where adjRSlag and adjRSerr p-values are very large. This suggests the OLS may be a more suitable model than the spatial models SLM and SEM. Finally, considering the AIC and BIC values, we see ols_sec has smaller AIC and BIC values than both SEM and OLS. This brings us to our conclusion that OLS is the most suitable for modelling obesity prevalence in primary schools, more so than any type of spatial model.
 
 ## Time series
+
 ```{r}
 library(tidyverse)
 library(imputeTS)  # For interpolation
@@ -3579,7 +3549,7 @@ z_scores_change= z_scores_summary %>%
 
 
 # Merge with spatial data
-oso_hist_geom_full = obesity_data_sf_2023_OSO_new %>%
+oso_hist_geom_full = obesity_data_sf_2023_OSO %>%
   inner_join(z_scores_change, by = "SCHOOL")
 
 oso_hist_geom = oso_hist_geom_full %>%
@@ -3604,8 +3574,8 @@ oso_hist_geom %>%
   arrange(desc(z_change)) # 10 schools identified
 ```
 
-
 ## Sphere of influence neighbours
+
 ```{r}
 # by Primary schools
 # obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
@@ -3638,9 +3608,8 @@ geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
 
 ```
 
-Average number of links (Primary school): 3.094972  
-p-value for Global Moran's I test (Primary school): 0.5712
-p-value for Global Geary's C test (Primary school): 0.3879
+Average number of links (Primary school): 3.094972\
+p-value for Global Moran's I test (Primary school): 0.5712 p-value for Global Geary's C test (Primary school): 0.3879
 
 Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019.
 
@@ -3703,7 +3672,8 @@ pri_map_z_decrease1
 pri_map_z_increase
 ```
 
-#Joint count considering only extremes
+# Joint count considering only extremes
+
 ```{r}
 #For increases
 del_nb_pri_z_increase <- tri2nb(st_coordinates(oso_hist_geom1), 
@@ -3751,10 +3721,10 @@ joincount.multi(oso_hist_geom1$z_change_high_increase,
                 soi_lw_B_pri_z_increase) 
 
 ```
-Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme decrease in obesity (of <1)
 
-Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of >1)
+Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme decrease in obesity (of \<1)
 
+Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of \>1)
 
 ```{r}
 tmap_mode("view") #interactive map
