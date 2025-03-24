@@ -26,7 +26,7 @@ library(tidyverse); library(sf); library(tmap); library(aspace); library(spdep);
 
 To support spatial and statistical analysis, several R libraries were loaded. tidyverse was used for data manipulation, sf for spatial data handling, and tmap for thematic mapping. aspace and spdep enabled spatial analysis, while corrplot visualised correlations. readxl facilitated reading Excel files, and spatialreg supported spatial regression modelling. These libraries ensure a robust analysis of childhood obesity trends in Singapore.
 
-## Loading and joining datasets
+## Loading and joining HPB and relevant datasets
 
 ```{r}
 # Loading Singapore URA subzone boundary data
@@ -35,7 +35,7 @@ sg_ura_boundaries <-
   st_make_valid()
 
 # Saving CRS provided by SG boundary map
-sg_crs <- st_crs(sg_ura_boundaries)
+sg_crs <- st_crs(sg_ura_boundaries) # SVY21
 
 # Loading cleaned obesity data from HPB and giving spatial awareness
 obesity_data <- 
@@ -48,6 +48,7 @@ obesity_data <-
 # Loading cleaned HMSP data from HPB and giving spatial awareness
 hmsp_data_sf <- 
   read.csv("hmsp_tier_pri_sec.csv") %>% 
+  rename(HMSP_Tier = TIER, HMSP_Score = TIER_SCORE) %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
   st_transform(crs = sg_crs) %>% 
   st_make_valid()
@@ -65,27 +66,30 @@ school_enrolment <-
 # Checking that all CRS are matching
 isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_data_sf)))
 
-# Checking CRS units
+# Checking CRS units 
 st_crs(sg_ura_boundaries)$units # metres
 st_crs(obesity_data)$units # metres
 st_crs(hmsp_data_sf)$units # metres
 
 # Joining data
 obesity_data <- obesity_data %>% 
-  left_join(school_info, by = join_by(SCHOOL == school_name))
+  left_join(school_info, by = join_by(SCHOOL == school_name)) %>% # data was previously cleaned to ensure that school names match 
+  left_join(select(st_drop_geometry(hmsp_data_sf), PT_ID, HMSP_Score, HMSP_Tier), by = join_by(PT_ID))
 ```
 
-To facilitate a spatial analysis of childhood obesity in Singapore, we first loaded the Urban Redevelopment Authority (URA) subzone boundary data using the st_read function. The dataset was processed with st_make_valid() to ensure topological correctness. The coordinate reference system (CRS) of the boundary data was then extracted and stored for consistency across our spatial datasets.
+The [Urban Redevelopment Authority (URA) Master Plan 2014 Subzone Boundary (No Sea)](https://data.gov.sg/collections/1707/view) dataset to serve as our base geometry map of Singapore. To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Singapore into regions, planning areas and subzones. This would aid our investigation of the regional patterns of childhood obesity.
 
-Next, we imported the cleaned obesity and Healthy Meals in Schools Programme (HMSP) datasets provided by the Health Promotion Board (HPB).
+The coordinate reference system of the URA boundary data was extracted and stored for consistency across our spatial datasets. ([SVY21](https://app.sla.gov.sg/sirent/About/PlaneCoordinateSystem): based on the Transverse Mercator projection from geographical coordinates referenced to the WGS 84 ellipsoid) For further details on the SVY21 CRS, please view the linked Singapore Land Authority (SLA) website .
 
-The [General Information of Schools](https://data.gov.sg/datasets/d_688b934f82c1059ed0a6993d2a829089/view) dataset contains key information for primary, secondary and pre-university schools, like whether they were government or co-ed schools or had special programmes (SAP, gifted, IP, etc.).
+Next, we imported the cleaned obesity and Healthy Meals in Schools Programme (HMSP) datasets provided by the Health Promotion Board (HPB). This data consists of yearly student obesity counts by schools, and HMSP Tiers and Scores for school canteen stalls. 
 
-Additionally, we loaded school enrollment data from previous years to examine trends in student populations. The dataset was filtered to retain only relevant variables, with intake-related columns and the 2024 enrollment data excluded since up-to-date enrollment figures were already present in the obesity dataset. This data integration step ensures that our analysis is enriched with school-specific attributes, providing a more comprehensive understanding of how student demographics relate to obesity trends in Singapore.
+The [General Information of Schools](https://data.gov.sg/datasets/d_688b934f82c1059ed0a6993d2a829089/view) dataset contains key information for primary, secondary and pre-university schools, like whether they were government or co-ed schools or had special programmes (SAP, gifted, IP, etc.). These variables would add further nuance to our analysis.
 
-All datasets were transformed into a spatial object using the st_as_sf() function, with longitude and latitude as coordinates, and reprojected to match the CRS of the URA boundary data. Similarly, we processed the dataset, converting it into a spatial format with the same CRS transformation. To ensure consistency in spatial analysis, we verified that the CRS of all datasets matched. Finally, the CRS units for each dataset were checked to confirm uniformity, ensuring accurate spatial mapping and analysis. These steps were essential for integrating multiple data sources within a consistent spatial framework, allowing for precise geographic visualisation and interpretation of childhood obesity patterns in Singapore.
+Past year enrolment data was also joined with our obesity datasets. School enrolment data was only provided for 2024, whereas obesity counts were provided from 2016 to 2023 (excluding 2021). Given Singapore's low birthrates and the shrinking student population over the years, an obesity prevalence measure would be inaccurate if solely calculated using 2024 enrolment data. Past year enrollment data was thus estimated using yearly intake data (for Primary schools only, due to intake data availability), e.g. the 2023 enrolment data in any school was estimated by removing the net intake in 2024, where the net intake = no. of students entering Primary 1 - no. of students graduating from Primary 6 (estimated from the P1 intake from 6 years ago).
 
-## Additional data transformations for data analysis
+All datasets with coordinate geometries were transformed into a spatial object using the st_as_sf() function, with longitude and latitude as coordinates, and reprojected to match the CRS of the URA boundary data. Spatial validity was checked and made valid using st_make_valid() to ensure topological correctness. Finally, the CRS units for each dataset were checked to confirm uniformity, ensuring accurate spatial mapping and analysis. These steps were essential for integrating multiple data sources within a consistent spatial framework, allowing for precise geographic visualisation and interpretation of childhood obesity patterns in Singapore.
+
+## Additional data transformations for exploratory data analysis
 
 ```{r}
 # Changing "PRIMARY + SECONDARY" level label to match PRI and SEC classification
@@ -97,7 +101,15 @@ obesity_data <- obesity_data %>% mutate(
     )
   ) %>% select(-c("PRI", "SEC"))
 
-# Convert school_enrolment from wide to long format
+# Classifying schools with special programmes with a "special" variable for further analysis
+obesity_data <- obesity_data %>% mutate(
+  special = case_when(
+    sap_ind == "Yes" | autonomous_ind == "Yes" | gifted_ind == "Yes" | ip_ind == "Yes" ~ "Yes",
+    TRUE ~ "No"
+    )
+  )
+
+# Converting school_enrolment from wide to long format
 school_enrolment_long <- obesity_data %>% 
   rename(ENROLMENT24 = ENROLMENT) %>% 
   select(PT_ID, SCHOOL, ENROLMENT24) %>% 
@@ -128,7 +140,7 @@ obesity_data_long <- obesity_data %>%
   # Extract year as numeric
   mutate(YEAR = as.numeric(gsub("X", "", YEAR))) 
 
-# Transform obesity count and school enrolment into an obesity prevalence figure
+# Creating obesity prevalence measure from obesity count and school enrolment 
 obesity_data_sf <- obesity_data_long %>%
   select(-ENROLMENT) %>% 
   full_join(school_enrolment_long, by = c("PT_ID", "SCHOOL", "YEAR")) %>%
@@ -137,30 +149,28 @@ obesity_data_sf <- obesity_data_long %>%
 
 # For our analysis, filter for 2023 data and overweight and severely overweight
 obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
-  filter(
-    YEAR == 2023, CATEGORY == "OSO", 
-    !(SCHOOL %in% 
-        c("FUCHUN SECONDARY SCHOOL", "TANGLIN SECONDARY SCHOOL","GUANGYANG PRIMARY SCHOOL")
-      ),
-    !is.na(PREVALENCE)
-    )
+  filter(YEAR == 2023, CATEGORY == "OSO", !(SCHOOL %in% c("FUCHUN SECONDARY SCHOOL", "TANGLIN SECONDARY SCHOOL","GUANGYANG PRIMARY SCHOOL")), !is.na(PREVALENCE))
 
-# Combining prof's data with ours (delete this line pls)
-oso23 = read_csv("Prof's Codes/oso23.csv", show_col_types = FALSE)
-oso23 = oso23 |> drop_na(OSO_pct) 
-
-# Re-classify
-oso23[,c(3, 4, 8, 13:26)] = lapply(oso23[,c(3, 4, 8, 13:26)], as.factor)
-oso23_new = oso23 %>% select(c("PT_ID", "HMSP_Tier", "HMSP_Score", "special"))
-obesity_data_sf_2023_OSO_new = left_join(obesity_data_sf_2023_OSO, oso23_new, by = "PT_ID")
-obesity_data_sf_2023_OSO = obesity_data_sf_2023_OSO_new #we can delete this line if necessary and just use obesity_data_sf_2023_oso_new
+# # Combining prof's data with ours (delete this line pls)
+# oso23 = read_csv("Prof's Codes/oso23.csv", show_col_types = FALSE)
+# oso23 = oso23 |> drop_na(OSO_pct) 
+# 
+# # Re-classify
+# oso23[,c(3, 4, 8, 13:26)] = lapply(oso23[,c(3, 4, 8, 13:26)], as.factor)
+# oso23_new = oso23 %>% select(c("PT_ID", "HMSP_Tier", "HMSP_Score", "special"))
+# obesity_data_sf_2023_OSO_new = left_join(obesity_data_sf_2023_OSO, oso23_new, by = "PT_ID")
+# obesity_data_sf_2023_OSO = obesity_data_sf_2023_OSO_new #we can delete this line if necessary and just use obesity_data_sf_2023_oso_new
 ```
 
-The data is further cleaned and transformed into a format that is ready for our spatial data analysis. 
+The data was further cleaned and transformed into a format that is ready for spatial data analysis. 
 
-We filter our data for the most recent available year (2023) as the enrolment data given is for 2024. We focus on the number of students categorised as Overweight or Severely Overweight (OSO), in the most recent year 2023.
+The key variable of interest is *Obesity Prevalence* (PREVALENCE) in schools: calculated as the ratio of Overweight or Severely Overweight (OSO) students in the most recent year (2023).
 
-We remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. For schools with no recorded data in 2023 (only "TANJONG KATONG GIRLS' SCHOOL")
+For our analysis of childhood obesity levels in Primary and Secondary Schools in Singapore, we will focus on the *2023 obesity levels* (obesity_data_sf_2023_OSO) as this is the most recent data available to us that would reflect the childhood obesity landscape today. This would also be the figure that HPB would look at when planning obesity policies. 
+
+For our post-Covid analysis of childhood obesity levels in Singapore schools, the time series data consisting of obesity prevalence for all years will be used to present the effect that the COVID-19 pandemic and Circuit Breaker had on obesity levels (for Primary schools, due to intake data availability).
+
+In addition to the prior data cleaning done by Professor Liu, we decided to remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. Schools with no recorded obesity data in 2023 were also removed (only "TANJONG KATONG GIRLS' SCHOOL").
 
 # Exploratory Data Analysis 
 
@@ -168,7 +178,7 @@ We remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due 
 tmap_mode("plot")
 tm_shape(sg_ura_boundaries) + tm_borders() +
   tm_shape(hmsp_data_sf) +
-  tm_symbols(size = 0.4, fill = "TIER", 
+  tm_symbols(size = 0.4, fill = "HMSP_Tier", 
              fill.scale = tm_scale(values = "brewer.set1"), 
              fill.legend = tm_legend(title = "HMSP Tiers"))
 
@@ -518,6 +528,10 @@ sec_sch_map +
 Generally, we observe greater overweight prevalence levels for schools in the North and lower overweight prevalence levels in the South and Central regions of Singapore.
 
 ## Obesity prevalence by region
+
+To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Singapore into regions, planning areas and subzones.
+
+The Planning Regions are divided into smaller Planning Areas. Each Planning Area have a population of about 150,000 and served by a town centre and several neighbourhood commercial/shopping centres. https://data.gov.sg/collections/2104/view
 
 We aggregate overweight counts and school enrolment data by the different delimited regions, and fill in the regions to get visualise overweight prevalence by region.
 
