@@ -684,6 +684,12 @@ moe_clusters_map + obesity_moe_clusters %>%
 
 There are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
 
+```{r}
+nb_pval_pri <- data.frame("Neighbour object" = c(), "Moran.I.p.value" = c())
+nb_pval_sec <- data.frame("Neighbour object" = c(), "Moran.I.p.value" = c())
+```
+
+
 ## Contiguous neighbours by URA regions
 
 ```{r}
@@ -786,27 +792,35 @@ tmap_arrange(pri_map, sec_map)
 # by Primary schools
 (ura_planning_areas_lw_pri <- nb2listw(ura_planning_areas_nb_pri, style = "W"))
 ura_planning_areas_lw_B_pri <- nb2listw(ura_planning_areas_nb_pri, style = "B")
-moran.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri)
+(moran <- moran.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri))
 moran.plot(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri,
            main="Moran scatterplot")
 geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri)
 globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
              ura_planning_areas_lw_B_pri)
+nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "Planning Area", "Moran.I.p.value" = moran$p.value))
 
 # by Secondary schools
 (ura_planning_areas_lw_sec <- nb2listw(ura_planning_areas_nb_sec, style = "W"))
 ura_planning_areas_lw_B_sec <- nb2listw(ura_planning_areas_nb_sec, style = "B")
-moran.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec)
+(moran <- moran.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec))
 moran.plot(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec, 
            main="Moran scatterplot")
 geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec)
 globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
              ura_planning_areas_lw_B_sec)
+nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "Planning Area", "Moran.I.p.value" = moran$p.value))
 ```
 
-Average number of links (Primary school): 3.428571 p-value for Global Moran's I test (Primary school): 0.005857 p-value for Global Geary's C test (Primary school): 0.005738 p-value for Global Getis-Ord's G test (Primary school): 0.8278
+Average number of links (Primary school): 3.428571 \
+p-value for Global Moran's I test (Primary school): 0.005857 \
+p-value for Global Geary's C test (Primary school): 0.005738 \
+p-value for Global Getis-Ord's G test (Primary school): 0.8278
 
-Average number of links (Secondary school): 3.285714 p-value for Global Moran's I test (Secondary school): 0.5256 p-value for Global Geary's C test (Secondary school): 0.5418 p-value for Global Getis-Ord's G test (Secondary school): 0.8072
+Average number of links (Secondary school): 3.285714 \
+p-value for Global Moran's I test (Secondary school): 0.5256 \
+p-value for Global Geary's C test (Secondary school): 0.5418 \
+p-value for Global Getis-Ord's G test (Secondary school): 0.8072
 
 #### Join count analysis
 
@@ -997,23 +1011,31 @@ tmap_arrange(pri_map, sec_map)
 # by Primary schools
 (moe_clusters_lw_pri <- nb2listw(moe_clusters_nb_pri, style = "W"))
 moe_clusters_lw_B_pri <- nb2listw(moe_clusters_nb_pri, style = "B")
-moran.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri)
+(moran <- moran.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri)
 globalG.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_B_pri)
+nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "MOE clusters", "Moran.I.p.value" = moran$p.value))
 
 # by Secondary schools
 (moe_clusters_lw_sec <- nb2listw(moe_clusters_nb_sec, style = "W"))
 moe_clusters_lw_B_sec <- nb2listw(moe_clusters_nb_sec, style = "B")
-moran.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec)
+(moran <- moran.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_B_sec)
+nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "MOE clusters", "Moran.I.p.value" = moran$p.value))
 ```
 
-Average number of links (Primary school): 5.657459 p-value for Global Moran's I test (Primary school): 0.1608 p-value for Global Geary's C test (Primary school): 0.1608 p-value for Global Getis-Ord's G test (Primary school): 0.02355
+Average number of links (Primary school): 5.657459 \
+p-value for Global Moran's I test (Primary school): 0.1608 \
+p-value for Global Geary's C test (Primary school): 0.1608 \
+p-value for Global Getis-Ord's G test (Primary school): 0.02355
 
-Average number of links (Secondary school): 4.347222 p-value for Global Moran's I test (Secondary school): 0.1768 p-value for Global Geary's C test (Secondary school): 0.1768 p-value for Global Getis-Ord's G test (Secondary school): 0.8314
+Average number of links (Secondary school): 4.347222 \
+p-value for Global Moran's I test (Secondary school): 0.1768 \
+p-value for Global Geary's C test (Secondary school): 0.1768 \
+p-value for Global Getis-Ord's G test (Secondary school): 0.8314
 
 #### Join count analysis
 
@@ -1155,23 +1177,31 @@ tmap_arrange(pri_map, sec_map)
 # by Primary schools
 (del_lw_pri <- nb2listw(del_nb_pri, style = "W"))
 del_lw_B_pri <- nb2listw(del_nb_pri, style = "B")
-moran.test(obesity_pri_sch$PREVALENCE, del_lw_pri)
+(moran <- moran.test(obesity_pri_sch$PREVALENCE, del_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, del_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, del_lw_pri)
 globalG.test(obesity_pri_sch$PREVALENCE, del_lw_B_pri)
+nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "Delauney triangles", "Moran.I.p.value" = moran$p.value))
 
 # by Secondary schools
 (del_lw_sec <- nb2listw(del_nb_sec, style = "W"))
 del_lw_B_sec <- nb2listw(del_nb_sec, style = "B")
-moran.test(obesity_sec_sch$PREVALENCE, del_lw_sec)
+(moran <- moran.test(obesity_sec_sch$PREVALENCE, del_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, del_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, del_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, del_lw_B_sec)
+nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "Delauney triangles", "Moran.I.p.value" = moran$p.value))
 ```
 
-Average number of links (Primary school): 5.823204 p-value for Global Moran's I test (Primary school): 1.809e-12 p-value for Global Geary's C test (Primary school): 3.885e-12 p-value for Global Getis-Ord's G test (Primary school): 0.03254
+Average number of links (Primary school): 5.823204 \
+p-value for Global Moran's I test (Primary school): 1.809e-12 \
+p-value for Global Geary's C test (Primary school): 3.885e-12 \
+p-value for Global Getis-Ord's G test (Primary school): 0.03254
 
-Average number of links (Secondary school): 5.805556 p-value for Global Moran's I test (Secondary school): 0.0001695 p-value for Global Geary's C test (Secondary school): 9.452e-05 p-value for Global Getis-Ord's G test (Secondary school): 0.2914
+Average number of links (Secondary school): 5.805556 \
+p-value for Global Moran's I test (Secondary school): 0.0001695 \
+p-value for Global Geary's C test (Secondary school): 9.452e-05 \
+p-value for Global Getis-Ord's G test (Secondary school): 0.2914
 
 #### Join count analysis
 
@@ -1315,23 +1345,31 @@ tmap_arrange(pri_map, sec_map)
 # by Primary schools
 (soi_lw_pri <- nb2listw(soi_nb_pri, style = "W"))
 soi_lw_B_pri <- nb2listw(soi_nb_pri, style = "B")
-moran.test(obesity_pri_sch$PREVALENCE, soi_lw_pri)
+(moran <- moran.test(obesity_pri_sch$PREVALENCE, soi_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, soi_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, soi_lw_pri)
 globalG.test(obesity_pri_sch$PREVALENCE, soi_lw_B_pri)
+nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "Sphere of Influence", "Moran.I.p.value" = moran$p.value))
 
 # by Secondary schools
 (soi_lw_sec <- nb2listw(soi_nb_sec, style = "W"))
 soi_lw_B_sec <- nb2listw(soi_nb_sec, style = "B")
-moran.test(obesity_sec_sch$PREVALENCE, soi_lw_sec)
+(moran <- moran.test(obesity_sec_sch$PREVALENCE, soi_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, soi_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, soi_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, soi_lw_B_sec)
+nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "Sphere of Influence", "Moran.I.p.value" = moran$p.value))
 ```
 
-Average number of links (Primary school): 3.082873 p-value for Global Moran's I test (Primary school): 6.672e-07 p-value for Global Geary's C test (Primary school): 3.173e-07 p-value for Global Getis-Ord's G test (Primary school): 0.07193
+Average number of links (Primary school): 3.082873 \
+p-value for Global Moran's I test (Primary school): 6.672e-07 \
+p-value for Global Geary's C test (Primary school): 3.173e-07 \
+p-value for Global Getis-Ord's G test (Primary school): 0.07193
 
-Average number of links (Secondary school): 2.958333 p-value for Global Moran's I test (Secondary school): 0.0004617 p-value for Global Geary's C test (Secondary school): 0.0002675 p-value for Global Getis-Ord's G test (Secondary school): 0.3102
+Average number of links (Secondary school): 2.958333 \
+p-value for Global Moran's I test (Secondary school): 0.0004617 \
+p-value for Global Geary's C test (Secondary school): 0.0002675 \
+p-value for Global Getis-Ord's G test (Secondary school): 0.3102
 
 #### Join count analysis
 
@@ -1482,23 +1520,31 @@ tmap_arrange(pri_map, sec_map)
 # by Primary schools
 (knn1_lw_pri <- nb2listw(knn1_nb_pri, style = "W"))
 knn1_lw_B_pri <- nb2listw(knn1_nb_pri, style = "B")
-moran.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
+(moran <- moran.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, knn1_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
 globalG.test(obesity_pri_sch$PREVALENCE, knn1_lw_B_pri)
+nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "1 nearest neighbour", "Moran.I.p.value" = moran$p.value))
 
 # by Secondary schools
 (knn1_lw_sec <- nb2listw(knn1_nb_sec, style = "W"))
 knn1_lw_B_sec <- nb2listw(knn1_nb_sec, style = "B")
-moran.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
+(moran <- moran.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, knn1_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, knn1_lw_B_sec)
+nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "1 nearest neighbour", "Moran.I.p.value" = moran$p.value))
 ```
 
-Average number of links (Primary school): 1 p-value for Global Moran's I test (Primary school): 0.004193 p-value for Global Geary's C test (Primary school): 0.02331 p-value for Global Getis-Ord's G test (Primary school): 0.09593
+Average number of links (Primary school): 1 \
+p-value for Global Moran's I test (Primary school): 0.004193 \
+p-value for Global Geary's C test (Primary school): 0.02331 \
+p-value for Global Getis-Ord's G test (Primary school): 0.09593
 
-Average number of links (Secondary school): 1 p-value for Global Moran's I test (Secondary school): 0.0004819 p-value for Global Geary's C test (Secondary school): 0.004126 p-value for Global Getis-Ord's G test (Secondary school): 0.234
+Average number of links (Secondary school): 1 \
+p-value for Global Moran's I test (Secondary school): 0.0004819 \
+p-value for Global Geary's C test (Secondary school): 0.004126 \
+p-value for Global Getis-Ord's G test (Secondary school): 0.234
 
 #### Join count analysis
 
@@ -1640,23 +1686,31 @@ tmap_arrange(pri_map, sec_map)
 # by Primary schools
 (knn2_lw_pri <- nb2listw(knn2_nb_pri, style = "W"))
 knn2_lw_B_pri <- nb2listw(knn2_nb_pri, style = "B")
-moran.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
+(moran <- moran.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, knn2_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
 globalG.test(obesity_pri_sch$PREVALENCE, knn2_lw_B_pri)
+nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "2 nearest neighbours", "Moran.I.p.value" = moran$p.value))
 
 # by Secondary schools
 (knn2_lw_sec <- nb2listw(knn2_nb_sec, style = "W"))
 knn2_lw_B_sec <- nb2listw(knn2_nb_sec, style = "B")
-moran.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
+(moran <- moran.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, knn2_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, knn2_lw_B_sec)
+nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "2 nearest neighbours", "Moran.I.p.value" = moran$p.value))
 ```
 
-Average number of links (Primary school): 2 p-value for Global Moran's I test (Primary school): 1.474e-05 p-value for Global Geary's C test (Primary school): 4.17e-05 p-value for Global Getis-Ord's G test (Primary school): 0.01137
+Average number of links (Primary school): 2 \
+p-value for Global Moran's I test (Primary school): 1.474e-05 \
+p-value for Global Geary's C test (Primary school): 4.17e-05 \
+p-value for Global Getis-Ord's G test (Primary school): 0.01137
 
-Average number of links (Secondary school): 2 p-value for Global Moran's I test (Secondary school): 0.003471 p-value for Global Geary's C test (Secondary school): 0.03461 p-value for Global Getis-Ord's G test (Secondary school): 0.2781
+Average number of links (Secondary school): 2 \
+p-value for Global Moran's I test (Secondary school): 0.003471 \
+p-value for Global Geary's C test (Secondary school): 0.03461 \
+p-value for Global Getis-Ord's G test (Secondary school): 0.2781
 
 #### Join count analysis
 
@@ -1798,23 +1852,31 @@ tmap_arrange(pri_map, sec_map)
 # by Primary schools
 (knn3_lw_pri <- nb2listw(knn3_nb_pri, style = "W"))
 knn3_lw_B_pri <- nb2listw(knn3_nb_pri, style = "B")
-moran.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
+(moran <- moran.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, knn3_lw_pri, main="Moran scatterplot")
 geary.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
 globalG.test(obesity_pri_sch$PREVALENCE, knn3_lw_B_pri)
+nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "3 nearest neighbours", "Moran.I.p.value" = moran$p.value))
 
 # by Secondary schools
 (knn3_lw_sec <- nb2listw(knn3_nb_sec, style = "W"))
 knn3_lw_B_sec <- nb2listw(knn3_nb_sec, style = "B")
-moran.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
+(moran <- moran.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, knn3_lw_sec, main="Moran scatterplot")
 geary.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
 globalG.test(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec)
+nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "3 nearest neighbours", "Moran.I.p.value" = moran$p.value))
 ```
 
-Average number of links (Primary school): 3 p-value for Global Moran's I test (Primary school): 7.811e-08 p-value for Global Geary's C test (Primary school): 9.495e-08 p-value for Global Getis-Ord's G test (Primary school): 0.00337
+Average number of links (Primary school): 3 \
+p-value for Global Moran's I test (Primary school): 7.811e-08 \
+p-value for Global Geary's C test (Primary school): 9.495e-08 \
+p-value for Global Getis-Ord's G test (Primary school): 0.00337
 
-Average number of links (Secondary school): 3 p-value for Global Moran's I test (Secondary school): 0.000427 p-value for Global Geary's C test (Secondary school): 0.002858 p-value for Global Getis-Ord's G test (Secondary school): 0.3985
+Average number of links (Secondary school): 3 \
+p-value for Global Moran's I test (Secondary school): 0.000427 \
+p-value for Global Geary's C test (Secondary school): 0.002858 \
+p-value for Global Getis-Ord's G test (Secondary school): 0.3985
 
 #### Join count analysis
 
@@ -1932,7 +1994,12 @@ Some sub-graphs have 2 or less neighbours
 
 # Conclusions from analysis of spatial clustering of obesity
 
-To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (what are each schools' neighbours). We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3) in the following sections.
+```{r}
+nb_pval_pri
+nb_pval_sec
+```
+
+To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (what are each schools' neighbours). We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3) in the sections above.
 
 Based on the Moran's I statistics, Delauney triangulation neigbours reported the lowest p-values, suggesting that there was significant spatial clustering following Delauney triangulation clusters.
 
@@ -1989,7 +2056,8 @@ sec_rankings <- read.csv("sec rankings.csv") %>%
 school_rankings <- rbind(pri_rankings, sec_rankings)
 ```
 
-# Census Variables Next, we consider the Singapore Census of Population
+# Census Variables 
+Next, we consider the Singapore Census of Population
 
 2020 data and bring in two variables: Income: From Table 110 Resident Households by Planning Area of Residence and Monthly Household Income from Work, we sum up the income for each planning area by multiplying the midpoint of a given income range (for example, \$9,000 - \$9,999 would have a midpoint of \$9,500) with the number of residents with that given monthly income range and totalling everything. The only exception to this is the income bracket "\$20,000 and Over", of which we took the midpoint value as \$25,000. We then obtain the mean income per planning area by dividing this totalled income figure by the total number of residents in each planning area (given in the second column of the data table). Education: From Table 100 Resident Population Aged 15 Years and Over by Planning Area of Residence and Highest Qualification Attained, we sum up the number of years of education in each planning area by multiplying the minimum number of years of education completed (No Qualification = 0, Primary = 6, Lower Secondary = 8 [6+2], Secondary = 10 [6+2+2], Post-Secondary (Non-Tertiary) = 12 [6+2+2+2 assuming JC route], Polytechnic Diploma = 13 [6+2+2+3 assuming average Polytechnic diploma as 3 year programme], Professional Qualification and Other Diploma = 15 [6+2+2+2+3 assuming JC then 3 year other diploma], University =16 [6+2+2+2+4 assuming JC then 4 year university degree]) with the number of residents that fall within the relevant maximum education completion category. We then obtain the mean number of years or education per planning area by dividing this totalled education years figure by the total number of residents in each planning area (given in the second column of the data table).
 
