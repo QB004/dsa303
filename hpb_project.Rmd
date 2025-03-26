@@ -336,6 +336,8 @@ moe_clusters_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
 
 # Spatial overview of childhood obesity (Colin)
 
+The following sections provide us with a spatial overview of childhood obesity in Singapore schools. We provide spatial descriptive summary measures, particularly spatial measures of central tendency (mean, median) and dispersion (standard deviation distance and standard deviation ellipse)
+
 ## Obesity prevalence overview map
 
 The following map is an overview of overweight prevalence in Singapore schools. You may use the different layers provided in the map to view the individual school data against URA regions, planning areas and subzones, or MOE zones and clusters. Note that MOE zones and clusters have overlapping areas.
@@ -375,14 +377,14 @@ ura_regions_map + ura_planning_areas_map + ura_subzones_map +
 
 ## Obesity prevalence by educational level
 
-Given the 
-We examine overweight prevalence in Singapore schools by educational level: Primary school or Secondary school. Primary school and secondary school students have different characteristics that might affect overweight prevalence.
+Given the difference in obesity levels in primary schools versus secondary schools, we separately examine overweight prevalence in by educational level. Primary school and secondary school students may have different characteristics that might affect overweight prevalence.
 
 The spatial mean centre (unweighted) and spatial variance (using the standard deviation distance and standard deviation ellipse) are calculated and plotted for each educational level.
 
-### by Primary School
 
 ```{r}
+### by Primary School
+
 tmap_mode("view")
 
 # filter out by educational level and remove NA values to calculate SDE
@@ -439,7 +441,7 @@ pri_sch_map <-
       )
     )
 
-pri_sch_map +
+pri_sch_map_summ <- pri_sch_map +
   tm_shape(pri_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
   tm_shape(pri_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(pri_sch_sde_weighted_line, name = "weighted SDE") + 
@@ -452,12 +454,8 @@ pri_sch_map +
   tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
   tm_title("Overweight prevalence in Primary Schools")
-```
 
 ### by Secondary School
-
-```{r}
-tmap_mode("view")
 
 # filter out by educational level and remove NA values to calculate SDE
 obesity_sec_sch <- obesity_data_sf_2023_OSO %>% 
@@ -512,7 +510,7 @@ sec_sch_map <-
       )
     )
 
-sec_sch_map +
+sec_sch_map_summ <- sec_sch_map +
   tm_shape(sec_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
   tm_shape(sec_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(sec_sch_sde_weighted_line, name = "weighted SDE") + 
@@ -526,7 +524,16 @@ sec_sch_map +
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
   tm_title("Overweight prevalence in Secondary Schools")
 
-# tmap_arrange(pri_sch_map, sec_sch_map, nrow = 1)
+tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, ncol = 1)
+```
+
+For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance spans the North-South length of Singapore. The standard deviation ellipse also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a very small angle of rotation. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
+
+Interestingly, when while the standard deviational ellipse 
+
+
+```{r}
+
 ```
 
 Generally, we observe greater overweight prevalence levels for schools in the North and lower overweight prevalence levels in the South and Central regions of Singapore.
@@ -686,7 +693,7 @@ moe_clusters_map + obesity_moe_clusters %>%
 
 # Spatial clustering of obesity
 
-Given the 
+Given the evidence of a spatial 
 
 To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (which school is considered a neighbour to which school). 
 
