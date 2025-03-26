@@ -145,7 +145,8 @@ obesity_data_sf <- obesity_data_long %>%
   select(-ENROLMENT) %>% 
   full_join(school_enrolment_long, by = c("PT_ID", "SCHOOL", "YEAR")) %>%
   # Calculate overweight prevalence rate
-  mutate(PREVALENCE = COUNT / ENROLMENT)  
+  mutate(PREVALENCE = COUNT / ENROLMENT) %>% 
+  relocate(PREVALENCE, .after = SCHOOL)
 
 # For our analysis, filter for 2023 data and overweight and severely overweight
 obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
@@ -291,6 +292,8 @@ We observe that the median obesity prevalence for the B, C, D and E HSMP tiers a
 
 These are maps that define Singapore's regions based on URA defined boundaries (region, planning area, subzone) and MOE defined boundaries (zone, cluster). Subsequently, the defined regions can be used together with aggregated data so that we can examine overweight prevalence and other contributing factors by these differently delimited regions.
 
+We will use these maps as a basemap for our subsequent analysis, and to facilitate our visualisation of obesity in Singapore schools
+
 ```{r}
 tmap_mode("view")
 
@@ -331,7 +334,7 @@ moe_clusters_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
   fill.legend = tm_legend_hide())
 ```
 
-# Obesity profile in Singapore (Colin)
+# Spatial overview of childhood obesity (Colin)
 
 ## Obesity prevalence overview map
 
@@ -372,6 +375,7 @@ ura_regions_map + ura_planning_areas_map + ura_subzones_map +
 
 ## Obesity prevalence by educational level
 
+Given the 
 We examine overweight prevalence in Singapore schools by educational level: Primary school or Secondary school. Primary school and secondary school students have different characteristics that might affect overweight prevalence.
 
 The spatial mean centre (unweighted) and spatial variance (using the standard deviation distance and standard deviation ellipse) are calculated and plotted for each educational level.
@@ -680,7 +684,15 @@ moe_clusters_map + obesity_moe_clusters %>%
   tm_facets_wrap(by = "LEVEL")
 ```
 
-# Region based analysis (Contiguous region neighbours)
+# Spatial clustering of obesity
+
+Given the 
+
+To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (which school is considered a neighbour to which school). 
+
+We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3) in the sections below.
+
+## Region based analysis (Contiguous region neighbours)
 
 There are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
 
@@ -690,7 +702,7 @@ nb_pval_sec <- data.frame("Neighbour object" = c(), "Moran.I.p.value" = c())
 ```
 
 
-## Contiguous neighbours by URA regions
+### Contiguous neighbours by URA regions
 
 ```{r}
 # by Primary school
@@ -714,7 +726,7 @@ sec_map <- ura_regions_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-## Contiguous neighbours by URA planning areas
+### Contiguous neighbours by URA planning areas
 
 ```{r}
 # by Primary school
@@ -786,7 +798,7 @@ sec_map <- ura_planning_areas_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-### Spatial autocorrelation statistics
+Spatial autocorrelation statistics
 
 ```{r}
 # by Primary schools
@@ -925,7 +937,7 @@ plot(correlC_planning_areas_sec, main="Contiguity lag orders: Geary's C")
 par(mfrow=c(1,1))
 ```
 
-## Contiguous neighbours by URA subzones
+### Contiguous neighbours by URA subzones
 
 ```{r}
 obesity_ura_subzones_pri <- obesity_ura_subzones %>% filter(LEVEL == "PRIMARY")
@@ -947,9 +959,9 @@ sec_map <- ura_subzones_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-# Cluster based analysis (Social distance)
+## Cluster based analysis (Social distance)
 
-## Contiguous neighbours by MOE clusters
+### Contiguous neighbours by MOE clusters
 
 ```{r}
 # Function to write a .gal file in the specified format
@@ -1005,7 +1017,7 @@ sec_map <- moe_clusters_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-### Spatial autocorrelation statistics
+Spatial autocorrelation statistics
 
 ```{r}
 # by Primary schools
@@ -1149,9 +1161,9 @@ tmap_arrange(pri_map, sec_map)
 # par(mfrow=c(1,1))
 ```
 
-# Graph neighbours based analysis
+## Graph neighbours based analysis
 
-## Delauney triangulation neighbours
+### Delauney triangulation neighbours
 
 ```{r}
 # by Primary schools
@@ -1171,7 +1183,7 @@ sec_map <- tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch)))
 tmap_arrange(pri_map, sec_map)
 ```
 
-### Spatial autocorrelation statistics
+Spatial autocorrelation statistics
 
 ```{r}
 # by Primary schools
@@ -1315,7 +1327,7 @@ plot(correlC_del_sec, main="Contiguity lag orders: Geary's C")
 par(mfrow=c(1,1))
 ```
 
-## Sphere of influence neighbours
+### Sphere of influence neighbours
 
 ```{r}
 # by Primary schools
@@ -1339,7 +1351,7 @@ sec_map <- tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch)))
 tmap_arrange(pri_map, sec_map)
 ```
 
-### Spatial autocorrelation statistics
+Spatial autocorrelation statistics
 
 ```{r}
 # by Primary schools
@@ -1492,9 +1504,9 @@ Some sub-graphs have 2 or less neighbours
 # par(mfrow=c(1,1))
 ```
 
-# K nearest neighbour based analysis
+## K nearest neighbour based analysis
 
-## 1 neighbour
+### 1 neighbour
 
 ```{r}
 # by Primary schools
@@ -1514,7 +1526,7 @@ sec_map <- tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-### Spatial autocorrelation statistics
+Spatial autocorrelation statistics
 
 ```{r}
 # by Primary schools
@@ -1660,7 +1672,7 @@ Some sub-graphs have 2 or less neighbours
 # par(mfrow=c(1,1))
 ```
 
-## 2 neighbours
+### 2 neighbours
 
 ```{r}
 # by Primary schools
@@ -1680,7 +1692,7 @@ sec_map <- tm_shape(nb2lines(knn2_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-### Spatial autocorrelation statistics
+Spatial autocorrelation statistics
 
 ```{r}
 # by Primary schools
@@ -1826,7 +1838,7 @@ Some sub-graphs have 2 or less neighbours
 # par(mfrow=c(1,1))
 ```
 
-## 3 neighbours
+### 3 neighbours
 
 ```{r}
 # by Primary schools
@@ -1846,7 +1858,7 @@ sec_map <- tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-### Spatial autocorrelation statistics
+Spatial autocorrelation statistics
 
 ```{r}
 # by Primary schools
@@ -1992,14 +2004,12 @@ Some sub-graphs have 2 or less neighbours
 # par(mfrow=c(1,1))
 ```
 
-# Conclusions from analysis of spatial clustering of obesity
+## Conclusions from analysis of spatial clustering of obesity
 
 ```{r}
 nb_pval_pri
 nb_pval_sec
 ```
-
-To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (what are each schools' neighbours). We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3) in the sections above.
 
 Based on the Moran's I statistics, Delauney triangulation neigbours reported the lowest p-values, suggesting that there was significant spatial clustering following Delauney triangulation clusters.
 
@@ -2035,7 +2045,7 @@ obesity_sec_sch %>%
   filter(LMORANZ >= 3) 
 ```
 
-# Elite metric (Lucas)
+# Elite metrics (Lucas)
 
 We obtain a Yes/No binary metric based on the popularity of primary & secondary schools in Singapore, which we dub as the "elite" metric. We derive this using the following methodology: Primary schools: We take the Phase 2C balloting information from the 2024 Primary 1 Registration Exercise for all 180 primary schools (database link: <https://www.moe.gov.sg/primary/p1-registration/past-vacancies-and-balloting-data/>). If the number of applicants in Phase 2C is greater than the number of vacancies, the school is marked as popular (Yes) reflecting oversubscribing due to high demand for the school's coveted vacancies. If the number of applicants in Phase 2C is less than or equal to the number of vacancies, the school is marked as not popular (No). Based on this methodology, there are 82 popular schools (Yes) and 98 non-popular schools (No). Secondary schools: We obtain the 2024 secondary school PSLE cutoff points from SG Schooling (<https://sgschooling.com/secondary/cop/all.html>) in the IP/PG3 (Express) streams. We take the cutoff point for each secondary school if given as a single value, or the highest value in a given point range, ignoring all secondary criteria for the Mother Tongue Grade (D/M/P) to get data for 138 secondary schools. We then calculate the top quartile of cutoff points, which ends up as 13, and label all secondary schools with cutoff points less than or equal to this value as popular schools (Y) and all other schools as non-popular (N). Using this methodology, we obtain 35 popular schools (Y) and 103 non-popular schools (N). For the secondary schools with no given PSLE cutoff point for 2024, we conduct the following manual adjustments: - School of the Arts, NUS High School and School of Science and Technology: These schools only accept admissions by Direct School Admission, so there is no PSLE cutoff range. From our research, these three schools are prestigious in their unique domains with many applicants each year. As such, we labelled these three schools as popular (Y). - Crest Secondary School, Assumption Pathway School and Northlight School: These schools offer specialised pathways for experiential and hands-on learning, allowing students to graduate with an ITE Skills certificate. As this is a non-mainstream pathway with only PG1/PG2 streams, we labelled these three schools as non-popular (N). In total, we have 144 secondary schools with 38 as popular (Y) and 106 as non-popular (N).
 
@@ -2056,7 +2066,7 @@ sec_rankings <- read.csv("sec rankings.csv") %>%
 school_rankings <- rbind(pri_rankings, sec_rankings)
 ```
 
-# Census Variables 
+# Education and Income Census data
 Next, we consider the Singapore Census of Population
 
 2020 data and bring in two variables: Income: From Table 110 Resident Households by Planning Area of Residence and Monthly Household Income from Work, we sum up the income for each planning area by multiplying the midpoint of a given income range (for example, \$9,000 - \$9,999 would have a midpoint of \$9,500) with the number of residents with that given monthly income range and totalling everything. The only exception to this is the income bracket "\$20,000 and Over", of which we took the midpoint value as \$25,000. We then obtain the mean income per planning area by dividing this totalled income figure by the total number of residents in each planning area (given in the second column of the data table). Education: From Table 100 Resident Population Aged 15 Years and Over by Planning Area of Residence and Highest Qualification Attained, we sum up the number of years of education in each planning area by multiplying the minimum number of years of education completed (No Qualification = 0, Primary = 6, Lower Secondary = 8 [6+2], Secondary = 10 [6+2+2], Post-Secondary (Non-Tertiary) = 12 [6+2+2+2 assuming JC route], Polytechnic Diploma = 13 [6+2+2+3 assuming average Polytechnic diploma as 3 year programme], Professional Qualification and Other Diploma = 15 [6+2+2+2+3 assuming JC then 3 year other diploma], University =16 [6+2+2+2+4 assuming JC then 4 year university degree]) with the number of residents that fall within the relevant maximum education completion category. We then obtain the mean number of years or education per planning area by dividing this totalled education years figure by the total number of residents in each planning area (given in the second column of the data table).
@@ -3226,13 +3236,13 @@ We must ensure that the predictors are correlated with the dependent variable an
 
 ```{r}
 # for primary schools
-rmat <- cor(obesity_model_pri, use = "pairwise.complete.obs")
-corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
+rmat_pri <- cor(obesity_model_pri, use = "pairwise.complete.obs")
+corrplot.mixed(rmat_pri, upper = "pie", number.cex=0.75, tl.cex = 0.75,
                upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
 
 # for secondary schoools
-rmat <- cor(obesity_model_sec, use = "pairwise.complete.obs") 
-corrplot.mixed(rmat, upper = "pie", number.cex=0.75, tl.cex = 0.75,
+rmat_sec <- cor(obesity_model_sec, use = "pairwise.complete.obs") 
+corrplot.mixed(rmat_sec, upper = "pie", number.cex=0.75, tl.cex = 0.75,
                upper.col = COL2("PiYG"), lower.col = COL2("PiYG"))
 ```
 
@@ -3294,7 +3304,7 @@ lm.all_sec<- lm(PREVALENCE~.,data=obesity_model_analysis_sec)
 summary(lm.all_sec)
 ```
 
-For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistically significant variables include is_coed_sch (p-value \<0.01), is_popular_sch (p-value\<0.05), while moderately significant variables are is_govt_sch and num_food_outlets (p-value\<0.1) For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value\<0.05) and is_popular_sch (p-value\<0.1).
+For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistically significant variables include is_coed_sch (p-value \<0.01), is_popular_sch (p-value\<0.05), while moderately significant variables are is_govt_sch, is_special_sch and num_food_outlets (p-value\<0.1) For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value\<0.05) and is_popular_sch (p-value\<0.1).
 
 ```{r}
 #BSS for Pri
@@ -3362,13 +3372,15 @@ summary(ols_sec)
 
 Based on the three types of model selection, We observe that BSS and Backward selection recommend the same model for primary school variables with 4 terms based on smallest BIC criterion. This model was chosen because it has the fewest number of variables, facilitating simplicity in interpretation.
 
-The best linear model for obesity prevalence in primary schools is (Intercept) Education is_popular_sch is_govt_sch is_coed_sch 0.216206288 -0.010604366 -0.009079636 0.014440522 0.017533648
+The best linear model for obesity prevalence in primary schools is \
+PREVALENCE = 0.215854168 - 0.010527116 * Education - 0.008987562 * is_popular_sch + 0.014435592 * is_govt_sch + 0.016975461 * is_coed_sch 
 
 This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis.
 
 We also observe all 3 approaches recommend the same model for secondary school variables with 2 terms based on smallest BIC criterion.
 
-The best linear model for obesity prevalence in secondary schools is (Intercept) Education is_special_sch 0.247219424 -0.009114996 -0.043620675
+The best linear model for obesity prevalence in secondary schools is \
+PREVALENCE = 0.247219424 - 0.009114996 * Education - 0.043620675 * is_special_sch 
 
 This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables.
 
