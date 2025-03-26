@@ -2497,6 +2497,8 @@ wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 
 # Sports CCAs in Schools (Qasim)
 
+This section aims to explore the spatial distribution of physical sports participation in schools across Singapore. We will be using the 2023 School Obesity (OSO) data and the 2024-25 school co-curricular activities (CCA) data to visualise the ratio of physical sports CCAs per 100 students in both primary and secondary schools. 
+
 ```{r}
 # Loading school co-curricular activities data
 school_sports_ccas <- 
@@ -2871,11 +2873,6 @@ sec_bivariate_map <-ura_planning_areas_map +
 sec_bivariate_map
 ```
 
-```{r}
-
-#cca vs prevalence bivariate morans I
-
-```
 
 # Sports Fields and Facilities
 
