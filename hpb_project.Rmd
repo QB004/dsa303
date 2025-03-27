@@ -2077,40 +2077,41 @@ $H_1:$ Positive spatial autocorrelation present
 
 Based on the spatial autocorrelation tests conducted using Moran’s I, Geary’s C, and Getis-Ord’s G statistics, we can conclude the following:
 
-Primary Schools:
+*Positive spatial autocorrelation for Primary Schools*
 
-Strong evidence of spatial clustering of obesity is observed under most spatial weight matrices.
+There is strong evidence of spatial clustering of obesity, in primary schools, observed under most of the spatial weight matrices.
 
-The Moran’s I test indicates significant positive spatial autocorrelation for primary schools under most configurations (e.g., Delaunay triangulation, Sphere of Influence, and k-nearest neighbours with k = 2 or 3).
+The Moran’s I test indicates highly significant (p-values < 0.01) positive spatial autocorrelation for primary schools under all configurations except for social neighbours (MOE clusters). We can reject the null hypothesis at the 1% significance level in favour of the presence of positive spatial autocorrelation. 
 
-Geary’s C test further supports the presence of spatial dependence, reinforcing the finding of clustering.
+Geary’s C test further supports the presence of spatial dependence at the 1% significance level, reinforcing the finding of clustering (with the exception of social neighbours and k = 1 nearest neighbours). Getis-Ord’s G test results are less consistent, though some configurations (Delaunay triangulation, Sphere of Influence, and k = 2, 3 nearest neighbours) continue to suggest moderately significant (p-values < 0.10) clustering of obesity in Primary schools.
 
-The Getis-Ord’s G test results are less consistent, though some configurations (e.g., Delaunay triangulation and k = 2, 3 nearest neighbours) suggest significant clustering of high-obesity schools.
-
-Secondary Schools:
+*Weaker evidence of autocorrelation for Secondary Schools*
 
 The evidence for spatial clustering is weaker for secondary schools.
 
-Moran’s I and Geary’s C tests show insignificant p-values for many spatial weight matrices, particularly for planning areas and MOE clusters.
+The Moran’s I test indicates highly significant (p-values < 0.01) positive spatial autocorrelation for primary schools under all configurations except for contiguous neighbours (Planning Areas) and social neighbours (MOE clusters).
 
-Significant spatial autocorrelation is only detected under some configurations, such as Delaunay triangulation, Sphere of Influence, and k = 3 nearest neighbours.
+Geary’s C test further supports the presence of spatial dependence at the 1% significance level, but with the exception of contiguous neighbours, social neighbours and k = 2 nearest neighbours. However, Getis-Ord’s G test fails to reject the null hypothesis at the 10% significance level for all spatial weight matrices.
 
-Getis-Ord’s G test does not strongly indicate clustering, except in a few cases.
+*Further conclusions*
 
-Conclusion:
-There is strong spatial clustering of obesity among primary schools across Singapore, suggesting that local factors and neighbourhood effects significantly influence childhood obesity rates. In contrast, secondary schools exhibit weaker and less consistent spatial clustering, implying that obesity prevalence may be more influenced by non-spatial factors such as school policies, socio-economic differences, or lifestyle choices.
+There is strong spatial clustering of obesity among primary schools across Singapore, suggesting that spatial factors and neighbourhood effects significantly influence childhood obesity rates. In contrast, secondary schools exhibit weaker and less consistent spatial clustering, implying that obesity prevalence may be more influenced by non-spatial factors.
 
-From a policy perspective, targeted interventions in primary school clusters could be more effective in leveraging spillover effects. The choice of spatial weight matrix influences the observed clustering patterns, but results are broadly consistent across graph-based and k-nearest neighbour methods. Future studies could refine spatial definitions to improve accuracy in detecting secondary school clusters.
+The insignificant results for social neighbours (primary and secondary schools) indicates that there is insufficient evidence to suggest that "social distance" might lead to spatial clustering of obesity in schools. From a policy perspective, administrators of MOE clusters do not influence obesity in schools, through MOE cluster specific policies or programmes for example. This could be due to MOE's macro approach to administrating policies across all schools in Singapore. Evidently, MOE works with HPB to implement the HMSP nationwide.
 
-For social neighbours (MOE clusters), we find that 
+From a policy perspective, targeted interventions in primary school clusters could be more effective in leveraging spillover effects.
 
-Examining graph neighbours, Delauney triangulation neighbours tend to have links that are relatively long. Sphere of Influence graphs help to thin the triangulation and remove long links (e.g. schools along the borders of Singapore were indicated as neighbours even when they were very far apart)
+## Identifying schools in spatial clusters
 
-Based on the Moran's I statistics, Delauney triangulation neigbours reported the lowest p-values, suggesting that there was significant spatial clustering following Delauney triangulation clusters.
+To identify spatial clusters and for our subsequent spatial model, we decided to use the Sphere of Influence spatial weights matrix:
 
-However, due to the arbitrary neighbour links introduced by Delauney triangulation , we determined that Sphere of Influence was the better choice to model neighbour links instead.
+Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3).
 
-SOI neighbours are symmetric by design – if i is a neighbour of j, then j is a neighbour of.
+Additionally, graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design, that is if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
+
+As such, we determined that Sphere of Influence was the best choice to model neighbour links.
+
+We use local autocorrelation statistics to identify spatial clusters.
 
 ```{r}
 # by Primary school
@@ -2141,6 +2142,8 @@ obesity_sec_sch %>%
   st_drop_geometry() %>%
   filter(LMORANZ >= 3) 
 ```
+
+
 
 # Elite metrics (Lucas)
 
