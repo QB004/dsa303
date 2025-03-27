@@ -3827,6 +3827,102 @@ Based on the joint count analysis, there is no significant spatial clustering of
 
 Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of \>1)
 
+
+#Controlling for effects of COVID
+```{r}
+oso_pri_hist = read_excel("oso_primary.xlsx")
+
+oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
+  drop_na()
+  
+oso_pri_hist_long <- oso_pri_hist_years %>%
+  pivot_longer(
+    cols = matches("^\\d"),   # Select columns where names start with a number
+    names_to = "year",
+    values_to = "oso"
+  ) %>%
+  mutate(year = as.integer(paste0("20", str_extract(year, "^\\d{2}"))))  
+
+
+oso_hist_int_1 = oso_pri_hist_long  
+
+
+#Get the Z-scores
+# Compute z-scores before and after 2019
+oso_hist_int_1 = oso_hist_int_1 %>%
+  group_by(year) %>%  # Group by year
+  mutate(
+    mean_oso = mean(oso, na.rm = TRUE),
+    sd_oso = sd(oso, na.rm = TRUE),
+    z_score = (oso - mean_oso) / sd_oso
+  ) %>%
+  ungroup()
+
+
+oso_covid = oso_hist_int_1 %>%
+  mutate(covid_period = case_when(
+    year < 2022 ~ "BEFORE_COVID",
+    year == 2022 ~ "DURING_COVID",
+    year == 2023 ~ "AFTER_COVID",
+    TRUE ~ NA_character_
+  )) %>%
+  group_by(SCHOOL, covid_period) %>%
+  summarise(avg_z_score = mean(z_score, na.rm = TRUE), .groups = "drop_last") %>%
+  pivot_wider(names_from = covid_period, values_from = avg_z_score) %>%
+  mutate(
+    after_covid_change = `AFTER_COVID` - `DURING_COVID`,
+    before_covid_change = `DURING_COVID` - `BEFORE_COVID`
+  )
+
+# Merge with spatial data
+oso_covid_geom_full = obesity_data_sf_2023_OSO_new %>%
+  left_join(oso_covid, by = "SCHOOL")
+
+oso_covid_geom = oso_covid_geom_full %>%
+  dplyr::select(c("PT_ID", "SCHOOL", "geometry", "after_covid_change", "before_covid_change"))
+
+
+summary(oso_covid_geom$before_covid_change)
+summary(oso_covid_geom$after_covid_change)
+
+#Classify
+oso_covid_geom_classes <- oso_covid_geom %>%
+  mutate(
+    before_covid_range = case_when(
+      before_covid_change < quantile(before_covid_change, 0.33) ~ "Low",
+      before_covid_change < quantile(before_covid_change, 0.66) ~ "Medium",
+      TRUE ~ "High"
+    ),
+    after_covid_range = case_when(
+      after_covid_change < quantile(after_covid_change, 0.33) ~ "Low",
+      after_covid_change < quantile(after_covid_change, 0.66) ~ "Medium",
+      TRUE ~ "High"
+    )
+  )
+
+oso_covid_hh = oso_covid_geom_classes %>%
+  filter(before_covid_range == "High" & after_covid_range == "High")
+
+oso_covid_lh = oso_covid_geom_classes %>%
+  filter(before_covid_range == "Low" & after_covid_range == "High")
+
+#Scatterplot of schools
+
+scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_change, y = after_covid_change, label = SCHOOL)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Change in Obesity: Before vs. After COVID",
+    x = "Before COVID",
+    y = "After COVID"
+  ) +
+  theme_minimal()
+
+#Plot of Contingency Table for Primary School Obesity Rates Controlled for COVID
+ggplotly(scatterplot_of_schools)
+```
+
 ```{r}
 tmap_mode("view") #interactive map
 tmap_mode("plot") #static map
