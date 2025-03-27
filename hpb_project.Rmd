@@ -1,10 +1,12 @@
 ---
-title: Childhood Obesity in Singapore: A Spatial Analysis of Obesity Prevalence and Post-COVID Trends in Schools
-author: Colin, Lucas, Nina, Qasim
+title: "Childhood Obesity in Singapore: A Spatial Analysis of Obesity Prevalence and Post-COVID Trends in Schools"
+author: "Colin, Lucas, Nina, Qasim"
 output: 
   html_document:
     toc: true
+    toc_float: true
     number_sections: true
+date: "`r Sys.Date()`"
 editor_options: 
   chunk_output_type: console
   markdown: 
@@ -815,7 +817,7 @@ sec_map <- ura_planning_areas_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-Spatial autocorrelation statistics
+*Spatial autocorrelation statistics*
 
 ```{r}
 # by Primary schools
@@ -851,9 +853,9 @@ p-value for Global Moran's I test (Secondary school): 0.5256 \
 p-value for Global Geary's C test (Secondary school): 0.5418 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.8072
 
-Join count analysis
-
 ```{r}
+#### Join count analysis
+
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
 
@@ -878,9 +880,9 @@ joincount.multi(obesity_ura_planning_areas_sec$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-Local Moran's I statistic
-
 ```{r}
+#### Local Moran's I statistic
+
 # by Primary school
 localm_ura_planning_areas_pri <- 
   localmoran(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
@@ -900,9 +902,9 @@ sec_map <- tm_shape(obesity_ura_planning_areas_sec) + tm_polygons(fill = "LMORAN
 tmap_arrange(pri_map, sec_map)
 ```
 
-Local Getis-Ord's G statistics
-
 ```{r}
+#### Local Getis-Ord's G statistics
+
 # by Primary school
 obesity_ura_planning_areas_pri$GO_STAT <-
   localG(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
@@ -920,9 +922,9 @@ sec_map <- tm_shape(obesity_ura_planning_areas_sec) + tm_polygons("GO_STAT") +
 tmap_arrange(pri_map, sec_map)
 ```
 
-Correlogram
-
 ```{r}
+#### Correlogram
+
 # by Primary school
 correl_planning_areas_pri <- sp.correlogram(
   ura_planning_areas_nb_pri, obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, 
@@ -956,7 +958,7 @@ par(mfrow=c(1,1))
 
 ### Contiguous neighbours by URA subzones
 
-There are 323 URA subzones in Singapore, of which 115 contain primary schools, and 100 contain secondary schools. As there were a few non-contiguous subzones, 
+There are 323 URA subzones in Singapore, of which 115 contain primary schools, and 100 contain secondary schools. As there were are many non-contiguous subzones, we do not run our we do not run our spatial autocorrelation statistics here.
 
 ```{r}
 obesity_ura_subzones_pri <- obesity_ura_subzones %>% filter(LEVEL == "PRIMARY")
@@ -1035,7 +1037,7 @@ sec_map <- moe_clusters_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-Spatial autocorrelation statistics
+*Spatial autocorrelation statistics*
 
 ```{r}
 # by Primary schools
@@ -1067,9 +1069,11 @@ p-value for Global Moran's I test (Secondary school): 0.1768 \
 p-value for Global Geary's C test (Secondary school): 0.1768 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.8314
 
-#### Join count analysis
+
 
 ```{r}
+#### Join count analysis
+
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
 
@@ -1103,9 +1107,9 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Moran's I statistic
 
-```{r}
 # by Primary school
 localm_moe_clusters_pri <- 
   localmoran(obesity_pri_sch$PREVALENCE, 
@@ -1125,9 +1129,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Getis-Ord's G statistics
 
-```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
   localG(obesity_pri_sch$PREVALENCE, 
@@ -1145,9 +1149,8 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Correlogram (does not work)
-
 ```{r}
+# #### Correlogram (does not work)
 # # by Primary school
 # correl_moe_clusters_pri <- sp.correlogram(
 #   moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
@@ -1201,7 +1204,7 @@ sec_map <- tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch)))
 tmap_arrange(pri_map, sec_map)
 ```
 
-Spatial autocorrelation statistics
+*Spatial autocorrelation statistics*
 
 ```{r}
 # by Primary schools
@@ -1233,11 +1236,9 @@ p-value for Global Moran's I test (Secondary school): 0.0001695 \
 p-value for Global Geary's C test (Secondary school): 9.452e-05 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.2914
 
-#### Join count analysis
-
 ```{r}
-# Setting an overweight cutoff point
-OVERWEIGHT_CUTOFF <- 0.14
+####  Join count analysis
+OVERWEIGHT_CUTOFF <- 0.14 # Setting an overweight cutoff point
 
 # by Primary school
 obesity_pri_sch$HIGH_PREVALENCE <- 
@@ -1269,9 +1270,9 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Local Moran's I statistic
-
 ```{r}
+####  Local Moran's I statistic
+
 # by Primary school
 localm_del_pri <- 
   localmoran(obesity_pri_sch$PREVALENCE, 
@@ -1291,9 +1292,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Getis-Ord's G statistics
 
-```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
   localG(obesity_pri_sch$PREVALENCE, 
@@ -1311,9 +1312,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Correlogram
 
-```{r}
 # by Primary school
 correl_del_pri <- sp.correlogram(
   del_nb_pri, obesity_pri_sch$PREVALENCE, 
@@ -1369,7 +1370,7 @@ sec_map <- tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch)))
 tmap_arrange(pri_map, sec_map)
 ```
 
-Spatial autocorrelation statistics
+*Spatial autocorrelation statistics*
 
 ```{r}
 # by Primary schools
@@ -1401,9 +1402,9 @@ p-value for Global Moran's I test (Secondary school): 0.0004617 \
 p-value for Global Geary's C test (Secondary school): 0.0002675 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.3102
 
+```{r}
 #### Join count analysis
 
-```{r}
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
 
@@ -1436,9 +1437,9 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Moran's I statistic
 
-```{r}
 # by Primary school
 localm_soi_pri <- 
   localmoran(obesity_pri_sch$PREVALENCE, 
@@ -1466,9 +1467,9 @@ soi_sec_map <-
 tmap_arrange(soi_pri_map, soi_sec_map)
 ```
 
+```{r}
 #### Local Getis-Ord's G statistics
 
-```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
   localG(obesity_pri_sch$PREVALENCE, 
@@ -1486,11 +1487,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Correlogram (does not work)
-
-Some sub-graphs have 2 or less neighbours
-
 ```{r}
+#### Correlogram (does not work, some sub-graphs have 2 or less neighbours)
+
 # # by Primary school
 # correl_soi_pri <- sp.correlogram(
 #   soi_nb_pri, obesity_pri_sch$PREVALENCE,
@@ -1544,7 +1543,7 @@ sec_map <- tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-Spatial autocorrelation statistics
+*Spatial autocorrelation statistics*
 
 ```{r}
 # by Primary schools
@@ -1576,9 +1575,9 @@ p-value for Global Moran's I test (Secondary school): 0.0004819 \
 p-value for Global Geary's C test (Secondary school): 0.004126 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.234
 
+```{r}
 #### Join count analysis
 
-```{r}
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
 
@@ -1612,9 +1611,9 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Moran's I statistic
 
-```{r}
 # by Primary school
 localm_knn1_pri <- 
   localmoran(obesity_pri_sch$PREVALENCE, 
@@ -1634,9 +1633,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Getis-Ord's G statistics
 
-```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
   localG(obesity_pri_sch$PREVALENCE, 
@@ -1654,11 +1653,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Correlogram (does not work)
-
-Some sub-graphs have 2 or less neighbours
-
 ```{r}
+# #### Correlogram (does not work, some sub-graphs have 2 or less neighbours)
+# 
 # # by Primary school
 # correl_knn1_pri <- sp.correlogram(
 #   knn1_nb_pri, obesity_pri_sch$PREVALENCE, 
@@ -1710,7 +1707,7 @@ sec_map <- tm_shape(nb2lines(knn2_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-Spatial autocorrelation statistics
+*Spatial autocorrelation statistics*
 
 ```{r}
 # by Primary schools
@@ -1742,9 +1739,9 @@ p-value for Global Moran's I test (Secondary school): 0.003471 \
 p-value for Global Geary's C test (Secondary school): 0.03461 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.2781
 
+```{r}
 #### Join count analysis
 
-```{r}
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
 
@@ -1778,9 +1775,9 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Moran's I statistic
 
-```{r}
 # by Primary school
 localm_knn2_pri <- 
   localmoran(obesity_pri_sch$PREVALENCE, 
@@ -1800,9 +1797,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Getis-Ord's G statistics
 
-```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
   localG(obesity_pri_sch$PREVALENCE, 
@@ -1820,11 +1817,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Correlogram (does not work)
-
-Some sub-graphs have 2 or less neighbours
-
 ```{r}
+# #### Correlogram (does not work, Some sub-graphs have 2 or less neighbours)
+#
 # # by Primary school
 # correl_knn2_pri <- sp.correlogram(
 #   knn2_nb_pri, obesity_pri_sch$PREVALENCE, 
@@ -1876,7 +1871,7 @@ sec_map <- tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-Spatial autocorrelation statistics
+*Spatial autocorrelation statistics*
 
 ```{r}
 # by Primary schools
@@ -1908,9 +1903,9 @@ p-value for Global Moran's I test (Secondary school): 0.000427 \
 p-value for Global Geary's C test (Secondary school): 0.002858 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.3985
 
+```{r}
 #### Join count analysis
 
-```{r}
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
 
@@ -1944,9 +1939,9 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Moran's I statistic
 
-```{r}
 # by Primary school
 localm_knn3_pri <- 
   localmoran(obesity_pri_sch$PREVALENCE, 
@@ -1966,9 +1961,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
+```{r}
 #### Local Getis-Ord's G statistics
 
-```{r}
 # by Primary school
 obesity_pri_sch$GO_STAT <-
   localG(obesity_pri_sch$PREVALENCE, 
@@ -1986,11 +1981,9 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Correlogram (does not work)
-
-Some sub-graphs have 2 or less neighbours
-
 ```{r}
+# #### Correlogram (does not work, some sub-graphs have 2 or less neighbours)
+#
 # # by Primary school
 # correl_knn3_pri <- sp.correlogram(
 #   knn3_nb_pri, obesity_pri_sch$PREVALENCE, 
@@ -3861,7 +3854,7 @@ Based on the joint count analysis, there is no significant spatial clustering of
 Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of \>1)
 
 
-#Controlling for effects of COVID
+# Controlling for effects of COVID
 ```{r}
 oso_pri_hist = read_excel("oso_primary.xlsx")
 
