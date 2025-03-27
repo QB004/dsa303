@@ -2889,7 +2889,8 @@ st_as_sf(st_make_valid(sports_facilities_sf)) # Fix invalid geometries
 sport_sg_facility_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
   tm_polygons(size = 0.3,
           fill = "slateblue4",
-          fill.legend = tm_legend(title = "Sports Fields"))
+          fill.legend = tm_legend(title = "Sports Facilities")) +
+  tm_title("A - SportSG Facilities in Singapore")
 
 sport_sg_facility_map
 
@@ -2906,7 +2907,8 @@ sports_fields_map <- ura_planning_areas_map + tm_shape(fields_shp) +
     tm_dots(size = 0.3,
           fill = "slateblue2",
           fill.legend = tm_legend(title = "Sports Fields"),
-          fill_alpha = 0.5)
+          fill_alpha = 0.5) +
+  tm_title("B - Sports Fields in Singapore")
 
 
 sports_fields_map
@@ -2926,7 +2928,8 @@ dus_facility_map <- ura_planning_areas_map + tm_shape(dual_use_facilities) +
     tm_dots(size = 0.3,
           fill = "navy",
           fill.legend = tm_legend(title = "Dual Use School Sports Facilities"),
-          fill_alpha = 0.5)
+          fill_alpha = 0.5) +
+  tm_title("C - Dual Use School Sports Facilities in Singapore")
 
 dus_facility_map
 
@@ -2950,7 +2953,7 @@ pri_dus_map <- ura_planning_areas_map +
   tm_layout(
     legend.position = c("BOTTOM", "RIGHT"),
     legend.title.size = 1.2,
-    main.title = "Primary Schools and Dual Use Sports Facilities"
+    main.title = "C2 - Primary Schools and Dual Use Sports Facilities"
   )
 
 pri_dus_map
@@ -2961,26 +2964,31 @@ sec_dus_map <- ura_planning_areas_map +
   tm_shape(sec_cca_data) +
   tm_symbols(
     size = 0.3,
-    fill = "red"
+    fill = "red",
+    tm_legend(title = "Secondary Schools")
   ) +
   tm_shape(dual_use_facilities) +
   tm_dots(
     size = 0.3,
-    fill = "blue"
+    fill = "blue",
+    tm_legend(title = "Dual Use School Sports Facilities")
   ) +
   tm_layout(
     legend.position = c("BOTTOM", "RIGHT"),
     legend.title.size = 1.2,
-    main.title = "Secondary Schools and Dual Use Sports Facilities"
+    main.title = "C3 - Secondary Schools and Dual Use Sports Facilities"
   )
 
 sec_dus_map
 
 ```
+##Choosing an Appropriate Data Set
+We had a variety of different data sets to choose from regarding sports facilities in Singapore. Map A displays SportSG facilities in Singapore as spatial polygons. Map B displays sports fields in Singapore as spatial points. Map C displays dual-use school sports facilities in Singapore as spatial points. We decided to use the dual-use school sports facilities data set as it is the most focused and relevant to our study regarding obesity in schools specifically. It would not be restricted by the activities that can only be conducted on a sports field (by also including sports halls). This data set contains information on sports facilities that are shared between schools and the community. This is important as it allows us to identify sports facilities that are accessible not only to the general public but especially to students.
 
-# K Nearest Neighbours
+Maps C1 and C2 display DUS facilities alongside primary and secondary schools respectively. The maps show the brief distribution of sports facilities in relation to schools. From visual inspection alone, several areas can be observed where there are schools without any nearby sports facilities. This could be a potential area of interest for further analysis.
 
-# NEAREST SPORTS FACILITY TO SCHOOL
+
+# K Nearest Neighbours - Nearest DUS facility to School
 
 ## 1 neighbour
 
@@ -3105,7 +3113,15 @@ print(sec_dus_avg_distance_map)
 
 
 ```
+A manually constructed equation is used to find the nearest 3 DUS facilities to each school (in metres)
 
+From this, for each school in a URA planning area, the average distance to the nearest DUS facility is calculated. This is then visualised in a heatmap for both primary and secondary schools. The maps show the average distance to the nearest DUS facility from schools in each URA planning area (in metres). 
+
+For primary schools an initial visual inspection shows Bukit Timah, Novena, Newton and River Valley as the areas with greater distances between schools and the nearest single DUS facility, with Novena and Newton falling into the 2500m-3000m range. 
+
+For Secondary Schools, alongside Bukit Timah and Novena this time is the Museum planning area.
+
+While this line of investigation has displayed certain patterns, it must first be considiered with the context of the obesity rates in these schools to determine if there might be any potential value to this exploration of sports facilities.
 # Facility Density by URA Planning Area
 
 ```{r}
