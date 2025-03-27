@@ -713,11 +713,11 @@ nb_pval_pri <- nb_pval_sec <-
              "Geary.C.p.value" = c(), "Getis.Ord.G.p.value" = c())
 ```
 
-## Contiguity neighbours analysis (Region-based)
+## Contiguity Neighbours analysis
 
-We examine spatial autocorrelation of URA defined regions, using "Queen" contiguity for a less strict criteria for contiguous polygon neighbours.
+We examine spatial autocorrelation for URA defined regions, using "Queen" contiguity for a less strict criteria for defining contiguous polygon neighbours.
 
-As there are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours were then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for accuracy of spatial statistical tests.
+There are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours were then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for accuracy of spatial statistical tests.
 
 ### Contiguous neighbours by URA regions
 
@@ -987,11 +987,11 @@ sec_map <- ura_subzones_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-## Cluster based analysis (Social distance)
+## Social Neighbours analysis ("Social distance")
 
-To consider the neighbours based on "social distance", we look at Ministry of Education Clusters of schools. Schools are typically administrated by MOE based on the clusters they belong to. As such, attitudes and policies of administrators for an MOE cluster of schools might be reflected in spatial autocorrelation measures.
+To consider the neighbours based on "social distance", we look at Ministry of Education Clusters of schools. Schools are typically administrated by MOE based on the administrative clusters they belong to. As such, attitudes and policies of administrators for an MOE cluster of schools might be reflected in spatial autocorrelation measures.
 
-### Contiguous neighbours by MOE clusters
+### MOE Clusters-based neighbours
 
 There are 28 MOE clusters (7 clusters for each MOE zone: North, East, South, West), which have overlapping areas. These clusters may be headed by administrators who are more familiar with the schools that they are in charge of. For example, the Singapore Chinese Girls' School (Pri) is designated under the N2 cluster (North zone), even though it is geographically nearer to the South and surrounded by schools in the S3 cluster (South zone). As such, the MOE clusters are determined by social or administrative factors rather than geographical regions, despite the names (North, East, South, West) given to MOE zones and clusters.
 
@@ -1197,9 +1197,9 @@ tmap_arrange(pri_map, sec_map)
 # par(mfrow=c(1,1))
 ```
 
-## Graph neighbours based analysis
+## Graph-Based Neighbours analysis
 
-We also examine neighbours based on popular algorithms for determining graph neighbours: Delauney triangulation neighbours and Sphere of Influence neighbours.
+We also examine neighbours based on popular algorithms for determining graph neighbours: Delauney Triangulation neighbours and Sphere of Influence neighbours.
 
 ### Delauney Triangulation neighbours
 
@@ -1550,9 +1550,13 @@ tmap_arrange(pri_map, sec_map)
 # par(mfrow=c(1,1))
 ```
 
-## K nearest neighbour based analysis
+## Geographic Distance-Based Neighbours analysis
 
-### 1 neighbour
+We determine distance-based neighbours by choosing the [k nearest neighbours](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Distance-Based_Neighbours) for k = 1, 2, and 3. Choosing the k nearest schools as neighbours takes into account more local factors that simultaneously affect obesity in a localised area. This method ensures that all areas have k neighbours. 
+
+### k = 1 nearest neighbour
+
+We consider just the nearest school as a school's neighbour.
 
 ```{r}
 # by Primary schools
@@ -1720,7 +1724,9 @@ tmap_arrange(pri_map, sec_map)
 # par(mfrow=c(1,1))
 ```
 
-### 2 neighbours
+### k = 2 nearest neighbours
+
+We consider the 2 nearest schools as a school's neighbours.
 
 ```{r}
 # by Primary schools
@@ -1888,7 +1894,9 @@ tmap_arrange(pri_map, sec_map)
 # par(mfrow=c(1,1))
 ```
 
-### 3 neighbours
+### k = 3 nearest neighbours
+
+We consider the 3 nearest schools as a school's neighbours.
 
 ```{r}
 # by Primary schools
@@ -2059,17 +2067,50 @@ tmap_arrange(pri_map, sec_map)
 ## Conclusions on spatial clustering analysis of obesity
 
 ```{r}
-nb_pval_pri
-nb_pval_sec
+# Summary of spatial autocorrelation test p-values
+nb_pval_pri %>% as_tibble()
+nb_pval_sec %>% as_tibble()
 ```
 
-Based
+$H_0:$ No spatial autocorrelation present
+$H_1:$ Positive spatial autocorrelation present
 
-Examining graph neighbours, while the Delauney triangulation neighbours appear to
+Based on the spatial autocorrelation tests conducted using Moran’s I, Geary’s C, and Getis-Ord’s G statistics, we can conclude the following:
+
+Primary Schools:
+
+Strong evidence of spatial clustering of obesity is observed under most spatial weight matrices.
+
+The Moran’s I test indicates significant positive spatial autocorrelation for primary schools under most configurations (e.g., Delaunay triangulation, Sphere of Influence, and k-nearest neighbours with k = 2 or 3).
+
+Geary’s C test further supports the presence of spatial dependence, reinforcing the finding of clustering.
+
+The Getis-Ord’s G test results are less consistent, though some configurations (e.g., Delaunay triangulation and k = 2, 3 nearest neighbours) suggest significant clustering of high-obesity schools.
+
+Secondary Schools:
+
+The evidence for spatial clustering is weaker for secondary schools.
+
+Moran’s I and Geary’s C tests show insignificant p-values for many spatial weight matrices, particularly for planning areas and MOE clusters.
+
+Significant spatial autocorrelation is only detected under some configurations, such as Delaunay triangulation, Sphere of Influence, and k = 3 nearest neighbours.
+
+Getis-Ord’s G test does not strongly indicate clustering, except in a few cases.
+
+Conclusion:
+There is strong spatial clustering of obesity among primary schools across Singapore, suggesting that local factors and neighbourhood effects significantly influence childhood obesity rates. In contrast, secondary schools exhibit weaker and less consistent spatial clustering, implying that obesity prevalence may be more influenced by non-spatial factors such as school policies, socio-economic differences, or lifestyle choices.
+
+From a policy perspective, targeted interventions in primary school clusters could be more effective in leveraging spillover effects. The choice of spatial weight matrix influences the observed clustering patterns, but results are broadly consistent across graph-based and k-nearest neighbour methods. Future studies could refine spatial definitions to improve accuracy in detecting secondary school clusters.
+
+For social neighbours (MOE clusters), we find that 
+
+Examining graph neighbours, Delauney triangulation neighbours tend to have links that are relatively long. Sphere of Influence graphs help to thin the triangulation and remove long links (e.g. schools along the borders of Singapore were indicated as neighbours even when they were very far apart)
 
 Based on the Moran's I statistics, Delauney triangulation neigbours reported the lowest p-values, suggesting that there was significant spatial clustering following Delauney triangulation clusters.
 
-However, due to the arbitrary neighbour links introduced by Delauney triangulation (e.g. schools along the borders of Singapore were indicated as neighbours even when they were very far apart), we determined that Sphere of Influence was the better choice to model neighbour links instead.
+However, due to the arbitrary neighbour links introduced by Delauney triangulation , we determined that Sphere of Influence was the better choice to model neighbour links instead.
+
+SOI neighbours are symmetric by design – if i is a neighbour of j, then j is a neighbour of.
 
 ```{r}
 # by Primary school
