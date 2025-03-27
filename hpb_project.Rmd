@@ -2522,8 +2522,7 @@ obesity_joined_school_sports_data <-
 
 # Visualising physical sports participation by school level
 
-###########################PRIMARY SCHOOL####################################
-
+##Primary School
 ```{r}
 # Primary school sports participation
 
@@ -2618,7 +2617,7 @@ pri_cca_map_sde
 
 ```
 
-####################################SECONDARY SCHOOL####################################
+##Secondary School
 
 ```{r}
 sec_cca_data <- obesity_joined_school_sports_data %>% filter(LEVEL == "SECONDARY", !is.na(sports_cca_per_100))
@@ -2758,7 +2757,9 @@ combined_cca_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_dat
   filter(!is.na(RATIO_AGG))
 
 ```
+Aggregating the sports CCA ratio by URA planning area, we observe no generalised pattern of school sports participation across Singapore. 
 
+While primary schools depict a much lower sports CCA ratio compared to secondary schools, this can likely be explained by the fact that CCA participation is not compulsory in primary schools (it is in secondary schools).
 # BIVARIATE CHLOROPLETH MAPS FOR CCA RATIO VS PREVALENCE
 
 ```{r}
@@ -2872,8 +2873,11 @@ sec_bivariate_map <-ura_planning_areas_map +
 
 sec_bivariate_map
 ```
+A Bivariate Chloropleth map aggregated over URA planning regions can be a good way to briefly visualise a potential spatial relationship between Sports CCA participation rates and Obesity rates in Schools.
 
+Unfortunately, for primary schools, we cannot conclude any kind of spatial dependence between the two variables. While a large number of planning areas are relatively self explanatory - areas with low CCA participation rates have high obesity rates and vice versa (red and blue regions), the most extreme (highest) obesity rates are found in areas with high CCA participation rates (dark grey areas). Areas of particular interest to this observation include Woodlands, Sembawang and Jurong East.
 
+Regarding secondary schools, while the distribution is different, the same problem occurs - this time with more central regions displaying high rates of both obesity and sports CCA participation. While still early, we can begin to form the idea that the relationship between sports CCA participation and obesity rates is not particularly strong.
 # Sports Fields and Facilities
 
 ```{r}
@@ -2988,7 +2992,7 @@ We had a variety of different data sets to choose from regarding sports faciliti
 Maps C1 and C2 display DUS facilities alongside primary and secondary schools respectively. The maps show the brief distribution of sports facilities in relation to schools. From visual inspection alone, several areas can be observed where there are schools without any nearby sports facilities. This could be a potential area of interest for further analysis.
 
 
-# K Nearest Neighbours - Nearest DUS facility to School
+# K Nearest Neighbours - Nearest DUS facility to Schools
 
 ## 1 neighbour
 
@@ -3121,7 +3125,10 @@ For primary schools an initial visual inspection shows Bukit Timah, Novena, Newt
 
 For Secondary Schools, alongside Bukit Timah and Novena this time is the Museum planning area.
 
-While this line of investigation has displayed certain patterns, it must first be considiered with the context of the obesity rates in these schools to determine if there might be any potential value to this exploration of sports facilities.
+While this line of investigation has displayed certain patterns, it must first be considered with the context of the obesity rates in these schools to determine if there might be any potential value to this exploration of sports facilities.
+
+Interestingly, areas that this analysis has identified as having a greater distance to the nearest DUS facility are areas with higher rates of sports CCA participation. This could be worth further exploration.
+
 # Facility Density by URA Planning Area
 
 ```{r}
@@ -3158,7 +3165,9 @@ facility_density_map <- ura_planning_areas_map + facility_by_area %>%
 facility_density_map
 
 ```
+This map is a representation of how many DUS facilties are in each URA planning area portrayed as a density per km². 
 
+Interestingly, certain regions of interest from the last visual representation are not shown here due to the complete absence of DUS facilities in these areas. These areas include Bukit Timah, Novena, Newton and River Valley, Museum - areas in which it was identified that schools had a greater distance to the nearest DUS facility. A raw metric of facility density does not take into account the distribution of schools in these areas, which may be a reason for the lack of facilities in these areas.
 # Modelling obesity in Singapore schools
 
 ## Joining data variables
