@@ -288,11 +288,11 @@ cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
 
 We observe that the median obesity prevalence for the B, C, D and E HSMP tiers are within one percentage point of one another (0.12-0.13 range) while the median value of the A tier is much lower at approximately 0.1. The A tier also has a significantly smaller IQR range and total range than other tiers, showing greater consistency in obesity prvalence within HSMP A tier schools (though this is likely also because there are only 8 A tier schools). The other HSMP tiers have similar IQR ranges and total data ranges, though tier B has a much wider Q1 compared to tiers C, D and E despite having similar median values. For C tier, the two upper bound outliers are Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613). For D tier, the sole outlier is Pioneer Primary School (0.226236). For A tier, the sole outlier is Admiralty Secondary School (0.16422), a coed secondary school in the North zone.
 
-# Singapore maps
+## Singapore maps
 
 These are maps that define Singapore's regions based on URA defined boundaries (region, planning area, subzone) and MOE defined boundaries (zone, cluster). Subsequently, the defined regions can be used together with aggregated data so that we can examine overweight prevalence and other contributing factors by these differently delimited regions.
 
-We will use these maps as a basemap for our subsequent analysis, and to facilitate our visualisation of obesity in Singapore schools
+We will use these maps as base maps for our subsequent analysis, and to facilitate our visualisation of obesity in Singapore schools
 
 ```{r}
 tmap_mode("view")
@@ -408,6 +408,7 @@ pri_sch_sdd_line <- pri_sch_sdd$LOCATIONS %>%
   st_cast("LINESTRING")
 
 pri_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_pri_sch))
+pri_sch_sde$ATTRIBUTES[,10] # theta = 92.55625
 pri_sch_sde_line <- pri_sch_sde$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
@@ -476,6 +477,7 @@ sec_sch_sdd_line <- sec_sch_sdd$LOCATIONS %>%
   st_cast("LINESTRING")
 
 sec_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_sec_sch))
+sec_sch_sde$ATTRIBUTES[,10] # theta = 92.3718
 sec_sch_sde_line <- sec_sch_sde$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
@@ -527,24 +529,19 @@ sec_sch_map_summ <- sec_sch_map +
 tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, ncol = 1)
 ```
 
-For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance spans the North-South length of Singapore. The standard deviation ellipse also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a very small angle of rotation. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
+For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance spans the North-South length of Singapore. The standard deviation ellipse also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
 
-Interestingly, when while the standard deviational ellipse 
+When we consider the weighted standard deviational ellipse instead, we observe a  directional bias towards the North and North-West directions. This suggests that schools towards the North and North-West of the spatial mean have higher overweight prevalence levels. This observation corresponds with what HPB had observed, that schools nearer to Singapore's Northern border (near the causeway to Malaysia) tended to have higher obesity rates. 
 
-
-```{r}
-
-```
-
-Generally, we observe greater overweight prevalence levels for schools in the North and lower overweight prevalence levels in the South and Central regions of Singapore.
+With a visual glance of the overweight prevalence map, one might also notice lower overweight prevalence levels in the South and Central regions of Singapore. Thus, this indication of a directional bias motivates us to examine spatial clusters of obesity as well as propose spatial models for childhood obesity in Singapore.
 
 ## Obesity prevalence by region
 
-To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Singapore into regions, planning areas and subzones.
+To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Singapore into regions, planning areas, and subzones.
 
-The Planning Regions are divided into smaller Planning Areas. Each Planning Area have a population of about 150,000 and served by a town centre and several neighbourhood commercial/shopping centres. https://data.gov.sg/collections/2104/view
+According to the URA, each [Planning Region](https://data.gov.sg/collections/1717/view) has a population size of more than 500,000 people and provide a mix of residential, commercial, business and recreational areas. Each Planning Region is then divided into [Planning Areas](https://data.gov.sg/collections/2104/view), which have a population of about 150,000 and are served by a town centre and several neighbourhood shopping centres. Each Planning Area is further divided into [Subzones](https://data.gov.sg/collections/1749/view)m], which are usually centred around a neighbourhood centre or activity node. 
 
-We aggregate overweight counts and school enrolment data by the different delimited regions, and fill in the regions to get visualise overweight prevalence by region.
+We aggregate overweight counts and school enrolment data by the different administrative regions, and fill in the regions to get visualise overweight prevalence by region.
 
 ```{r}
 # Aggregating overweight counts by URA regions
@@ -691,25 +688,35 @@ moe_clusters_map + obesity_moe_clusters %>%
   tm_facets_wrap(by = "LEVEL")
 ```
 
+Similar to our visualisation of obesity on an individual school levels, we again observe that regions closer to the edges of Singapore (the North in particular) have higher overweight prevalence levels.
+
+The rationale behind examining obesity by administrative regions is to allow HPB to target policies towards specific URA regions or MOE clusters. Administrative regions typically follow similar policies introduced by superintendents or administrators in charge of a particular region or cluster of schools. This aspect of administrative or regional classification of school may result in different attitudes or policy solutions by administrators towards solving childhood obesity in each region. 
+
 # Spatial clustering of obesity
 
-Given the evidence of a spatial 
+Given the evidence of a directional bias of overweight prevalence in Singapore schools, we now consider whether there are spatial relationships for overweight prevalence in schools. Importantly, we want to identify if there are any spatial clusters of schools. Positive spatial autocorrelation would mean that there is a spillover effect of overweight prevalence for schools in a specific cluster. These clusters would share similar local factors that cause high childhood obesity rates, making it easier to target specific schools. HPB could then target one or a few schools in the overweight cluster and rely on spillover effects (e.g. peer pressure, social influence, changing attitudes) to bring down obesity in these clusters.
 
-To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (which school is considered a neighbour to which school). 
+To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (which school is considered a neighbour to which school). We analysed spatial autocorrelation for neighbouring administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3 neighbours) in next few sub-sections. We then chose the best neighbour classification (spatial weights matrix) to support our analysis. The accompanying maps for each section provide a visualisation of each neighbour list object.
 
-We analysed spatial autocorrelation in administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3) in the sections below.
+To quantify spatial autocorrelation, we used the global Moran's I statistic as it is the most popular indicator of global spatial autocorrelation, and it captures the degree of dependence of one variable at a given location to similar variables at neighbouring locations. As the Moran’s I statistic is highly sensitive to the choice of spatial weights matrix, we include other spatial autocorrelation statistics (Join count analysis, Global and local Geary’s C statistic, Global and local Getis-Ord’s G) for robustness checks.
+
+We recommend skipping to the last sub-section in this section on spatial clustering to examine the autocorrelation of our selected spatial weights matrix.
 
 ## Region based analysis (Contiguous region neighbours)
 
-There are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours by planning area are then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for spatial statistical tests.
+We examine spatial autocorrelation of URA defined regions.
+
+As there are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours were then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for accuracy of spatial statistical tests.
 
 ```{r}
+# initialising empty data frame to collect Moran's I p-values
 nb_pval_pri <- data.frame("Neighbour object" = c(), "Moran.I.p.value" = c())
 nb_pval_sec <- data.frame("Neighbour object" = c(), "Moran.I.p.value" = c())
 ```
 
-
 ### Contiguous neighbours by URA regions
+
+There only 5 URA regions in Singapore, thus we do not run our spatial autocorrelation statistics here, as spatial clustering observed among these 5 regions would not give us meaningful insights.
 
 ```{r}
 # by Primary school
@@ -735,12 +742,15 @@ tmap_arrange(pri_map, sec_map)
 
 ### Contiguous neighbours by URA planning areas
 
+There are 55 URA planning areas in Singapore, of which 28 contain primary schools, and 28 contain secondary schools. We consider continguous neighbours by planning area below. As only one planning area (for primary and secondary schools) was non-contiguous, we made that planning area contiguous in a gal file for our spatial analysis.
+
 ```{r}
 # by Primary school
 obesity_ura_planning_areas_pri <- obesity_ura_planning_areas %>%
   filter(LEVEL == "PRIMARY") %>%
   rowid_to_column("index")
 
+# # This code was used to construct gal file and then commented out
 # # Manually connecting 1 observation with no neighbours with its nearest neighbours
 # ura_planning_areas_nb_pri <- obesity_ura_planning_areas_pri %>% poly2nb(queen = T)
 # ura_planning_areas_nb_pri %>%
@@ -841,7 +851,7 @@ p-value for Global Moran's I test (Secondary school): 0.5256 \
 p-value for Global Geary's C test (Secondary school): 0.5418 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.8072
 
-#### Join count analysis
+Join count analysis
 
 ```{r}
 # Setting an overweight cutoff point
@@ -868,7 +878,7 @@ joincount.multi(obesity_ura_planning_areas_sec$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Local Moran's I statistic
+Local Moran's I statistic
 
 ```{r}
 # by Primary school
@@ -890,7 +900,7 @@ sec_map <- tm_shape(obesity_ura_planning_areas_sec) + tm_polygons(fill = "LMORAN
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Local Getis-Ord's G statistics
+Local Getis-Ord's G statistics
 
 ```{r}
 # by Primary school
@@ -910,7 +920,7 @@ sec_map <- tm_shape(obesity_ura_planning_areas_sec) + tm_polygons("GO_STAT") +
 tmap_arrange(pri_map, sec_map)
 ```
 
-#### Correlogram
+Correlogram
 
 ```{r}
 # by Primary school
@@ -945,6 +955,8 @@ par(mfrow=c(1,1))
 ```
 
 ### Contiguous neighbours by URA subzones
+
+There are 323 URA subzones in Singapore, of which 115 contain primary schools, and 100 contain secondary schools. As there were a few non-contiguous subzones, 
 
 ```{r}
 obesity_ura_subzones_pri <- obesity_ura_subzones %>% filter(LEVEL == "PRIMARY")
@@ -1010,7 +1022,6 @@ moe_clusters_nb_line_pri <- moe_clusters_nb_pri %>%
 pri_map <- moe_clusters_map +
   moe_clusters_nb_line_pri %>% tm_shape() + tm_lines(lwd = 0.5) +
   pri_sch_map
-
 
 obesity_moe_clusters_sec <- obesity_sec_sch %>% filter(LEVEL == "SECONDARY")
 moe_clusters_nb_sec <-
