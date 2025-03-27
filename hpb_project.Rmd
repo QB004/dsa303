@@ -290,9 +290,14 @@ cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
 
 We observe that the median obesity prevalence for the B, C, D and E HSMP tiers are within one percentage point of one another (0.12-0.13 range) while the median value of the A tier is much lower at approximately 0.1. The A tier also has a significantly smaller IQR range and total range than other tiers, showing greater consistency in obesity prvalence within HSMP A tier schools (though this is likely also because there are only 8 A tier schools). The other HSMP tiers have similar IQR ranges and total data ranges, though tier B has a much wider Q1 compared to tiers C, D and E despite having similar median values. For C tier, the two upper bound outliers are Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613). For D tier, the sole outlier is Pioneer Primary School (0.226236). For A tier, the sole outlier is Admiralty Secondary School (0.16422), a coed secondary school in the North zone.
 
+
+# Spatial overview of childhood obesity (Colin)
+
+The following sections provide us with a spatial overview of childhood obesity in Singapore schools. We provide spatial descriptive summary measures, particularly spatial measures of central tendency (mean, median) and dispersion (standard deviation distance and standard deviation ellipse)
+
 ## Singapore maps
 
-These are maps that define Singapore's regions based on URA defined boundaries (region, planning area, subzone) and MOE defined boundaries (zone, cluster). Subsequently, the defined regions can be used together with aggregated data so that we can examine overweight prevalence and other contributing factors by these differently delimited regions.
+Firstly, we create maps that delimit Singapore's regions based on URA defined boundaries (region, planning area, subzone) and MOE defined boundaries (zone, cluster). Subsequently, the defined regions can be used together with aggregated data so that we can examine overweight prevalence and other contributing factors by these differently delimited regions.
 
 We will use these maps as base maps for our subsequent analysis, and to facilitate our visualisation of obesity in Singapore schools
 
@@ -336,9 +341,6 @@ moe_clusters_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
   fill.legend = tm_legend_hide())
 ```
 
-# Spatial overview of childhood obesity (Colin)
-
-The following sections provide us with a spatial overview of childhood obesity in Singapore schools. We provide spatial descriptive summary measures, particularly spatial measures of central tendency (mean, median) and dispersion (standard deviation distance and standard deviation ellipse)
 
 ## Obesity prevalence overview map
 
@@ -702,19 +704,20 @@ To consider spatial clustering of obesity in schools, we need to define how scho
 
 To quantify spatial autocorrelation, we used the global Moran's I statistic as it is the most popular indicator of global spatial autocorrelation, and it captures the degree of dependence of one variable at a given location to similar variables at neighbouring locations. As the Moran’s I statistic is highly sensitive to the choice of spatial weights matrix, we include other spatial autocorrelation statistics (Join count analysis, Global and local Geary’s C statistic, Global and local Getis-Ord’s G) for robustness checks.
 
-We recommend skipping to the last sub-section in this section on spatial clustering to examine the autocorrelation of our selected spatial weights matrix.
-
-## Region based analysis (Contiguous region neighbours)
-
-We examine spatial autocorrelation of URA defined regions.
-
-As there are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours were then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for accuracy of spatial statistical tests.
+We recommend skipping to the last sub-section to examine the autocorrelation of our selected spatial weights matrix, and our results from the spatial clustering analysis of childhood obesity in Singapore
 
 ```{r}
 # initialising empty data frame to collect Moran's I p-values
-nb_pval_pri <- data.frame("Neighbour object" = c(), "Moran.I.p.value" = c())
-nb_pval_sec <- data.frame("Neighbour object" = c(), "Moran.I.p.value" = c())
+nb_pval_pri <- nb_pval_sec <- 
+  data.frame("Neighbour.object" = c(), "Moran.I.p.value" = c(), 
+             "Geary.C.p.value" = c(), "Getis.Ord.G.p.value" = c())
 ```
+
+## Contiguity neighbours analysis (Region-based)
+
+We examine spatial autocorrelation of URA defined regions, using "Queen" contiguity for a less strict criteria for contiguous polygon neighbours.
+
+As there are too few contiguous neighbours by URA region to analyse meaningfully (only 5 URA regions). When analysing by URA subzone, there are too many non-contiguous subzones. We recommend to only analyse by URA planning area, which has some non-contiguous neighbours in the central regions. These non-contiguous neighbours were then manually edited (in the .gal file) to create neighbours with nearest planning areas to ensure contiguity for accuracy of spatial statistical tests.
 
 ### Contiguous neighbours by URA regions
 
@@ -826,10 +829,12 @@ ura_planning_areas_lw_B_pri <- nb2listw(ura_planning_areas_nb_pri, style = "B")
 (moran <- moran.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri))
 moran.plot(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri,
            main="Moran scatterplot")
-geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri)
-globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
-             ura_planning_areas_lw_B_pri)
-nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "Planning Area", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri))
+(getisordG <- globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
+             ura_planning_areas_lw_B_pri))
+nb_pval_pri <- rbind(nb_pval_pri, data.frame(
+  "Neighbour.object" = "Planning Area", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
 (ura_planning_areas_lw_sec <- nb2listw(ura_planning_areas_nb_sec, style = "W"))
@@ -837,10 +842,12 @@ ura_planning_areas_lw_B_sec <- nb2listw(ura_planning_areas_nb_sec, style = "B")
 (moran <- moran.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec))
 moran.plot(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec, 
            main="Moran scatterplot")
-geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec)
-globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
-             ura_planning_areas_lw_B_sec)
-nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "Planning Area", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec))
+(getisordG <- globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
+                           ura_planning_areas_lw_B_sec))
+nb_pval_sec <- rbind(nb_pval_sec, data.frame(
+  "Neighbour.object" = "Planning Area", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 ```
 
 Average number of links (Primary school): 3.428571 \
@@ -982,7 +989,13 @@ tmap_arrange(pri_map, sec_map)
 
 ## Cluster based analysis (Social distance)
 
+To consider the neighbours based on "social distance", we look at Ministry of Education Clusters of schools. Schools are typically administrated by MOE based on the clusters they belong to. As such, attitudes and policies of administrators for an MOE cluster of schools might be reflected in spatial autocorrelation measures.
+
 ### Contiguous neighbours by MOE clusters
+
+There are 28 MOE clusters (7 clusters for each MOE zone: North, East, South, West), which have overlapping areas. These clusters may be headed by administrators who are more familiar with the schools that they are in charge of. For example, the Singapore Chinese Girls' School (Pri) is designated under the N2 cluster (North zone), even though it is geographically nearer to the South and surrounded by schools in the S3 cluster (South zone). As such, the MOE clusters are determined by social or administrative factors rather than geographical regions, despite the names (North, East, South, West) given to MOE zones and clusters.
+
+Because of the overlapping areas for MOE clusters, we cannot define contiguous neighbours for the clusters. Instead, the neighbour list object is defined within each MOE cluster, and so schools within one MOE cluster are considered as neighbours with each other.
 
 ```{r}
 # Function to write a .gal file in the specified format
@@ -1045,18 +1058,22 @@ tmap_arrange(pri_map, sec_map)
 moe_clusters_lw_B_pri <- nb2listw(moe_clusters_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri, main="Moran scatterplot")
-geary.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri)
-globalG.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_B_pri)
-nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "MOE clusters", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri))
+(getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_B_pri))
+nb_pval_pri <- rbind(nb_pval_pri, data.frame(
+  "Neighbour.object" = "MOE clusters", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
 (moe_clusters_lw_sec <- nb2listw(moe_clusters_nb_sec, style = "W"))
 moe_clusters_lw_B_sec <- nb2listw(moe_clusters_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec, main="Moran scatterplot")
-geary.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec)
-globalG.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_B_sec)
-nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "MOE clusters", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec))
+(getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_B_sec))
+nb_pval_sec <- rbind(nb_pval_sec, data.frame(
+  "Neighbour.object" = "MOE clusters", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 ```
 
 Average number of links (Primary school): 5.657459 \
@@ -1068,8 +1085,6 @@ Average number of links (Secondary school): 4.347222 \
 p-value for Global Moran's I test (Secondary school): 0.1768 \
 p-value for Global Geary's C test (Secondary school): 0.1768 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.8314
-
-
 
 ```{r}
 #### Join count analysis
@@ -1184,7 +1199,11 @@ tmap_arrange(pri_map, sec_map)
 
 ## Graph neighbours based analysis
 
-### Delauney triangulation neighbours
+We also examine neighbours based on popular algorithms for determining graph neighbours: Delauney triangulation neighbours and Sphere of Influence neighbours.
+
+### Delauney Triangulation neighbours
+
+Delaunay triangulation of a set of points in the plane subdivides their convex hull into triangles whose circumcircles do not contain any of the points, maximising the size of the smallest angle in any of the triangles. The [neighbour relationships are defined by the triangulation](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours), which extends outwards to the convex hull of the points and which is planar. This algorithm may be useful for generating neighbour links.
 
 ```{r}
 # by Primary schools
@@ -1212,18 +1231,22 @@ tmap_arrange(pri_map, sec_map)
 del_lw_B_pri <- nb2listw(del_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, del_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, del_lw_pri, main="Moran scatterplot")
-geary.test(obesity_pri_sch$PREVALENCE, del_lw_pri)
-globalG.test(obesity_pri_sch$PREVALENCE, del_lw_B_pri)
-nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "Delauney triangles", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_pri_sch$PREVALENCE, del_lw_pri))
+(getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, del_lw_B_pri))
+nb_pval_pri <- rbind(nb_pval_pri, data.frame(
+  "Neighbour.object" = "Delauney triangulation", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
 (del_lw_sec <- nb2listw(del_nb_sec, style = "W"))
 del_lw_B_sec <- nb2listw(del_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, del_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, del_lw_sec, main="Moran scatterplot")
-geary.test(obesity_sec_sch$PREVALENCE, del_lw_sec)
-globalG.test(obesity_sec_sch$PREVALENCE, del_lw_B_sec)
-nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "Delauney triangles", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_sec_sch$PREVALENCE, del_lw_sec))
+(getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, del_lw_B_sec))
+nb_pval_sec <- rbind(nb_pval_sec, data.frame(
+  "Neighbour.object" = "Delauney triangulation", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 ```
 
 Average number of links (Primary school): 5.823204 \
@@ -1346,7 +1369,9 @@ plot(correlC_del_sec, main="Contiguity lag orders: Geary's C")
 par(mfrow=c(1,1))
 ```
 
-### Sphere of influence neighbours
+### Sphere of Influence neighbours
+
+Points are [Sphere of Influence neighbours (SOI)](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) if circles centred on the points, of radius equal to the points’ nearest neighbour distances, intersect in two places. As Delauney Triangulation joins distant points around the convex hull, Sphere of Influence graphs help to thin the triangulation, removing links that are relatively long. This may be more accurate than Delauney Triangulation for establishing neighbour links in Singapore.
 
 ```{r}
 # by Primary schools
@@ -1378,18 +1403,22 @@ tmap_arrange(pri_map, sec_map)
 soi_lw_B_pri <- nb2listw(soi_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, soi_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, soi_lw_pri, main="Moran scatterplot")
-geary.test(obesity_pri_sch$PREVALENCE, soi_lw_pri)
-globalG.test(obesity_pri_sch$PREVALENCE, soi_lw_B_pri)
-nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "Sphere of Influence", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_pri_sch$PREVALENCE, soi_lw_pri))
+(getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, soi_lw_B_pri))
+nb_pval_pri <- rbind(nb_pval_pri, data.frame(
+  "Neighbour.object" = "Sphere of Influence", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
 (soi_lw_sec <- nb2listw(soi_nb_sec, style = "W"))
 soi_lw_B_sec <- nb2listw(soi_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, soi_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, soi_lw_sec, main="Moran scatterplot")
-geary.test(obesity_sec_sch$PREVALENCE, soi_lw_sec)
-globalG.test(obesity_sec_sch$PREVALENCE, soi_lw_B_sec)
-nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "Sphere of Influence", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_sec_sch$PREVALENCE, soi_lw_sec))
+(getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, soi_lw_B_sec))
+nb_pval_sec <- rbind(nb_pval_sec, data.frame(
+  "Neighbour.object" = "Sphere of Influence", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 ```
 
 Average number of links (Primary school): 3.082873 \
@@ -1551,18 +1580,22 @@ tmap_arrange(pri_map, sec_map)
 knn1_lw_B_pri <- nb2listw(knn1_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, knn1_lw_pri, main="Moran scatterplot")
-geary.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri)
-globalG.test(obesity_pri_sch$PREVALENCE, knn1_lw_B_pri)
-nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "1 nearest neighbour", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri))
+(getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, knn1_lw_B_pri))
+nb_pval_pri <- rbind(nb_pval_pri, data.frame(
+  "Neighbour.object" = "1 nearest neighbour", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
 (knn1_lw_sec <- nb2listw(knn1_nb_sec, style = "W"))
 knn1_lw_B_sec <- nb2listw(knn1_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, knn1_lw_sec, main="Moran scatterplot")
-geary.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec)
-globalG.test(obesity_sec_sch$PREVALENCE, knn1_lw_B_sec)
-nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "1 nearest neighbour", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec))
+(getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, knn1_lw_B_sec))
+nb_pval_sec <- rbind(nb_pval_sec, data.frame(
+  "Neighbour.object" = "1 nearest neighbour", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 ```
 
 Average number of links (Primary school): 1 \
@@ -1715,18 +1748,22 @@ tmap_arrange(pri_map, sec_map)
 knn2_lw_B_pri <- nb2listw(knn2_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, knn2_lw_pri, main="Moran scatterplot")
-geary.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri)
-globalG.test(obesity_pri_sch$PREVALENCE, knn2_lw_B_pri)
-nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "2 nearest neighbours", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri))
+(getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, knn2_lw_B_pri))
+nb_pval_pri <- rbind(nb_pval_pri, data.frame(
+  "Neighbour.object" = "2 nearest neighbour", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
 (knn2_lw_sec <- nb2listw(knn2_nb_sec, style = "W"))
 knn2_lw_B_sec <- nb2listw(knn2_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, knn2_lw_sec, main="Moran scatterplot")
-geary.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec)
-globalG.test(obesity_sec_sch$PREVALENCE, knn2_lw_B_sec)
-nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "2 nearest neighbours", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec))
+(getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, knn2_lw_B_sec))
+nb_pval_sec <- rbind(nb_pval_sec, data.frame(
+  "Neighbour.object" = "2 nearest neighbour", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 ```
 
 Average number of links (Primary school): 2 \
@@ -1879,18 +1916,22 @@ tmap_arrange(pri_map, sec_map)
 knn3_lw_B_pri <- nb2listw(knn3_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri))
 moran.plot(obesity_pri_sch$PREVALENCE, knn3_lw_pri, main="Moran scatterplot")
-geary.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri)
-globalG.test(obesity_pri_sch$PREVALENCE, knn3_lw_B_pri)
-nb_pval_pri <- rbind(nb_pval_pri, data.frame("Neighbour object" = "3 nearest neighbours", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri))
+(getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, knn3_lw_B_pri))
+nb_pval_pri <- rbind(nb_pval_pri, data.frame(
+  "Neighbour.object" = "3 nearest neighbour", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
 (knn3_lw_sec <- nb2listw(knn3_nb_sec, style = "W"))
 knn3_lw_B_sec <- nb2listw(knn3_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec))
 moran.plot(obesity_sec_sch$PREVALENCE, knn3_lw_sec, main="Moran scatterplot")
-geary.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec)
-globalG.test(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec)
-nb_pval_sec <- rbind(nb_pval_sec, data.frame("Neighbour object" = "3 nearest neighbours", "Moran.I.p.value" = moran$p.value))
+(gearyC <- geary.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec))
+(getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec))
+nb_pval_sec <- rbind(nb_pval_sec, data.frame(
+  "Neighbour.object" = "3 nearest neighbour", "Moran.I.p.value" = moran$p.value,
+  "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 ```
 
 Average number of links (Primary school): 3 \
@@ -2015,12 +2056,16 @@ tmap_arrange(pri_map, sec_map)
 # par(mfrow=c(1,1))
 ```
 
-## Conclusions from analysis of spatial clustering of obesity
+## Conclusions on spatial clustering analysis of obesity
 
 ```{r}
 nb_pval_pri
 nb_pval_sec
 ```
+
+Based
+
+Examining graph neighbours, while the Delauney triangulation neighbours appear to
 
 Based on the Moran's I statistics, Delauney triangulation neigbours reported the lowest p-values, suggesting that there was significant spatial clustering following Delauney triangulation clusters.
 
