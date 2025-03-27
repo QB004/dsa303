@@ -2620,7 +2620,9 @@ pri_cca_map_sde <- ura_planning_areas_map +
 pri_cca_map_sde
 
 ```
+With size representing obesity prevalence in each school, and a red-green colour scale depicting the level of sports participation, it's difficult to initially see any clear spatial patterns.
 
+Spatial descriptive summaries such as the weighted SDE (red dotted line) can be used to try and understand the data. It's slightly skewed towards the south than the SDE (black dotted line), indicating that schools with higher sports participation levels are more concentrated in the south - potentially evident by the cluster in Bukit Merah.
 ##Secondary School
 
 ```{r}
@@ -2713,10 +2715,10 @@ sec_cca_map_sde <- ura_planning_areas_map +
 sec_cca_map_sde
 
 
-###################################################################
-
 ```
+Regarding secondary schools, it's visually clear that there are fewer schools with a high sports CCA ratio, relative to other schools. This seems to indicate that there are fewer Sports CCAs per 100 students in secondary schools as compared to in primary schools.
 
+The spatial distribution of sports participation is very similar to that of primary schools, with the weighted SDE (red dotted line) again being slightly skewed towards the south than the SDE (black dotted line), indicating that schools with higher sports participation levels are more concentrated in the south, potentially influenced bt the horizontal band of schools across Bukit Timah, Novena and Kallang.
 # Aggregating sports cca ratio counts by URA planning area
 
 ```{r}
@@ -2764,7 +2766,7 @@ combined_cca_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_dat
 Aggregating the sports CCA ratio by URA planning area, we observe no generalised pattern of school sports participation across Singapore. 
 
 While primary schools depict a much lower sports CCA ratio compared to secondary schools, this can likely be explained by the fact that CCA participation is not compulsory in primary schools (it is in secondary schools).
-# BIVARIATE CHLOROPLETH MAPS FOR CCA RATIO VS PREVALENCE
+# Sports CCA ratio vs Obesity Prevalence
 
 ```{r}
 
