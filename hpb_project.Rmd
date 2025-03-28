@@ -4314,8 +4314,7 @@ scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_ch
   theme_minimal()
 
 #Plot of Contingency Table for Primary School Obesity Rates Controlled for COVID
-ggplotly(scatterplot_of_schools)
-
+plotly::ggplotly(scatterplot_of_schools)
 ```
 
 According to the contingency table, Primary Schools that should be observed include Townsville Primary School, Fuchun Primary School, Farrer Park Primary School and Pioneer Primary School. These schools faced a steep increase in obesity levels post-Covid, compared to before COVID levels. 
