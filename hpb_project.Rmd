@@ -2621,6 +2621,122 @@ wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 # morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
 ```
 
+
+#Bivariate Choropleth maps
+```{r}
+library(classInt);library(dplyr)
+
+#Select the two variables for the bivariate map
+food_distance <- food_combined_sf %>% 
+  filter(!is.na(distance_to_nearest_food_option), !is.na(PREVALENCE)) %>%
+  select(SCHOOL,LEVEL, distance_to_nearest_food_option, PREVALENCE, geometry)
+
+#primary school
+pri_obesity_food <- food_combined_sf %>%
+  filter(LEVEL == "PRIMARY") %>%
+  select(-LEVEL)
+
+pri_food_prevalence <- st_join(ura_planning_areas, pri_obesity_food) %>% 
+  group_by(PLN_AREA_N) %>% 
+  summarise(
+    avg_dist = mean(distance_to_nearest_food_option, na.rm = T),
+    avg_prevalence = mean(PREVALENCE, na.rm = T),
+  ) %>%
+  filter(!is.na(avg_dist), !is.na(avg_prevalence))
+
+
+#Classify both variables into 3 categories (low, medium, high)
+pri_bc_food <- pri_food_prevalence %>%
+  mutate(
+    food_cat = cut(avg_dist, 
+                     breaks = classIntervals(avg_dist, 3, style = "quantile")$brks, 
+                     labels = c("Low", "Medium", "High"), 
+                     include.lowest = TRUE),
+    obesity_cat = cut(avg_prevalence, 
+                      breaks = classIntervals(avg_prevalence, 3, style = "quantile")$brks, 
+                      labels = c("Low", "Medium", "High"), 
+                      include.lowest = TRUE)
+  )
+
+#Combine the two classifications into one
+pri_bc_food <- pri_bc_food %>%
+  mutate(bivariate_class = paste(food_cat, obesity_cat, sep = "_"))
+
+
+bivariate_colors <- c(
+  "Low_Low" = "#e8e8e8", "Medium_Low" = "#b4d3e4", "High_Low" = "#8bb5d1",
+  "Low_Medium" = "#e4b4b4", "Medium_Medium" = "#b4b4b4", "High_Medium" = "#8b8b8b",
+  "Low_High" = "#d18b8b", "Medium_High" = "#b58b8b", "High_High" = "#8b8b8b"
+)
+
+
+pri_bivariate_food_map <-ura_planning_areas_map +
+  tm_shape(pri_bc_food) +
+  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories (Food - Obesity)") +
+  tm_layout(legend.position = c("right", "bottom")) +
+  tm_title("Bivariate Map of Distance to the Nearest Food Option and Obesity Prevalence by URA Planning Areas (Primary Schools)")
+
+
+pri_bivariate_food_map
+
+
+
+# Secondary school bivariate map
+#Select the two variables for the bivariate map
+food_distance <- food_combined_sf %>% 
+  filter(!is.na(distance_to_nearest_food_option), !is.na(PREVALENCE)) %>%
+  select(SCHOOL,LEVEL, distance_to_nearest_food_option, PREVALENCE, geometry)
+
+#secondary school
+sec_obesity_food <- food_combined_sf %>%
+  filter(LEVEL == "SECONDARY") %>%
+  select(-LEVEL)
+
+sec_food_prevalence <- st_join(ura_planning_areas, sec_obesity_food) %>% 
+  group_by(PLN_AREA_N) %>% 
+  summarise(
+    avg_dist = mean(distance_to_nearest_food_option, na.rm = T),
+    avg_prevalence = mean(PREVALENCE, na.rm = T),
+  ) %>%
+  filter(!is.na(avg_dist), !is.na(avg_prevalence))
+
+
+#Classify both variables into 3 categories (low, medium, high)
+sec_bc_food <- sec_food_prevalence %>%
+  mutate(
+    food_cat = cut(avg_dist, 
+                     breaks = classIntervals(avg_dist, 3, style = "quantile")$brks, 
+                     labels = c("Low", "Medium", "High"), 
+                     include.lowest = TRUE),
+    obesity_cat = cut(avg_prevalence, 
+                      breaks = classIntervals(avg_prevalence, 3, style = "quantile")$brks, 
+                      labels = c("Low", "Medium", "High"), 
+                      include.lowest = TRUE)
+  )
+
+#Combine the two classifications into one
+sec_bc_food <- sec_bc_food %>%
+  mutate(bivariate_class = paste(food_cat, obesity_cat, sep = "_"))
+
+
+bivariate_colors <- c(
+  "Low_Low" = "#e8e8e8", "Medium_Low" = "#b4d3e4", "High_Low" = "#8bb5d1",
+  "Low_Medium" = "#e4b4b4", "Medium_Medium" = "#b4b4b4", "High_Medium" = "#8b8b8b",
+  "Low_High" = "#d18b8b", "Medium_High" = "#b58b8b", "High_High" = "#8b8b8b"
+)
+
+
+sec_bivariate_food_map <-ura_planning_areas_map +
+  tm_shape(sec_bc_food) +
+  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories (Food - Obesity)") +
+  tm_layout(legend.position = c("right", "bottom")) +
+  tm_title("Bivariate Map of Distance to the Nearest Food Option and Obesity Prevalence by URA Planning Areas (Secondary Schools)")
+
+
+sec_bivariate_food_map
+pri_bivariate_food_map
+```
+
 # Sports CCAs in Schools (Qasim)
 
 This section aims to explore the spatial distribution of physical sports participation in schools across Singapore. We will be using the 2023 School Obesity (OSO) data and the 2024-25 school co-curricular activities (CCA) data to visualise the ratio of physical sports CCAs per 100 students in both primary and secondary schools. 
