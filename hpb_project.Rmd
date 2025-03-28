@@ -2115,19 +2115,22 @@ We use local autocorrelation statistics to identify spatial clusters.
 
 ```{r}
 # by Primary school
-localm_soi_pri <- 
-  localmoran(obesity_pri_sch$PREVALENCE, 
-             soi_lw_pri)
+localm_soi_pri <- localmoran(obesity_pri_sch$PREVALENCE, soi_lw_pri)
 obesity_pri_sch$LMORANZ <- localm_soi_pri[,4]
-pri_map <- tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+pri_map <- 
+  tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + 
+  tm_shape(obesity_pri_sch) + 
+  tm_symbols(fill = "LMORANZ", size = 0.5) + 
   tm_title("Local Moran's I Z-Statistic")
 
 # by Secondary school
-localm_soi_sec <- 
-  localmoran(obesity_sec_sch$PREVALENCE, 
-             soi_lw_sec)
+localm_soi_sec <- localmoran(obesity_sec_sch$PREVALENCE, soi_lw_sec)
 obesity_sec_sch$LMORANZ <- localm_soi_sec[,4]
-sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+sec_map <- 
+  tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) + 
+  tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
   tm_title("Local Moran's I Z-Statistic")
 
 tmap_arrange(pri_map, sec_map)
@@ -2143,7 +2146,37 @@ obesity_sec_sch %>%
   filter(LMORANZ >= 3) 
 ```
 
+```{r}
+#### Local Getis-Ord's G statistics
 
+# by Primary school
+obesity_pri_sch$GO_STAT <- localG(obesity_pri_sch$PREVALENCE, knn3_lw_B_pri)
+pri_map <-
+  tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + 
+  tm_shape(obesity_pri_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+# by Secondary school
+obesity_sec_sch$GO_STAT <- localG(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec)
+sec_map <- 
+  tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) + 
+  tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
+  tm_title("Local Getis-Ord's G statistics")
+
+tmap_arrange(pri_map, sec_map)
+
+# Identified clusters in Primary schools 
+obesity_pri_sch %>%
+  st_drop_geometry() %>% 
+  filter(GO_STAT >= 3)
+
+# Identified clusters in Secondary schools
+obesity_sec_sch %>% 
+  st_drop_geometry() %>%
+  filter(GO_STAT >= 3) 
+```
 
 # Elite metrics (Lucas)
 
@@ -2536,7 +2569,7 @@ wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 # morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
 ```
 
-# Distance of the nearest food option to each school
+## Distance of the nearest food option to each school
 
 ```{r}
 #Write function to compute distance to nearest food option, along with outlet_type
@@ -2613,9 +2646,9 @@ obesity_joined_school_sports_data <-
   mutate(sports_cca_per_100 = physical_sports_count / ENROLMENT * 100) #ratio of sports cca per 100 students
 ```
 
-# Visualising physical sports participation by school level
+## Visualising physical sports participation by school level
 
-##Primary School
+### Primary School
 ```{r}
 # Primary school sports participation
 
@@ -2712,7 +2745,7 @@ pri_cca_map_sde
 With size representing obesity prevalence in each school, and a red-green colour scale depicting the level of sports participation, it's difficult to initially see any clear spatial patterns.
 
 Spatial descriptive summaries such as the weighted SDE (red dotted line) can be used to try and understand the data. It's slightly skewed towards the south than the SDE (black dotted line), indicating that schools with higher sports participation levels are more concentrated in the south - potentially evident by the cluster in Bukit Merah.
-##Secondary School
+### Secondary School
 
 ```{r}
 sec_cca_data <- obesity_joined_school_sports_data %>% filter(LEVEL == "SECONDARY", !is.na(sports_cca_per_100))
@@ -2808,7 +2841,7 @@ sec_cca_map_sde
 Regarding secondary schools, it's visually clear that there are fewer schools with a high sports CCA ratio, relative to other schools. This seems to indicate that there are fewer Sports CCAs per 100 students in secondary schools as compared to in primary schools.
 
 The spatial distribution of sports participation is very similar to that of primary schools, with the weighted SDE (red dotted line) again being slightly skewed towards the south than the SDE (black dotted line), indicating that schools with higher sports participation levels are more concentrated in the south, potentially influenced bt the horizontal band of schools across Bukit Timah, Novena and Kallang.
-# Aggregating sports cca ratio counts by URA planning area
+## Aggregating sports cca ratio counts by URA planning area
 
 ```{r}
 cca_planning_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_data) %>% 
@@ -2855,7 +2888,7 @@ combined_cca_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_dat
 Aggregating the sports CCA ratio by URA planning area, we observe no generalised pattern of school sports participation across Singapore. 
 
 While primary schools depict a much lower sports CCA ratio compared to secondary schools, this can likely be explained by the fact that CCA participation is not compulsory in primary schools (it is in secondary schools).
-# Sports CCA ratio vs Obesity Prevalence
+## Sports CCA ratio vs Obesity Prevalence
 
 ```{r}
 
@@ -3081,13 +3114,12 @@ sec_dus_map <- ura_planning_areas_map +
 sec_dus_map
 
 ```
-##Choosing an Appropriate Data Set
+## Choosing an Appropriate Data Set
 We had a variety of different data sets to choose from regarding sports facilities in Singapore. Map A displays SportSG facilities in Singapore as spatial polygons. Map B displays sports fields in Singapore as spatial points. Map C displays dual-use school sports facilities in Singapore as spatial points. We decided to use the dual-use school sports facilities data set as it is the most focused and relevant to our study regarding obesity in schools specifically. It would not be restricted by the activities that can only be conducted on a sports field (by also including sports halls). This data set contains information on sports facilities that are shared between schools and the community. This is important as it allows us to identify sports facilities that are accessible not only to the general public but especially to students.
 
 Maps C1 and C2 display DUS facilities alongside primary and secondary schools respectively. The maps show the brief distribution of sports facilities in relation to schools. From visual inspection alone, several areas can be observed where there are schools without any nearby sports facilities. This could be a potential area of interest for further analysis.
 
-
-# K Nearest Neighbours - Nearest DUS facility to Schools
+## K Nearest Neighbours - Nearest DUS facility to Schools
 
 ## 1 neighbour
 
@@ -3224,7 +3256,7 @@ While this line of investigation has displayed certain patterns, it must first b
 
 Interestingly, areas that this analysis has identified as having a greater distance to the nearest DUS facility are areas with higher rates of sports CCA participation. This could be worth further exploration.
 
-# Facility Density by URA Planning Area
+## Facility Density by URA Planning Area
 
 ```{r}
 
@@ -3692,7 +3724,7 @@ BIC(ols_sec) # -590.1164
 
 Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see in both tests where SLM and SEM are alternatives that the p-value is much larger than 0.05, showing there is insufficient evidence at 5% significance level to reject the null OLS. This is further supported by the LM test results, where adjRSlag and adjRSerr p-values are very large. This suggests the OLS may be a more suitable model than the spatial models SLM and SEM. Finally, considering the AIC and BIC values, we see ols_sec has smaller AIC and BIC values than both SEM and OLS. This brings us to our conclusion that OLS is the most suitable for modelling obesity prevalence in primary schools, more so than any type of spatial model.
 
-## Time series
+# Time series
 
 ```{r}
 library(tidyverse)
@@ -3890,7 +3922,7 @@ pri_map_z_decrease1
 pri_map_z_increase
 ```
 
-# Joint count considering only extremes
+## Joint count considering only extremes
 
 ```{r}
 #For increases
@@ -3945,7 +3977,7 @@ Based on the joint count analysis, there is no significant spatial clustering of
 Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of \>1)
 
 
-# Controlling for effects of COVID
+## Controlling for effects of COVID
 ```{r}
 oso_pri_hist = read_excel("oso_primary.xlsx")
 
