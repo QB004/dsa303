@@ -3977,7 +3977,7 @@ Based on the joint count analysis, there is no significant spatial clustering of
 Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of \>1)
 
 
-## Controlling for effects of COVID
+#Controlling for effects of COVID
 ```{r}
 oso_pri_hist = read_excel("oso_primary.xlsx")
 
@@ -4024,8 +4024,11 @@ oso_covid = oso_hist_int_1 %>%
   )
 
 # Merge with spatial data
-oso_covid_geom_full = obesity_data_sf_2023_OSO_new %>%
-  left_join(oso_covid, by = "SCHOOL")
+oso_covid_geom_full = obesity_data_sf_2023_OSO %>%
+  left_join(oso_covid, by = "SCHOOL") %>%
+  filter(LEVEL == "PRIMARY") %>%
+  drop_na()
+
 
 oso_covid_geom = oso_covid_geom_full %>%
   dplyr::select(c("PT_ID", "SCHOOL", "geometry", "after_covid_change", "before_covid_change"))
@@ -4070,7 +4073,12 @@ scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_ch
 
 #Plot of Contingency Table for Primary School Obesity Rates Controlled for COVID
 ggplotly(scatterplot_of_schools)
+
 ```
+
+According to the contingency table, Primary Schools that should be observed include Townsville Primary School, Fuchun Primary School, Farrer Park Primary School and Pioneer Primary School. These schools faced a steep increase in obesity levels post-Covid, compared to before COVID levels. 
+
+Such is the case for Telok Kurau Primary School, Seng Kang Primary School, Naval Base Primary School, St. Stephen's Primary School, Xinmin Primary School and Singapore Chinese Girls' School. The aforementioned schools had declining obesity levels prior to Covid. However, following the pandemic, these schools faced increasing levels of obesity which is a cause for concern.
 
 ```{r}
 tmap_mode("view") #interactive map
