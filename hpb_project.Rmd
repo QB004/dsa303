@@ -4322,9 +4322,9 @@ According to the contingency table, Primary Schools that should be observed incl
 Such is the case for Telok Kurau Primary School, Seng Kang Primary School, Naval Base Primary School, St. Stephen's Primary School, Xinmin Primary School and Singapore Chinese Girls' School. The aforementioned schools had declining obesity levels prior to Covid. However, following the pandemic, these schools faced increasing levels of obesity which is a cause for concern.
 
 ```{r}
-tmap_mode("view") #interactive map
-tmap_mode("plot") #static map
-# tmap_save(tmap_object, 'xx.jpg') # for saving maps as images
-cols4all::c4a_gui() # colour scales
-RColorBrewer::display.brewer.all()
+# tmap_mode("view") #interactive map
+# tmap_mode("plot") #static map
+# # tmap_save(tmap_object, 'xx.jpg') # for saving maps as images
+# cols4all::c4a_gui() # colour scales
+# RColorBrewer::display.brewer.all()
 ```
