@@ -43,7 +43,7 @@ To support spatial and statistical analysis, several R libraries were loaded. ti
 ```{r}
 # Loading Singapore URA subzone boundary data
 sg_ura_boundaries <- 
-  st_read("MasterPlan2014SubzoneBoundaryWebSHP/MP14_SUBZONE_WEB_PL.shp") %>% 
+  st_read("DataFiles/MasterPlan2014SubzoneBoundaryWebSHP/MP14_SUBZONE_WEB_PL.shp") %>% 
   st_make_valid()
 
 # Saving CRS provided by SG boundary map
@@ -51,7 +51,7 @@ sg_crs <- st_crs(sg_ura_boundaries) # SVY21
 
 # Loading cleaned obesity data from HPB and giving spatial awareness
 obesity_data <- 
-  read.csv("obesity.csv", na.strings = "#N/A") %>% # "#N/A" values converted to "NA" for R to be able to read it
+  read.csv("DataFiles/obesity.csv", na.strings = "#N/A") %>% # "#N/A" values converted to "NA" for R to be able to read it
   select(-PT_ID.1) %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
   st_transform(crs = sg_crs) %>% 
@@ -59,7 +59,7 @@ obesity_data <-
 
 # Loading cleaned HMSP data from HPB and giving spatial awareness
 hmsp_data_sf <- 
-  read.csv("hmsp_tier_pri_sec.csv") %>% 
+  read.csv("DataFiles/hmsp_tier_pri_sec.csv") %>% 
   rename(HMSP_Tier = TIER, HMSP_Score = TIER_SCORE) %>% 
   st_as_sf(coords = c("longitude","latitude"), crs = 4326) %>% 
   st_transform(crs = sg_crs) %>% 
@@ -67,14 +67,16 @@ hmsp_data_sf <-
 
 # Loading General Information of Schools dataset
 school_info <- 
-  read_excel("Generalinformationofschools.xlsx", na = c("na", "NA")) %>% 
+  read_excel("DataFiles/Generalinformationofschools.xlsx", na = c("na", "NA")) %>% 
   select(school_name, dgp_code:mothertongue3_code, -zone_code, -mainlevel_code) # dropped variables are repeated in other data frames or not useful for our analysis
 
 # Loading previous year enrolment data
 school_enrolment <-
-  read_excel("enrolment.xlsx", sheet = "primary") %>% 
+  read_excel("DataFiles/enrolment.xlsx", sheet = "primary") %>% 
   select(-starts_with("intake"), -ENROLMENT24) # drop enrolment24 as obesity_data contains 2024 enrolment data for the full set of schools
+```
 
+```{r, results = FALSE}
 # Checking that all CRS are matching
 isTRUE(all.equal(st_crs(sg_ura_boundaries), st_crs(obesity_data), st_crs(hmsp_data_sf)))
 
@@ -163,16 +165,6 @@ obesity_data_sf <- obesity_data_long %>%
 # For our analysis, filter for 2023 data and overweight and severely overweight
 obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
   filter(YEAR == 2023, CATEGORY == "OSO", !(SCHOOL %in% c("FUCHUN SECONDARY SCHOOL", "TANGLIN SECONDARY SCHOOL","GUANGYANG PRIMARY SCHOOL")), !is.na(PREVALENCE))
-
-# # Combining prof's data with ours (delete this line pls)
-# oso23 = read_csv("Prof's Codes/oso23.csv", show_col_types = FALSE)
-# oso23 = oso23 |> drop_na(OSO_pct) 
-# 
-# # Re-classify
-# oso23[,c(3, 4, 8, 13:26)] = lapply(oso23[,c(3, 4, 8, 13:26)], as.factor)
-# oso23_new = oso23 %>% select(c("PT_ID", "HMSP_Tier", "HMSP_Score", "special"))
-# obesity_data_sf_2023_OSO_new = left_join(obesity_data_sf_2023_OSO, oso23_new, by = "PT_ID")
-# obesity_data_sf_2023_OSO = obesity_data_sf_2023_OSO_new #we can delete this line if necessary and just use obesity_data_sf_2023_oso_new
 ```
 
 The data was further cleaned and transformed into a format that is ready for spatial data analysis. 
@@ -301,7 +293,7 @@ cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
 We observe that the median obesity prevalence for the B, C, D and E HSMP tiers are within one percentage point of one another (0.12-0.13 range) while the median value of the A tier is much lower at approximately 0.1. The A tier also has a significantly smaller IQR range and total range than other tiers, showing greater consistency in obesity prvalence within HSMP A tier schools (though this is likely also because there are only 8 A tier schools). The other HSMP tiers have similar IQR ranges and total data ranges, though tier B has a much wider Q1 compared to tiers C, D and E despite having similar median values. For C tier, the two upper bound outliers are Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613). For D tier, the sole outlier is Pioneer Primary School (0.226236). For A tier, the sole outlier is Admiralty Secondary School (0.16422), a coed secondary school in the North zone.
 
 
-# Spatial overview of childhood obesity (Colin)
+# Spatial overview of childhood obesity
 
 The following sections provide us with a spatial overview of childhood obesity in Singapore schools. We provide spatial descriptive summary measures, particularly spatial measures of central tendency (mean, median) and dispersion (standard deviation distance and standard deviation ellipse)
 
@@ -362,30 +354,16 @@ tmap_mode("view")
 # School obesity map plot
 school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prevalence") +
   tm_symbols(
-    size = 0.5,
-    shape = "LEVEL",
-    shape.legend = tm_legend(
-      position = c("BOTTOM", "CENTER"),
-      title = "Educational level"
-      ),
-    fill = "PREVALENCE", 
-    # a green-red diverging scale to indicate severity of overweight prevalence
-    fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
-      values = "brewer.yl_or_rd"
-      ), 
+    size = 0.5, shape = "LEVEL", fill = "PREVALENCE", 
+    shape.legend = tm_legend(title = "Educational level"), 
+    fill.scale = tm_scale(breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30), values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence by school",
-      orientation = "landscape",
-      position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
-      )
+      title = "Overweight prevalence by school", orientation = "landscape",
+      position = c("BOTTOM", "LEFT"), item.height = 0.5, item.width = 2.1)
     )
 
 # Overview of overweight prevalence levels in Singapore schools
-ura_regions_map + ura_planning_areas_map + ura_subzones_map + 
-  moe_zones_map + moe_clusters_map +
-  school_obesity_map +
+ura_regions_map + ura_planning_areas_map + ura_subzones_map + moe_zones_map + moe_clusters_map + school_obesity_map +
   tm_title("Overview of overweight prevalence in Singapore schools")
 ```
 
@@ -771,10 +749,10 @@ obesity_ura_planning_areas_pri <- obesity_ura_planning_areas %>%
 # # Manually connecting 1 observation with no neighbours with its nearest neighbours
 # ura_planning_areas_nb_pri <- obesity_ura_planning_areas_pri %>% poly2nb(queen = T)
 # ura_planning_areas_nb_pri %>%
-#   write.nb.gal(file = "ura_planning_areas_nb_pri.gal",
+#   write.nb.gal(file = "galFiles/ura_planning_areas_nb_pri.gal",
 #                ind = ura_planning_areas_nb_pri$index)
 
-ura_planning_areas_nb_pri <- read.gal("ura_planning_areas_nb_pri.gal")
+ura_planning_areas_nb_pri <- read.gal("galFiles/ura_planning_areas_nb_pri.gal")
 ura_planning_areas_nb_line_pri <- ura_planning_areas_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)))
 pri_map <- ura_planning_areas_map +
@@ -804,10 +782,10 @@ obesity_ura_planning_areas_sec <- obesity_ura_planning_areas %>%
 # # Manually connecting 1 observation with no neighbours with its nearest neighbour
 # ura_planning_areas_nb_sec <- obesity_ura_planning_areas_sec %>% poly2nb(queen = T)
 # ura_planning_areas_nb_sec %>%
-#   write.nb.gal(file = "ura_planning_areas_nb_sec.gal",
+#   write.nb.gal(file = "galFiles/ura_planning_areas_nb_sec.gal",
 #                ind = ura_planning_areas_nb_sec$index)
 
-ura_planning_areas_nb_sec <- read.gal("ura_planning_areas_nb_sec.gal")
+ura_planning_areas_nb_sec <- read.gal("galFiles/ura_planning_areas_nb_sec.gal")
 ura_planning_areas_nb_line_sec <- ura_planning_areas_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_sec)))
 sec_map <- ura_planning_areas_map +
@@ -1034,16 +1012,16 @@ write_gal <- function(data, filename) {
 moe_clusters_pri <- obesity_pri_sch %>%
   st_drop_geometry() %>%
   select(PT_ID, SCHOOL, CLUSTER)
-write_gal(moe_clusters_pri, "moe_clusters_pri.gal")
+write_gal(moe_clusters_pri, "galFiles/moe_clusters_pri.gal")
 
 moe_clusters_sec <- obesity_sec_sch %>%
   st_drop_geometry() %>%
   select(PT_ID, SCHOOL, CLUSTER)
-write_gal(moe_clusters_sec, "moe_clusters_sec.gal")
+write_gal(moe_clusters_sec, "galFiles/moe_clusters_sec.gal")
 
 obesity_moe_clusters_pri <- obesity_pri_sch %>% filter(LEVEL == "PRIMARY")
 moe_clusters_nb_pri <-
-  read.gal("moe_clusters_pri.gal", region.id = obesity_pri_sch$PT_ID)
+  read.gal("galFiles/moe_clusters_pri.gal", region.id = obesity_pri_sch$PT_ID)
 moe_clusters_nb_line_pri <- moe_clusters_nb_pri %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_pri)))
 pri_map <- moe_clusters_map +
@@ -1052,7 +1030,7 @@ pri_map <- moe_clusters_map +
 
 obesity_moe_clusters_sec <- obesity_sec_sch %>% filter(LEVEL == "SECONDARY")
 moe_clusters_nb_sec <-
-  read.gal("moe_clusters_sec.gal", region.id = obesity_sec_sch$PT_ID)
+  read.gal("galFiles/moe_clusters_sec.gal", region.id = obesity_sec_sch$PT_ID)
 moe_clusters_nb_line_sec <- moe_clusters_nb_sec %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_sec)))
 sec_map <- moe_clusters_map +
@@ -2282,11 +2260,11 @@ Observing these 3 identified primary schools and 2 identified secondary schools 
 We obtain a Yes/No binary metric based on the popularity of primary & secondary schools in Singapore, which we dub as the "elite" metric. We derive this using the following methodology: Primary schools: We take the [Phase 2C balloting information](https://www.moe.gov.sg/primary/p1-registration/past-vacancies-and-balloting-data/) from the 2024 Primary 1 Registration Exercise for all 180 primary schools. If the number of applicants in Phase 2C is greater than the number of vacancies, the school is marked as popular (Yes) reflecting oversubscribing due to high demand for the school's coveted vacancies. If the number of applicants in Phase 2C is less than or equal to the number of vacancies, the school is marked as not popular (No). Based on this methodology, there are 82 popular schools (Yes) and 98 non-popular schools (No). Secondary schools: We obtain the [2024 secondary school PSLE cutoff points](https://sgschooling.com/secondary/cop/all.html) from SG Schooling in the IP/PG3 (Express) streams. We take the cutoff point for each secondary school if given as a single value, or the highest value in a given point range, ignoring all secondary criteria for the Mother Tongue Grade (D/M/P) to get data for 138 secondary schools. We then calculate the top quartile of cutoff points, which ends up as 13, and label all secondary schools with cutoff points less than or equal to this value as popular schools (Y) and all other schools as non-popular (N). Using this methodology, we obtain 35 popular schools (Y) and 103 non-popular schools (N). For the secondary schools with no given PSLE cutoff point for 2024, we conduct the following manual adjustments: - School of the Arts, NUS High School and School of Science and Technology: These schools only accept admissions by Direct School Admission, so there is no PSLE cutoff range. From our research, these three schools are prestigious in their unique domains with many applicants each year. As such, we labelled these three schools as popular (Y). - Crest Secondary School, Assumption Pathway School and Northlight School: These schools offer specialised pathways for experiential and hands-on learning, allowing students to graduate with an ITE Skills certificate. As this is a non-mainstream pathway with only PG1/PG2 streams, we labelled these three schools as non-popular (N). In total, we have 144 secondary schools with 38 as popular (Y) and 106 as non-popular (N).
 
 ```{r}
-pri_rankings <- read.csv("pri rankings.csv") %>% 
+pri_rankings <- read.csv("DataFiles/pri rankings.csv") %>% 
   mutate(School = toupper(School)) %>% 
   rename(is_popular_sch = Balloting.2C) %>% 
   select(School, is_popular_sch)
-sec_rankings <- read.csv("sec rankings.csv") %>% 
+sec_rankings <- read.csv("DataFiles/sec rankings.csv") %>% 
   mutate(School = toupper(School)) %>% 
   rename(is_popular_sch = Quartile.1) %>% 
   select(School, is_popular_sch)
@@ -2315,7 +2293,7 @@ census_add <- data.frame(
   Primary = c(1693, 1693), 
   Secondary = c(1125, 1125))
 
-census <- read.csv("census stats.csv") %>% 
+census <- read.csv("DataFiles/census stats.csv") %>% 
   mutate(PLN_AREA_N = toupper(PLN_AREA_N)) %>% 
   bind_rows(census_add)
 
@@ -2485,20 +2463,20 @@ Analysing the spatial descriptive summary measures for education variable, we ob
 #Data transformation
 
 #Hawker Centres
-hawker_full = st_read("NEAMarketandFoodCentre.geojson") %>%
+hawker_full = st_read("DataFiles/NEAMarketandFoodCentre.geojson") %>%
   st_transform(crs = sg_crs)
 hawker = hawker_full["geometry"]
 
 #Fast Food Outlets 
   #Mcdonald's
-macs_full = st_read("mcdonalds_singapore.geojson") %>%
+macs_full = st_read("DataFiles/mcdonalds_singapore.geojson") %>%
   st_transform(crs = sg_crs) 
 table(st_is_valid(macs_full)) #Check validity
 st_crs(macs_full)$epsg #Check CRS
 macs = macs_full[,"geometry"] #Extract necessary columns for analysis
 
   #7-11 Outlets
-seven_eleven_full = st_read("711_singapore.geojson") %>%
+seven_eleven_full = st_read("DataFiles/711_singapore.geojson") %>%
   st_transform(crs = sg_crs)
 seven_eleven = seven_eleven_full[,"geometry"] #Extract necessary columns for analysis
 table(st_is_valid(seven_eleven)) #Check validity
@@ -2843,7 +2821,7 @@ This section aims to explore the spatial distribution of physical sports partici
 ```{r}
 # Loading school co-curricular activities data
 school_sports_ccas <- 
-  read.csv("CocurricularactivitiesCCAs.csv") %>% 
+  read.csv("DataFiles/CocurricularactivitiesCCAs.csv") %>% 
   group_by(school_name,school_section) %>% 
   summarise(
     total = n(),
@@ -3234,7 +3212,7 @@ Regarding secondary schools, while the distribution is different, the same probl
 
 ```{r}
 # Loading sports facilities data
-sports_facilities_file <- "SportSGSportFacilities.geojson"
+sports_facilities_file <- "DataFiles/SportSGSportFacilities.geojson"
 sports_facilities_sf <- st_read(sports_facilities_file) %>% 
   st_transform(crs = sg_crs)
 
@@ -3254,7 +3232,7 @@ sport_sg_facility_map
 
 # Loading Sports fields data
 fields_shp <- 
-  st_read("SportsFieldsSGSHP/PLAYSG.shp") %>% 
+  st_read("DataFiles/SportsFieldsSGSHP/PLAYSG.shp") %>% 
   st_make_valid() %>%
   st_as_sf() %>%
   st_transform(crs = sg_crs) 
@@ -3275,7 +3253,7 @@ sports_fields_map
 # Loading dual use facilities data
 
 dual_use_facilities <- 
-  st_read("DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>% 
+  st_read("DataFiles/DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>%
   st_make_valid() %>%
   st_as_sf() %>%
   st_transform(crs = sg_crs) 
@@ -3980,7 +3958,7 @@ library(trend)
 library(readxl)
 library(dplyr)
 
-oso_pri_hist = read_excel("oso_primary.xlsx")
+oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
 
 oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
   drop_na()
