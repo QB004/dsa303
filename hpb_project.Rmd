@@ -1154,38 +1154,6 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
-# #### Correlogram (does not work)
-# # by Primary school
-# correl_moe_clusters_pri <- sp.correlogram(
-#   moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_moe_clusters_pri <- sp.correlogram(
-#   moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_moe_clusters_pri <- sp.correlogram(
-#   moe_clusters_nb_pri, obesity_pri_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# par(mfrow=c(2,3))
-# plot(correl_moe_clusters_pri, main="Contiguity lag orders: correlation")
-# plot(correlI_moe_clusters_pri, main="Contiguity lag orders: Moran's I")
-# plot(correlC_moe_clusters_pri, main="Contiguity lag orders: Geary's C")
-# 
-# # by Secondary school
-# correl_moe_clusters_sec <- sp.correlogram(
-#   moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_moe_clusters_sec <- sp.correlogram(
-#   moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_moe_clusters_sec <- sp.correlogram(
-#   moe_clusters_nb_sec, obesity_sec_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# plot(correl_moe_clusters_sec, main="Contiguity lag orders: correlation")
-# plot(correlI_moe_clusters_sec, main="Contiguity lag orders: Moran's I")
-# plot(correlC_moe_clusters_sec, main="Contiguity lag orders: Geary's C")
-# par(mfrow=c(1,1))
-```
 
 ## Graph-Based Neighbours analysis
 
@@ -1506,39 +1474,6 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
-#### Correlogram (does not work, some sub-graphs have 2 or less neighbours)
-
-# # by Primary school
-# correl_soi_pri <- sp.correlogram(
-#   soi_nb_pri, obesity_pri_sch$PREVALENCE,
-#   order = 3, method = "corr", style = "W")
-# correlI_soi_pri <- sp.correlogram(
-#   soi_nb_pri, obesity_pri_sch$PREVALENCE,
-#   order = 3, method = "I", style = "W")
-# correlC_soi_pri <- sp.correlogram(
-#   soi_nb_pri, obesity_pri_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# par(mfrow=c(2,3))
-# plot(correl_soi_pri, main="Contiguity lag orders: correlation")
-# plot(correlI_soi_pri, main="Contiguity lag orders: Moran's I")
-# plot(correlC_soi_pri, main="Contiguity lag orders: Geary's C")
-# 
-# # by Secondary school
-# correl_soi_sec <- sp.correlogram(
-#   soi_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_soi_sec <- sp.correlogram(
-#   soi_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_soi_sec <- sp.correlogram(
-#   soi_nb_sec, obesity_sec_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# plot(correl_soi_sec, main="Contiguity lag orders: correlation")
-# plot(correlI_soi_sec, main="Contiguity lag orders: Moran's I")
-# plot(correlC_soi_sec, main="Contiguity lag orders: Geary's C")
-# par(mfrow=c(1,1))
-```
 
 ## Geographic Distance-Based Neighbours analysis
 
@@ -1680,39 +1615,6 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
-# #### Correlogram (does not work, some sub-graphs have 2 or less neighbours)
-# 
-# # by Primary school
-# correl_knn1_pri <- sp.correlogram(
-#   knn1_nb_pri, obesity_pri_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_knn1_pri <- sp.correlogram(
-#   knn1_nb_pri, obesity_pri_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_knn1_pri <- sp.correlogram(
-#   knn1_nb_pri, obesity_pri_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# par(mfrow=c(2,3))
-# plot(correl_knn1_pri, main="Contiguity lag orders: correlation")
-# plot(correlI_knn1_pri, main="Contiguity lag orders: Moran's I")
-# plot(correlC_knn1_pri, main="Contiguity lag orders: Geary's C")
-# 
-# # by Secondary school
-# correl_knn1_sec <- sp.correlogram(
-#   knn1_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_knn1_sec <- sp.correlogram(
-#   knn1_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_knn1_sec <- sp.correlogram(
-#   knn1_nb_sec, obesity_sec_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# plot(correl_knn1_sec, main="Contiguity lag orders: correlation")
-# plot(correlI_knn1_sec, main="Contiguity lag orders: Moran's I")
-# plot(correlC_knn1_sec, main="Contiguity lag orders: Geary's C")
-# par(mfrow=c(1,1))
-```
 
 ### k = 2 nearest neighbours
 
@@ -1850,39 +1752,6 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
-# #### Correlogram (does not work, Some sub-graphs have 2 or less neighbours)
-#
-# # by Primary school
-# correl_knn2_pri <- sp.correlogram(
-#   knn2_nb_pri, obesity_pri_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_knn2_pri <- sp.correlogram(
-#   knn2_nb_pri, obesity_pri_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_knn2_pri <- sp.correlogram(
-#   knn2_nb_pri, obesity_pri_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# par(mfrow=c(2,3))
-# plot(correl_knn2_pri, main="Contiguity lag orders: correlation")
-# plot(correlI_knn2_pri, main="Contiguity lag orders: Moran's I")
-# plot(correlC_knn2_pri, main="Contiguity lag orders: Geary's C")
-# 
-# # by Secondary school
-# correl_knn2_sec <- sp.correlogram(
-#   knn2_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_knn2_sec <- sp.correlogram(
-#   knn2_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_knn2_sec <- sp.correlogram(
-#   knn2_nb_sec, obesity_sec_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# plot(correl_knn2_sec, main="Contiguity lag orders: correlation")
-# plot(correlI_knn2_sec, main="Contiguity lag orders: Moran's I")
-# plot(correlC_knn2_sec, main="Contiguity lag orders: Geary's C")
-# par(mfrow=c(1,1))
-```
 
 ### k = 3 nearest neighbours
 
@@ -2020,39 +1889,7 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
-# #### Correlogram (does not work, some sub-graphs have 2 or less neighbours)
-#
-# # by Primary school
-# correl_knn3_pri <- sp.correlogram(
-#   knn3_nb_pri, obesity_pri_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_knn3_pri <- sp.correlogram(
-#   knn3_nb_pri, obesity_pri_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_knn3_pri <- sp.correlogram(
-#   knn3_nb_pri, obesity_pri_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# par(mfrow=c(2,3))
-# plot(correl_knn3_pri, main="Contiguity lag orders: correlation")
-# plot(correlI_knn3_pri, main="Contiguity lag orders: Moran's I")
-# plot(correlC_knn3_pri, main="Contiguity lag orders: Geary's C")
-# 
-# # by Secondary school
-# correl_knn3_sec <- sp.correlogram(
-#   knn3_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "corr", style = "W")
-# correlI_knn3_sec <- sp.correlogram(
-#   knn3_nb_sec, obesity_sec_sch$PREVALENCE, 
-#   order = 3, method = "I", style = "W")
-# correlC_knn3_sec <- sp.correlogram(
-#   knn3_nb_sec, obesity_sec_sch$PREVALENCE,
-#   order = 3, method = "C", style = "W")
-# plot(correl_knn3_sec, main="Contiguity lag orders: correlation")
-# plot(correlI_knn3_sec, main="Contiguity lag orders: Moran's I")
-# plot(correlC_knn3_sec, main="Contiguity lag orders: Geary's C")
-# par(mfrow=c(1,1))
-```
+
 
 ## Conclusions on spatial clustering analysis of obesity
 
@@ -4074,8 +3911,6 @@ moran.test(oso_hist_geom$z_change, soi_lw_pri_z)
 moran.plot(oso_hist_geom$z_change, soi_lw_pri_z, main="Moran scatterplot")
 geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
 
-
-
 ```
 
 Average number of links (Primary school): 3.094972\
@@ -4299,10 +4134,3 @@ According to the contingency table, Primary Schools that should be observed incl
 
 Such is the case for Telok Kurau Primary School, Seng Kang Primary School, Naval Base Primary School, St. Stephen's Primary School, Xinmin Primary School and Singapore Chinese Girls' School. The aforementioned schools had declining obesity levels prior to Covid. However, following the pandemic, these schools faced increasing levels of obesity which is a cause for concern.
 
-```{r}
-# tmap_mode("view") #interactive map
-# tmap_mode("plot") #static map
-# # tmap_save(tmap_object, 'xx.jpg') # for saving maps as images
-# cols4all::c4a_gui() # colour scales
-# RColorBrewer::display.brewer.all()
-```
