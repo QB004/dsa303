@@ -34,6 +34,7 @@ rm(pkgs)
 if (requireNamespace("rstudioapi", quietly = TRUE)) {
   setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 }
+
 ```
 
 To support spatial and statistical analysis, several R libraries were loaded. tidyverse was used for data manipulation, sf for spatial data handling, and tmap for thematic mapping. aspace and spdep enabled spatial analysis, while corrplot visualised correlations. readxl facilitated reading Excel files, and spatialreg supported spatial regression modelling. These libraries ensure a robust analysis of childhood obesity trends in Singapore.
@@ -2308,16 +2309,16 @@ hawker = hawker_full["geometry"]
   #Mcdonald's
 macs_full = st_read("DataFiles/mcdonalds_singapore.geojson") %>%
   st_transform(crs = sg_crs) 
-table(st_is_valid(macs_full)) #Check validity
-st_crs(macs_full)$epsg #Check CRS
-macs = macs_full[,"geometry"] #Extract necessary columns for analysis
+table(st_is_valid(macs_full))
+st_crs(macs_full)$epsg 
+macs = macs_full[,"geometry"] 
 
   #7-11 Outlets
 seven_eleven_full = st_read("DataFiles/711_singapore.geojson") %>%
   st_transform(crs = sg_crs)
-seven_eleven = seven_eleven_full[,"geometry"] #Extract necessary columns for analysis
-table(st_is_valid(seven_eleven)) #Check validity
-st_crs(seven_eleven)$epsg #Check CRS
+seven_eleven = seven_eleven_full[,"geometry"]
+table(st_is_valid(seven_eleven)) 
+st_crs(seven_eleven)$epsg 
 
 #Combine data into single SF object
 seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
@@ -2327,8 +2328,8 @@ food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
 
 
 ##### Primary school analysis
-obesity_pri_food = obesity_pri_sch #duplicate primary school data
-st_crs(obesity_pri_food)$units #check units
+obesity_pri_food = obesity_pri_sch 
+st_crs(obesity_pri_food)$units 
 pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
 pri_intersections <- st_intersects(pri_schools_buffer1, food)
 
@@ -2349,16 +2350,16 @@ print(pri_food_map)
 
 
 ####Secondary school analysis
-obesity_sec_food = obesity_sec_sch #duplicate secondary school data
-st_crs(obesity_sec_food)$units #check units
+obesity_sec_food = obesity_sec_sch 
+st_crs(obesity_sec_food)$units 
 sec_schools_buffer1 <- st_buffer(obesity_sec_food, dist = 1000) %>% st_geometry()
 sec_intersections <- st_intersects(sec_schools_buffer1, food)
 
-#calculate the number of food outlets within a 1km radius of each school
+#Calculate the number of food outlets within a 1km radius of each school
 obesity_sec_food$num_food_outlets <- lengths(sec_intersections)
 obesity_sec_food
 
-#show density via choropleth map
+#Show density via choropleth map
 sec_food_map = ura_regions_map + 
   tm_shape(obesity_sec_food) +
   tm_symbols(
@@ -2369,118 +2370,137 @@ sec_food_map = ura_regions_map +
 
 print(sec_food_map)
 
+
+
 ###Spatial analysis - Secondary school
-st_crs(obesity_sec_food)$proj #Check for metric units
+st_crs(obesity_sec_food)$proj 
 obesity_sec_food_coords = st_coordinates(obesity_sec_food)
 
 mean_sec_food = calc_mnc(id = 1, points = obesity_sec_food_coords)
 median_sec_food = calc_mdc(id = 2, points = obesity_sec_food_coords)
-sdd_sec_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_sec_food_coords)
 
+sdd_sec_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_sec_food_coords)
 LC_sdd_line_sec_food = sdd_sec_food$LOCATIONS %>% 
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
     st_combine() %>% 
-    st_cast("LINESTRING") # CRS from the parent object.
+    st_cast("LINESTRING") 
 
 sde_sec_food = calc_sde(id=4, calccentre = T, weighted=F, points= obesity_sec_food_coords)
 ls()
 LC_sde_line_sec = sde_sec_food$LOCATIONS %>%
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
     st_combine() %>% 
-    st_cast("LINESTRING") # CRS from the parent object.
+    st_cast("LINESTRING") 
 
-(LC_sdd_line_sec = sdd_sec_food$LOCATIONS %>% 
+
+sde_sec_food_weighted = calc_sde(id = 5, calccentre = T, weighted = T, weights = obesity_sec_food$num_food_outlets, points = obesity_sec_food_coords)
+LC_sde_line_sec_food_weighted = sde_sec_food_weighted$LOCATIONS %>% 
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
     st_combine() %>% 
-    st_cast("LINESTRING")) # CRS from the parent object.
+    st_cast("LINESTRING") 
 
-(LC_std_dist_sec = st_sf(sdd_sec_food$ATTRIBUTES, geom=st_geometry(LC_sdd_line_sec))) 
-
-LC_std_ellps_sec = st_sf(sde_sec_food$ATTRIBUTES, geom = st_geometry(LC_sde_line_sec))
-
-#Plot the summary measures
 (mean_median_sec = rbind(mean_sec_food$LOCATIONS, median_sec_food$LOCATIONS) %>% 
     data.frame() %>% 
-    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_sec_food))) # matrix -> data.frame -> sf points
+    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_sec_food))) 
 
-mean_median_sec$id =  c("Spatial Mean","Spatial Median") # assign names
+mean_median_sec$id =  c("Spatial Mean","Spatial Median") 
 mean_median_sec
 
-sec_food_map + 
-  tm_shape(obesity_sec_food) +
-  tm_shape(LC_std_ellps_sec) + tm_lines(lwd=2) + 
-  tm_shape(LC_std_dist_sec) + tm_lines(lwd=2, lty=2) + 
-  tm_shape(mean_median_sec) + tm_dots(size=0.5, shape="id", fill = "white", shape.legend = tm_legend_hide()) + 
-  tm_compass(position = c("left", "top")) +
-  tm_add_legend(type="symbols", labels="Spatial mean", shape = 1) +
-  tm_add_legend(type="symbols", labels="Spatial median", shape = 0) +
-  tm_add_legend(type="lines", labels="SDD", lty=2) + 
-  tm_add_legend(type="lines", labels="SDE", lty=1)
+
+#Plot the summary measures
+(sec_food_map <- ura_planning_areas_map +
+    tm_shape(obesity_sec_food, name = "num_food_outlets") +
+    tm_symbols(
+        size = "num_food_outlets",
+        size.scale = tm_scale_continuous(values.scale = 0.8),
+        size.legend = tm_legend_hide(),
+        fill = "num_food_outlets", 
+        fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
+        fill.legend = tm_legend(
+            title = "Number of Food Outlets",
+            orientation = "landscape", 
+            position = c("BOTTOM", "LEFT"),
+            item.height = 0.5, item.width = 2.1
+        )
+    ) + 
+    tm_shape(LC_sdd_line_sec_food, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
+    tm_shape(LC_sde_line_sec, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+    tm_shape(LC_sde_line_sec_food_weighted, name = "weighted SDE") + 
+    tm_lines(col = "red", lwd = 2, lty = 3) +
+    tm_shape(mean_median_sec, name = "Summary measures") + tm_dots(
+        size = 0.5, shape = "id", fill = "white", 
+        shape.legend = tm_legend("Summary measures")
+    ) + 
+    tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+    tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+    tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+    tm_title("Number of Food Outlets for Secondary Schools"))
+
 
 
 ##Spatial analysis - Primary school
-st_crs(obesity_pri_food)$proj #Check for metric units 
+st_crs(obesity_pri_food)$proj 
 obesity_pri_food_coords = st_coordinates(obesity_pri_food)
 
 mean_pri_food = calc_mnc(id = 1, points = obesity_pri_food_coords)
 median_pri_food = calc_mdc(id = 2, points = obesity_pri_food_coords)
-sdd_pri_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_pri_food_coords)
 
+sdd_pri_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_pri_food_coords)
 (LC_sdd_line_pri_food = sdd_pri_food$LOCATIONS %>% 
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_pri_food)) %>% 
     st_combine() %>% 
-    st_cast("LINESTRING")) # CRS from the parent object.
+    st_cast("LINESTRING"))
 
 sde_pri_food = calc_sde(id=4, calccentre = T, weighted=F, points= obesity_pri_food_coords)
 ls()
 LC_sde_line_pri = sde_pri_food$LOCATIONS %>%
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_pri_food)) %>% 
     st_combine() %>% 
-    st_cast("LINESTRING") # CRS from the parent object.
+    st_cast("LINESTRING") 
 
-
-(LC_sdd_line_pri = sdd_pri_food$LOCATIONS %>% 
+sde_pri_food_weighted = calc_sde(id = 5, calccentre = T, weighted = T, weights = obesity_pri_food$num_food_outlets, points = obesity_pri_food_coords)
+LC_sde_line_pri_food_weighted = sde_pri_food_weighted$LOCATIONS %>% 
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_pri_food)) %>% 
     st_combine() %>% 
-    st_cast("LINESTRING")) # CRS from the parent object.
+    st_cast("LINESTRING") 
 
-(LC_std_dist_pri = st_sf(sdd_pri_food$ATTRIBUTES, geom=st_geometry(LC_sdd_line_pri))) 
-
-LC_std_ellps_pri = st_sf(sde_pri_food$ATTRIBUTES, geom = st_geometry(LC_sde_line_pri))
-
-#Plot the summary measures 
 (mean_median_pri = rbind(mean_pri_food$LOCATIONS, median_pri_food$LOCATIONS) %>% 
     data.frame() %>% 
-    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_pri_food))) # matrix -> data.frame -> sf points
+    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_pri_food))) 
 
-mean_median_pri$id =  c("Spatial Mean","Spatial Median") # assign names
+mean_median_pri$id =  c("Spatial Mean","Spatial Median") 
 mean_median_pri
 
-pri_food_map + 
-  tm_shape(obesity_pri_food) +
-  tm_shape(LC_std_ellps_pri) + tm_lines(lwd=2) + 
-  tm_shape(LC_std_dist_pri) + tm_lines(lwd=2, lty=2) + 
-  tm_shape(mean_median_pri) + tm_dots(size=0.5, shape="id", fill = "white", shape.legend = tm_legend_hide()) + 
-  tm_compass(position = c("left", "top")) +
-  tm_add_legend(type="symbols", labels="Spatial mean", shape = 1) +
-  tm_add_legend(type="symbols", labels="Spatial median", shape = 0) +
-  tm_add_legend(type="lines", labels="SDD", lty=2) + 
-  tm_add_legend(type="lines", labels="SDE", lty=1)
-#Bivariate Moran's I
-obesity_pri_food
-coords_pri_sch <- st_coordinates(obesity_pri_food)
-knn_nb_pri_sch_food <- knn2nb(knearneigh(coords_pri_sch, k = 3))
-wts_pri_sch_food <- nb2listw(knn_nb_pri_sch_food, style = "W")
-morans_bi_pri_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_pri_food), listw = wts_pri_sch_food)
-morans_bi_pri_food  #P-value = 4.071e-08, hence there is a significant relationship between obesity prevalence and number of food outlets
+#Plot the summary measures 
+(pri_food_map <- ura_planning_areas_map +
+    tm_shape(obesity_pri_food, name = "num_food_outlets") +
+    tm_symbols(
+        size = "num_food_outlets",
+        size.scale = tm_scale_continuous(values.scale = 0.8),
+        size.legend = tm_legend_hide(),
+        fill = "num_food_outlets", 
+        fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
+        fill.legend = tm_legend(
+            title = "Number of Food Outlets",
+            orientation = "landscape", 
+            position = c("BOTTOM", "LEFT"),
+            item.height = 0.5, item.width = 2.1
+        )
+    ) + 
+    tm_shape(LC_sdd_line_pri_food, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
+    tm_shape(LC_sde_line_pri, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+    tm_shape(LC_sde_line_pri_food_weighted, name = "weighted SDE") + 
+    tm_lines(col = "red", lwd = 2, lty = 3) +
+    tm_shape(mean_median_pri, name = "Summary measures") + tm_dots(
+        size = 0.5, shape = "id", fill = "white", 
+        shape.legend = tm_legend("Summary measures")
+    ) + 
+    tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+    tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+    tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+    tm_title("Number of Food Outlets for Primary Schools"))
 
 
-obesity_sec_food
-coords_sec_sch <- st_coordinates(obesity_sec_food)
-knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_sec_sch, k = 3))
-wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
-# morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
-# morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
 ```
 
 ## Distance of the nearest food option to each school
@@ -2531,8 +2551,7 @@ food_combined_sf
 coords_dist <- st_coordinates(food_combined_sf)
 knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
-# morans_bi_sec_food <- lm.morantest(lm(PREVALENCE ~ num_food_outlets, data = obesity_sec_food), listw = wts_sec_sch_food)
-# morans_bi_sec_food  #P-value = 0.0003288, hence there is a significant relationship between obesity prevalence and number of food outlets at a 5% sig level
+
 ```
 
 ## Bivariate Choropleth maps
@@ -2590,9 +2609,7 @@ pri_bivariate_food_map <-ura_planning_areas_map +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Distance to the Nearest Food Option and Obesity Prevalence by URA Planning Areas (Primary Schools)")
 
-
 pri_bivariate_food_map
-
 
 
 # Secondary school bivariate map
@@ -4128,6 +4145,8 @@ scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_ch
 
 #Plot of Contingency Table for Primary School Obesity Rates Controlled for COVID
 plotly::ggplotly(scatterplot_of_schools)
+
+
 ```
 
 According to the contingency table, Primary Schools that should be observed include Townsville Primary School, Fuchun Primary School, Farrer Park Primary School and Pioneer Primary School. These schools faced a steep increase in obesity levels post-Covid, compared to before COVID levels. 
