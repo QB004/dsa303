@@ -366,6 +366,9 @@ We will use these maps as base maps for our subsequent analysis, and to facilita
 ```{r}
 tmap_mode("view")
 
+# Singapore borders map
+sg_map <- sg_ura_boundaries %>% st_union() %>% tm_shape() + tm_borders()
+
 # URA regions map
 ura_regions <- sg_ura_boundaries %>% group_by(REGION_N) %>% 
   summarise(geometry = st_union(geometry))
@@ -679,10 +682,7 @@ obesity_moe_zones <-
     geometry = st_union(geometry)
     )
 
-sg_ura_boundaries %>% st_union() %>% tm_shape() + tm_borders() +
-  moe_zones_map +
-  tm_legend_hide() + 
-  obesity_moe_zones %>% 
+sg_map + moe_zones_map + tm_legend_hide() + obesity_moe_zones %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
@@ -710,8 +710,7 @@ obesity_moe_clusters <-
     geometry = st_union(geometry)
     )
 
-sg_ura_boundaries %>% st_union() %>% tm_shape() + tm_borders() +
-  moe_clusters_map + obesity_moe_clusters %>% 
+sg_map + moe_clusters_map + obesity_moe_clusters %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
@@ -1015,7 +1014,7 @@ ura_subzones_nb_line_pri <- ura_subzones_nb_pri %>%
 pri_map <- ura_subzones_map +
   ura_subzones_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_subzones_pri)) %>% 
-  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_shape() + tm_symbols(size = 0.4) + 
   tm_title("Contiguous neighbours: URA subzones (Primary)")
 
 # by Secondary schools
@@ -1026,7 +1025,7 @@ ura_subzones_nb_line_sec <- ura_subzones_nb_sec %>%
 sec_map <- ura_subzones_map +
   ura_subzones_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
   st_point_on_surface(st_geometry(obesity_ura_subzones_sec)) %>% 
-  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_shape() + tm_symbols(size = 0.4) + 
   tm_title("Contiguous neighbours: URA subzones (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -1076,9 +1075,10 @@ moe_clusters_nb_pri <-
   read.gal("galFiles/moe_clusters_pri.gal", region.id = obesity_pri_sch$PT_ID)
 moe_clusters_nb_line_pri <- moe_clusters_nb_pri %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_pri)))
-pri_map <- moe_clusters_map +
-  moe_clusters_nb_line_pri %>% tm_shape() + tm_lines(lwd = 0.5) +
-  pri_sch_map
+pri_map <- sg_map + moe_clusters_map + 
+  moe_clusters_nb_line_pri %>% tm_shape() + tm_lines(lwd = 0.5) + 
+  obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_title("Social neighbours: MOE clusters (Primary)")
 
 # by Secondary schools
 moe_clusters_sec <- obesity_sec_sch %>%
@@ -1091,11 +1091,12 @@ moe_clusters_nb_sec <-
   read.gal("galFiles/moe_clusters_sec.gal", region.id = obesity_sec_sch$PT_ID)
 moe_clusters_nb_line_sec <- moe_clusters_nb_sec %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_sec)))
-sec_map <- moe_clusters_map +
+sec_map <- sg_map + moe_clusters_map +
   moe_clusters_nb_line_sec %>% tm_shape() + tm_lines(lwd = 0.5) +
-  sec_sch_map
+  obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_title("Social neighbours: MOE clusters (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 **Spatial autocorrelation statistics**
@@ -1228,17 +1229,19 @@ tmap_mode("plot")
 # obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
 del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch), 
                      row.names = obesity_pri_sch$PT_ID) 
-pri_map <- tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + pri_sch_map
+pri_map <- sg_map + tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 0.5) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_title("Delauney triangulation neighbours (Primary)")
 
 # by Secondary schools
 # obesity_sec_sch_jitter <- st_jitter(obesity_sec_sch) 
 del_nb_sec <- tri2nb(st_coordinates(obesity_sec_sch), 
                      row.names = obesity_sec_sch$PT_ID) 
-sec_map <- tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + sec_sch_map
+sec_map <- sg_map + tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 0.5) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_title("Delauney triangulation neighbours (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 **Spatial autocorrelation statistics**
@@ -1400,8 +1403,9 @@ if (require(dbscan, quietly=TRUE)) {
 } else {
   soi_nb = NULL
 }
-pri_map <- tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + pri_sch_map
+pri_map <- sg_map + tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_title("Sphere of influence neighbours (Primary)")
 
 # by Secondary schools
 if (require(dbscan, quietly=TRUE)) {
@@ -1409,10 +1413,11 @@ if (require(dbscan, quietly=TRUE)) {
 } else {
   soi_nb = NULL
 }
-sec_map <- tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + sec_sch_map
+sec_map <- sg_map + tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_title("Sphere of influence neighbours (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 **Spatial autocorrelation statistics**
@@ -1552,17 +1557,19 @@ tmap_mode("plot")
 knn1_nb_pri <- obesity_pri_sch %>% 
   knearneigh(k = 1) %>% 
   knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
-pri_map <- tm_shape(nb2lines(knn1_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + pri_sch_map
+pri_map <- sg_map + tm_shape(nb2lines(knn1_nb_pri, coords = st_geometry(obesity_pri_sch))) + 
+  tm_lines(lwd = 2) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_title("k = 1 nearest neighbour (Primary)")
 
 # by Secondary schools
 knn1_nb_sec <- obesity_sec_sch %>% 
   knearneigh(k = 1) %>% 
   knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
-sec_map <- tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + sec_sch_map
+sec_map <- sg_map + tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_title("k = 1 nearest neighbour (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 **Spatial autocorrelation statistics**
@@ -1691,17 +1698,19 @@ tmap_mode("plot")
 knn2_nb_pri <- obesity_pri_sch %>% 
   knearneigh(k = 2) %>% 
   knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
-pri_map <- tm_shape(nb2lines(knn2_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + pri_sch_map
+pri_map <- sg_map + tm_shape(nb2lines(knn2_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) + 
+  tm_title("k = 2 nearest neighbour (Primary)")
 
 # by Secondary schools
 knn2_nb_sec <- obesity_sec_sch %>% 
   knearneigh(k = 2) %>% 
   knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
-sec_map <- tm_shape(nb2lines(knn2_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + sec_sch_map
+sec_map <- sg_map + tm_shape(nb2lines(knn2_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) + 
+  tm_title("k = 2 nearest neighbour (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 **Spatial autocorrelation statistics**
@@ -1830,17 +1839,19 @@ tmap_mode("plot")
 knn3_nb_pri <- obesity_pri_sch %>% 
   knearneigh(k = 3) %>% 
   knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
-pri_map <- tm_shape(nb2lines(knn3_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + pri_sch_map
+pri_map <- sg_map + tm_shape(nb2lines(knn3_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) + 
+  tm_title("k = 3 nearest neighbour (Primary)")
 
 # by Secondary schools
 knn3_nb_sec <- obesity_sec_sch %>% 
   knearneigh(k = 3) %>% 
   knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
-sec_map <- tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + sec_sch_map
+sec_map <- sg_map + tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) + 
+  tm_title("k = 3 nearest neighbour (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 **Spatial autocorrelation statistics**
@@ -1961,8 +1972,25 @@ tmap_arrange(pri_map, sec_map)
 
 ```{r}
 # Summary of spatial autocorrelation test p-values
-nb_pval_pri %>% as_tibble()
-nb_pval_sec %>% as_tibble()
+nb_pval_pri %>% gt() %>%
+  tab_header(
+    title = "Spatial autocorrelation statistics p-values",
+    subtitle = "Primary schools"
+  ) %>%
+  fmt_number(
+    columns = c(Moran.I.p.value, Geary.C.p.value, Getis.Ord.G.p.value),
+    decimals = 4
+  )
+
+nb_pval_sec %>% gt() %>%
+  tab_header(
+    title = "Spatial autocorrelation statistics p-values",
+    subtitle = "Secondary schools"
+  ) %>%
+  fmt_number(
+    columns = c(Moran.I.p.value, Geary.C.p.value, Getis.Ord.G.p.value),
+    decimals = 4
+  )
 ```
 
 $H_0:$ No spatial autocorrelation present
@@ -1970,7 +1998,7 @@ $H_1:$ Positive spatial autocorrelation present
 
 Based on the spatial autocorrelation tests conducted using Moran’s I, Geary’s C, and Getis-Ord’s G statistics, we can conclude the following:
 
-*Positive spatial autocorrelation for Primary Schools*
+**Positive spatial autocorrelation for Primary Schools**
 
 There is strong evidence of spatial clustering of obesity, in primary schools, observed under most of the spatial weight matrices.
 
@@ -1978,7 +2006,7 @@ The Moran’s I test indicates highly significant (p-values < 0.01) positive spa
 
 Geary’s C test further supports the presence of spatial dependence at the 1% significance level, reinforcing the finding of clustering (with the exception of social neighbours and k = 1 nearest neighbours). Getis-Ord’s G test results are less consistent, though some configurations (Delaunay triangulation, Sphere of Influence, and k = 2, 3 nearest neighbours) continue to suggest moderately significant (p-values < 0.10) clustering of obesity in Primary schools.
 
-*Weaker evidence of autocorrelation for Secondary Schools*
+**Weaker evidence of autocorrelation for Secondary Schools**
 
 The evidence for spatial clustering is weaker for secondary schools.
 
@@ -1986,7 +2014,7 @@ The Moran’s I test indicates highly significant (p-values < 0.01) positive spa
 
 Geary’s C test further supports the presence of spatial dependence at the 1% significance level, but with the exception of contiguous neighbours, social neighbours and k = 2 nearest neighbours. However, Getis-Ord’s G test fails to reject the null hypothesis at the 10% significance level for all spatial weight matrices.
 
-*Further conclusions*
+**Further conclusions**
 
 There is strong spatial clustering of obesity among primary schools across Singapore, suggesting that spatial factors and neighbourhood effects significantly influence childhood obesity rates. In contrast, secondary schools exhibit weaker and less consistent spatial clustering, implying that obesity prevalence may be more influenced by non-spatial factors.
 
@@ -2010,10 +2038,11 @@ Local Moran's I, returned as a z-score, is used to identify the degree to which 
 
 Local Getis-Ord's G, returned as a z-score, suggests a high-high prevalence clusters or hot spot for positive z-values, and low-low prevalence clusters or cold spots for negative z-values.
 
-*SOI Spatial autocorrelation statistics*
+**SOI Spatial autocorrelation statistics**
 
 ```{r}
 #### Join count analysis
+tmap_mode("plot")
 
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
@@ -2021,20 +2050,20 @@ OVERWEIGHT_CUTOFF <- 0.14
 # by Primary school
 obesity_pri_sch$HIGH_PREVALENCE <- 
   as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
-pri_map <- ura_regions_map + obesity_pri_sch %>% 
+pri_map <- sg_map + obesity_pri_sch %>% 
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
     fill = "HIGH_PREVALENCE", 
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
+  tm_legend() +
   tm_title("Join count analysis")
-joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, 
-                soi_lw_B_pri)
+joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, soi_lw_B_pri)
 
 # by Secondary school
 obesity_sec_sch$HIGH_PREVALENCE <- 
   as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
-sec_map <- ura_regions_map + obesity_sec_sch %>% 
+sec_map <- sg_map + obesity_sec_sch %>% 
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
     fill = "HIGH_PREVALENCE", 
@@ -2044,7 +2073,7 @@ sec_map <- ura_regions_map + obesity_sec_sch %>%
 joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
                 soi_lw_B_sec)
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 ```{r}
@@ -2070,11 +2099,12 @@ sec_map <-
   tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
   tm_title("Local Moran's I Z-Statistic")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 ```{r}
 #### Local Getis-Ord's G statistics
+tmap_mode("plot")
 
 # by Primary school
 obesity_pri_sch$GO_STAT <- localG(obesity_pri_sch$PREVALENCE, knn3_lw_B_pri)
@@ -2092,7 +2122,7 @@ sec_map <-
   tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
   tm_title("Local Getis-Ord's G statistics")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 As sphere of influence neighbours have subgraphs with just 2 schools, we will not consider more than one lag for our spatial regression model. This is because schools in SOI subgraphs with 2 schools will only have one immediate neighbour each. Thus, we do not implement spatial correlograms for our analysis. 

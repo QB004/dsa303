@@ -1,0 +1,72 @@
+---
+title: "Sample"
+output:
+  html_document: 
+    toc: true
+    toc_float: true
+    number_sections: true
+  pdf_document: default
+date: "`r Sys.Date()`"
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+```{r include=F}
+start.time = Sys.time()
+pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", 
+         "gt", "broom")
+invisible(lapply(pkgs, function(pkg) {
+  suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+}))
+rm(pkgs)
+if (requireNamespace("rstudioapi", quietly = TRUE)) {
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+}
+```
+
+# Section Header
+
+Write comments. e.g. Data cleaning
+
+## Sub Section
+
+Generated using AI.
+
+```{r}
+# Load necessary libraries
+#library(gt)
+#library(broom)
+
+# Run regression
+model <- lm(mpg ~ wt + hp, data = mtcars)
+
+# Tidy the model output
+model_summary <- tidy(model)
+
+# Convert to gt table and format to 4 decimal places
+gt_table <- model_summary %>%
+  gt() %>%
+  tab_header(
+    title = "Regression Results",
+    subtitle = "Predicting mpg using wt and hp"
+  ) %>%
+  fmt_number(
+    columns = c(estimate, std.error, statistic, p.value),
+    decimals = 4
+  )
+
+# Print gt table
+gt_table
+
+```
+
+
+### Sub-sub Section
+
+Your comments here.
