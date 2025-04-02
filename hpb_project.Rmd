@@ -19,7 +19,7 @@ knitr::opts_chunk$set(warning = FALSE)
 knitr::opts_chunk$set(message = FALSE)
 ```
 
-# Data loading, cleaning and transformation
+# Data
 
 ## Spatial data libraries
 
@@ -39,7 +39,7 @@ if (requireNamespace("rstudioapi", quietly = TRUE)) {
 
 To support spatial and statistical analysis, several R libraries were loaded. tidyverse was used for data manipulation, sf for spatial data handling, and tmap for thematic mapping. aspace and spdep enabled spatial analysis, while corrplot visualised correlations. readxl facilitated reading Excel files, and spatialreg supported spatial regression modelling. These libraries ensure a robust analysis of childhood obesity trends in Singapore.
 
-## Loading and joining HPB and relevant datasets
+## Loading and joining datasets
 
 ```{r}
 # Loading Singapore URA subzone boundary data
@@ -89,7 +89,9 @@ st_crs(hmsp_data_sf)$units # metres
 # Joining data
 obesity_data <- obesity_data %>% 
   left_join(school_info, by = join_by(SCHOOL == school_name)) %>% # data was previously cleaned to ensure that school names match 
-  left_join(select(st_drop_geometry(hmsp_data_sf), PT_ID, HMSP_Score, HMSP_Tier), by = join_by(PT_ID))
+  left_join(
+    select(st_drop_geometry(hmsp_data_sf), PT_ID, HMSP_Score, HMSP_Tier), 
+    by = join_by(PT_ID))
 ```
 
 The [Urban Redevelopment Authority (URA) Master Plan 2014 Subzone Boundary (No Sea)](https://data.gov.sg/collections/1707/view) dataset to serve as our base geometry map of Singapore. To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Singapore into regions, planning areas and subzones. This would aid our investigation of the regional patterns of childhood obesity.
@@ -104,7 +106,7 @@ Past year enrolment data was also joined with our obesity datasets. School enrol
 
 All datasets with coordinate geometries were transformed into a spatial object using the st_as_sf() function, with longitude and latitude as coordinates, and reprojected to match the CRS of the URA boundary data. Spatial validity was checked and made valid using st_make_valid() to ensure topological correctness. Finally, the CRS units for each dataset were checked to confirm uniformity, ensuring accurate spatial mapping and analysis. These steps were essential for integrating multiple data sources within a consistent spatial framework, allowing for precise geographic visualisation and interpretation of childhood obesity patterns in Singapore.
 
-## Additional data transformations for exploratory data analysis
+## Additional data transformations
 
 ```{r}
 # Changing "PRIMARY + SECONDARY" level label to match PRI and SEC classification
@@ -148,9 +150,10 @@ for (i in 1:nrow(school_enrolment_long)) {
 
 # Convert obesity_data from wide to long format
 obesity_data_long <- obesity_data %>%
-  pivot_longer(cols = starts_with("X"), 
-               names_to = "YEAR_CATEGORY", 
-               values_to = "COUNT") %>%
+  pivot_longer(
+    cols = starts_with("X"), 
+    names_to = "YEAR_CATEGORY", 
+    values_to = "COUNT") %>%
   separate(YEAR_CATEGORY, into = c("YEAR", "CATEGORY"), sep = "_", extra = "merge") %>%
   # Extract year as numeric
   mutate(YEAR = as.numeric(gsub("X", "", YEAR))) 
@@ -165,7 +168,10 @@ obesity_data_sf <- obesity_data_long %>%
 
 # For our analysis, filter for 2023 data and overweight and severely overweight
 obesity_data_sf_2023_OSO <- obesity_data_sf %>% 
-  filter(YEAR == 2023, CATEGORY == "OSO", !(SCHOOL %in% c("FUCHUN SECONDARY SCHOOL", "TANGLIN SECONDARY SCHOOL","GUANGYANG PRIMARY SCHOOL")), !is.na(PREVALENCE))
+  filter(
+    YEAR == 2023, CATEGORY == "OSO", 
+    !(SCHOOL %in% c("FUCHUN SECONDARY SCHOOL", "TANGLIN SECONDARY SCHOOL","GUANGYANG PRIMARY SCHOOL")), 
+    !is.na(PREVALENCE))
 ```
 
 The data was further cleaned and transformed into a format that is ready for spatial data analysis. 
@@ -202,7 +208,8 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
   tm_facets_wrap(by = "ZONE")
 ```
 
-## OSO rate by school level
+## Obesity Box plots
+### Obesity by School Level
 
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = LEVEL, y = PREVALENCE, fill = LEVEL)) +
@@ -216,7 +223,7 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = LEVEL, y = PREVALENCE, fill = LEVEL)) +
 
 We observe that the median obesity prevalence rate for secondary schools is higher than primary schools. The inter-quartile range for obesity prevalence in secondary schools is considerably larger than that of primary schools, with a larger overall data spread as well. The sole outlier for secondary school obesity prevalence is Crest Secondary School, with an extremely high obesity prevalence of 0.268613.
 
-## OSO rate by Zone
+### Obesity by Zone
 
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = ZONE, y = PREVALENCE, fill = ZONE)) +
@@ -230,7 +237,7 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = ZONE, y = PREVALENCE, fill = ZONE)) +
 
 We observe that across all four zones, the median obesity prevalence is comparable at between 10% to 15%. Ranking the median obesity prevalence for the zones, we get North \> West \> South \> East. The inter-quartile ranges and overall data spreads for all four zones are approximately equivalent, though the North zone is the only among the four for the data spread to stretch beyond an obesity prevalence of 0.20 (outliers exclusive). The two outliers for the East zone are East Spring Secondary School (0.193481) and Loyang View Secondary School (0.221809). It is worth noting that East Spring Secondary School being a data outlier can be attributed to the East zone having majority of its schools at lower obesity prevalence rates, for its obesity value would not be considered an outlier if placed in the North or West zones. The sole outlier for the West zone is Crest Secondary School with an extremely high obesity prevalence of 0.268613.
 
-## OSO rate by School Type
+### Obesity by School Type
 
 ```{r}
 sub = obesity_data_sf_2023_OSO |>
@@ -246,7 +253,7 @@ ggplot(sub, aes(x = type_code, y = PREVALENCE, fill = type_code)) +
 
 We observe that the median obesity prevalence for government schools is over 2% higher than government-aided schools. The inter-quartile range for government-aided schools is larger, especially for Q3 which is spread over a larger range. The lower bound outliers for government schools are National Junior College (0.056235), Raffles Girls' School (Primary) (0.057807) and Raffles' Girls School (Secondary) (0.061249). The upper bound outliers for government schools are East Spring Secondary School (0.193481), Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613).
 
-## OSO rate by Gender Mix
+### Obesity by Gender Mix
 
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nature_code)) +
@@ -261,12 +268,12 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = nature_code, y = PREVALENCE, fill = nat
 
 We observe that the median obesity prevalence for coed schools is noticeably higher than that for boys' and girls' schools. Median obesity prevalence in boys' schools is also higher than that for girls' schools. The interquartile range for all three types of schools is comparable, but the overall data range of obesity prevalence is much larger for coed schools than girls' or boys' schools. For girls' school, the sole upper bound data outlier is CHIJ St. Joseph's Convent (0.1552). We further observe that this is a North zone secondary school, but among the North zone girls' schools it is a significant outlier as other counterparts have obesity prevalence of around 0.05-0.06 range. For coed schools, the sole lower bound data outlier is Anglican High School (0.049065). The three upper bound data outliers are Loyang View Secondary School (0.221809), Pioneer Primary School (0.226236) and Crest Secondary School (0.268613). It is interesting that the opposite trend (higher obesity in single-gender schools than coed schools) has been observed in other countries such as [South Korea](https://pmc.ncbi.nlm.nih.gov/articles/PMC4430348/). Possible explanations include a stronger desire for students of both genders to manage their appearance (and in turn, weight) to increase their attractiveness to the opposite gender.
 
-## OSO rate by Specialised Programs
+### Obesity by Specialised Programme
 
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special)) +
   geom_boxplot(na.rm = T) +
-  labs(title = "Boxplot of prevalence rate by Specialised Programs",
+  labs(title = "Boxplot of prevalence rate by Specialised Programmes",
        x = "Special Program",
        y = "Prevalence Rate") +
   theme_minimal() +
@@ -276,7 +283,7 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = special, y = PREVALENCE, fill = special
 
 We observe that the median obesity prevalence for non-specialised schools is noticeably higher than that for specialised schools, at almost 5 percentage points. The interquartile range for both types of schools is comparable, but the overall data range of obesity prevalence is much larger for non-specialised than specialised schools at both upper and lower ends of the spectrum. For specialised schools, the sole upper bound data outlier is Dunamn Secondary School (0.155722). It is worth noting that this obesity prevalence value would not be an outlier in the non-specialised school data and is fairly close to the Q3 range for non-specialised schools. For non-specialised schools, the sole lower bound data outlier is Anglican High School (0.049065). The three upper bound data outliers are Loyang View Secondary School (0.221809), Pioneer Primary School (0.226236) and Crest Secondary School (0.268613).
 
-## OSO rate by HMSP Tier
+### Obesity by HMSP Tier
 
 ```{r}
 ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_Tier)) +
@@ -287,14 +294,66 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = HMSP_Tier, y = PREVALENCE, fill = HMSP_
   theme_minimal() +
   scale_x_discrete(drop = TRUE) +
   coord_flip() # Flip the coordinates to make it horizontal 
-
-cor(obesity_data_sf_2023_OSO$PREVALENCE, obesity_data_sf_2023_OSO$HMSP_Score)
 ```
 
-We observe that the median obesity prevalence for the B, C, D and E HSMP tiers are within one percentage point of one another (0.12-0.13 range) while the median value of the A tier is much lower at approximately 0.1. The A tier also has a significantly smaller IQR range and total range than other tiers, showing greater consistency in obesity prvalence within HSMP A tier schools (though this is likely also because there are only 8 A tier schools). The other HSMP tiers have similar IQR ranges and total data ranges, though tier B has a much wider Q1 compared to tiers C, D and E despite having similar median values. For C tier, the two upper bound outliers are Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613). For D tier, the sole outlier is Pioneer Primary School (0.226236). For A tier, the sole outlier is Admiralty Secondary School (0.16422), a coed secondary school in the North zone.
+We observe that the median obesity prevalence for the B, C, D and E HSMP tiers are within one percentage point of one another (0.12-0.13 range) while the median value of the A tier is much lower at approximately 0.1. The A tier also has a significantly smaller IQR range and total range than other tiers, showing greater consistency in obesity prevalence within HSMP A tier schools (though this is likely also because there are only 8 A tier schools). The other HSMP tiers have similar IQR ranges and total data ranges, though tier B has a much wider Q1 compared to tiers C, D and E despite having similar median values. For C tier, the two upper bound outliers are Loyang View Secondary School (0.221809) and Crest Secondary School (0.268613). For D tier, the sole outlier is Pioneer Primary School (0.226236). For A tier, the sole outlier is Admiralty Secondary School (0.16422), a coed secondary school in the North zone.
 
+## Obesity Density plots
 
-# Spatial overview of childhood obesity
+### Obesity by School Type
+
+```{r}
+ggplot(obesity_data_sf_2023_OSO, aes(x = PREVALENCE, fill = type_code, color = type_code)) +
+  geom_density(alpha = 0.4) + 
+  labs(title = "Density Plot of Obesity Rate by School Type",
+       x = "Obesity Rate 2023",
+       y = "Density") +
+  facet_wrap(vars(LEVEL)) +
+  theme_minimal()
+```
+
+Government, government-aided schools and specialised schools typically have a higher obesity rate. For secondary schools, independent schools tend to have lower obesity rates.
+
+### Obesity by School Zone
+
+```{r}
+ggplot(obesity_data_sf_2023_OSO, aes(x = PREVALENCE, fill = ZONE, color = ZONE)) +
+  geom_density(alpha = 0.4) + 
+  labs(title = "Density Plot of Obesity Rate by Zone",
+       x = "Obesity Rate 2023",
+       y = "Density") +
+  facet_wrap(vars(LEVEL)) +
+  theme_minimal()
+```
+
+Obesity rates in the North and West zones are typically higher.
+
+### Obesity by Gender Mix
+
+```{r}
+ggplot(obesity_data_sf_2023_OSO, aes(x = PREVALENCE, fill = nature_code, color = nature_code)) +
+  geom_density(alpha = 0.4) + 
+  labs(title = "Density Plot of Obesity Rate by Gender Mix",
+       x = "Obesity Rate 2023",
+       y = "Density") +
+  facet_wrap(vars(LEVEL)) +
+  theme_minimal()
+```
+
+Co-ed schools typically have a higher rate of obesity.
+
+### Obesity by Special Programme
+
+```{r}
+ggplot(obesity_data_sf_2023_OSO, aes(x = PREVALENCE, fill = special, color = special)) +
+  geom_density(alpha = 0.4) +  # Adjust transparency for overlap
+  labs(title = "Density Plot of Obesity Rate by Special Programme Availability",
+       x = "Obesity Rate 2023",
+       y = "Density") +
+  theme_minimal()
+```
+
+# Spatial Overview of Childhood Obesity
 
 The following sections provide us with a spatial overview of childhood obesity in Singapore schools. We provide spatial descriptive summary measures, particularly spatial measures of central tendency (mean, median) and dispersion (standard deviation distance and standard deviation ellipse)
 
@@ -312,7 +371,7 @@ ura_regions <- sg_ura_boundaries %>% group_by(REGION_N) %>%
   summarise(geometry = st_union(geometry))
 ura_regions_map <- tm_shape(ura_regions, name = "URA regions") + tm_polygons(
     col = "grey", fill = "REGION_N", fill_alpha = 0.25, 
-    fill.legend = tm_legend(title = "URA regions"))
+    fill.legend = tm_legend(title = "URA regions", bg.color = "white"))
 
 # URA planning areas map
 ura_planning_areas <- sg_ura_boundaries %>% group_by(PLN_AREA_N) %>% 
@@ -334,7 +393,7 @@ moe_zones <- obesity_data %>% group_by(ZONE) %>%
   summarise(geometry = st_union(geometry)) %>% st_convex_hull()
 moe_zones_map <- tm_shape(moe_zones, name = "MOE zones") + tm_polygons(
   col = "grey", fill = "ZONE", fill_alpha = 0.25, 
-  fill.legend = tm_legend(title = "MOE School Zones"))
+  fill.legend = tm_legend(title = "MOE School Zones", bg.color = "white"))
 
 # MOE clusters map
 moe_clusters <- obesity_data %>% group_by(CLUSTER) %>% 
@@ -343,7 +402,6 @@ moe_clusters_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
   col = "grey", fill = "CLUSTER", fill_alpha = 0.25, 
   fill.legend = tm_legend_hide())
 ```
-
 
 ## Obesity prevalence overview map
 
@@ -359,7 +417,7 @@ school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prev
     shape.legend = tm_legend(title = "Educational level"), 
     fill.scale = tm_scale(breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30), values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence by school", orientation = "landscape",
+      title = "Overweight prevalence by school",
       position = c("BOTTOM", "LEFT"), item.height = 0.5, item.width = 2.1)
     )
 
@@ -384,15 +442,13 @@ tmap_mode("view")
 obesity_pri_sch <- obesity_data_sf_2023_OSO %>% 
   filter(LEVEL == "PRIMARY", !is.na(PREVALENCE))
 
-obesity_data_sf_2023_OSO %>% summary()
-
 # Mean centre, standard deviation distance, standard deviation ellipse
 pri_sch_mean <- calc_mnc(id = 1, points = st_coordinates(obesity_pri_sch))
 pri_sch_median <- calc_mdc(id = 2, points = st_coordinates(obesity_pri_sch))
 pri_sch_mean_median <- rbind(pri_sch_mean$LOCATIONS, pri_sch_median$LOCATIONS) %>% 
   data.frame() %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs)
-pri_sch_mean_median$id = c("Spatial mean", "Spatial median")
+pri_sch_mean_median$id <- c("Spatial mean", "Spatial median")
 
 pri_sch_sdd <- calc_sdd(id = 3, points = st_coordinates(obesity_pri_sch))
 pri_sch_sdd_line <- pri_sch_sdd$LOCATIONS %>% 
@@ -422,16 +478,15 @@ pri_sch_map <-
     size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide(),
     fill = "PREVALENCE", 
-    # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30), 
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence by school",
-      orientation = "landscape", 
-      position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
+      title = "Overweight prevalence by school", 
+      position = c("BOTTOM", "LEFT"), 
+      item.height = 0.5, 
+      item.width = 2.1
       )
     )
 
@@ -440,10 +495,8 @@ pri_sch_map_summ <- pri_sch_map +
   tm_shape(pri_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(pri_sch_sde_weighted_line, name = "weighted SDE") + 
   tm_lines(col = "red", lwd = 2, lty = 3) +
-  tm_shape(pri_sch_mean_median, name = "Summary measures") + tm_dots(
-    size = 0.5, shape = "id", fill = "white", 
-    shape.legend = tm_legend("Summary measures")
-    ) + 
+  tm_shape(pri_sch_mean_median, name = "Summary measures") + 
+  tm_dots(size = 0.5, shape = "id", fill = "white", shape.legend = tm_legend("Summary measures")) + 
   tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
   tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
@@ -492,14 +545,12 @@ sec_sch_map <-
     size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide(),
     fill = "PREVALENCE", 
-    # a green-red diverging scale to indicate severity of overweight prevalence
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
-      orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
@@ -519,7 +570,7 @@ sec_sch_map_summ <- sec_sch_map +
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
   tm_title("Overweight prevalence in Secondary Schools")
 
-tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, ncol = 1)
+tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 1)
 ```
 
 For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance spans the North-South length of Singapore. The standard deviation ellipse also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
@@ -532,11 +583,13 @@ With a visual glance of the overweight prevalence map, one might also notice low
 
 To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Singapore into regions, planning areas, and subzones.
 
-According to the URA, each [Planning Region](https://data.gov.sg/collections/1717/view) has a population size of more than 500,000 people and provide a mix of residential, commercial, business and recreational areas. Each Planning Region is then divided into [Planning Areas](https://data.gov.sg/collections/2104/view), which have a population of about 150,000 and are served by a town centre and several neighbourhood shopping centres. Each Planning Area is further divided into [Subzones](https://data.gov.sg/collections/1749/view)m], which are usually centred around a neighbourhood centre or activity node. 
+According to the URA, each [Planning Region](https://data.gov.sg/collections/1717/view) has a population size of more than 500,000 people and provide a mix of residential, commercial, business and recreational areas. Each Planning Region is then divided into [Planning Areas](https://data.gov.sg/collections/2104/view), which have a population of about 150,000 and are served by a town centre and several neighbourhood shopping centres. Each Planning Area is further divided into [Subzones](https://data.gov.sg/collections/1749/view), which are usually centred around a neighbourhood centre or activity node. 
 
 We aggregate overweight counts and school enrolment data by the different administrative regions, and fill in the regions to get visualise overweight prevalence by region.
 
 ```{r}
+tmap_mode("plot")
+
 # Aggregating overweight counts by URA regions
 obesity_ura_regions <- st_join(ura_regions, obesity_data_sf) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
@@ -550,20 +603,18 @@ ura_regions_map + obesity_ura_regions %>%
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
-    # fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      # orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
+      item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
   tm_title("Overweight prevalence by URA regions") +
-  tm_facets_wrap(by = "LEVEL")
+  tm_facets_wrap(by = "LEVEL", nrow = 1)
 
 # Aggregating overweight counts by URA planning areas
 obesity_ura_planning_areas <- st_join(ura_planning_areas, obesity_data_sf) %>%
@@ -585,11 +636,11 @@ ura_planning_areas_map + obesity_ura_planning_areas %>%
     fill.legend = tm_legend(
       title = "Overweight prevalence",
       position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
+      item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
   tm_title("Overweight prevalence by URA planning areas") +
-  tm_facets_wrap(by = "LEVEL")
+  tm_facets_wrap(by = "LEVEL", nrow = 1)
 
 # Aggregating overweight counts by URA subzones
 obesity_ura_subzones <- st_join(ura_subzones, obesity_data_sf) %>% 
@@ -611,11 +662,11 @@ ura_subzones_map + obesity_ura_subzones %>%
     fill.legend = tm_legend(
       title = "Overweight prevalence",
       position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
+      item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
   tm_title("Overweight prevalence by URA subzones") +
-  tm_facets_wrap(by = "LEVEL")
+  tm_facets_wrap(by = "LEVEL", nrow = 1)
 
 # Aggregating overweight counts by MOE school zones
 obesity_moe_zones <- 
@@ -628,7 +679,8 @@ obesity_moe_zones <-
     geometry = st_union(geometry)
     )
 
-moe_zones_map +
+sg_ura_boundaries %>% st_union() %>% tm_shape() + tm_borders() +
+  moe_zones_map +
   tm_legend_hide() + 
   obesity_moe_zones %>% 
   tm_shape(name = "Overweight prevalence") +
@@ -641,14 +693,12 @@ moe_zones_map +
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1,
-      show = T
+      item.height = 0.5, item.width = 2.1, bg.color = "white", show = T
       )
     ) +
   tm_title("Overweight prevalence by MOE clusters") +
-  tm_facets_wrap(by = "LEVEL")
+  tm_facets_wrap(by = "LEVEL", nrow = 1)
 
 # Aggregating overweight counts by MOE clusters
 obesity_moe_clusters <- 
@@ -660,7 +710,8 @@ obesity_moe_clusters <-
     geometry = st_union(geometry)
     )
 
-moe_clusters_map + obesity_moe_clusters %>% 
+sg_ura_boundaries %>% st_union() %>% tm_shape() + tm_borders() +
+  moe_clusters_map + obesity_moe_clusters %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
@@ -671,21 +722,19 @@ moe_clusters_map + obesity_moe_clusters %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      orientation = "landscape", 
       position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1,
-      show = T
+      item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
   tm_title("Overweight prevalence by MOE clusters") +
-  tm_facets_wrap(by = "LEVEL")
+  tm_facets_wrap(by = "LEVEL", nrow = 1)
 ```
 
 Similar to our visualisation of obesity on an individual school levels, we again observe that regions closer to the edges of Singapore (the North in particular) have higher overweight prevalence levels.
 
 The rationale behind examining obesity by administrative regions is to allow HPB to target policies towards specific URA regions or MOE clusters. Administrative regions typically follow similar policies introduced by superintendents or administrators in charge of a particular region or cluster of schools. This aspect of administrative or regional classification of school may result in different attitudes or policy solutions by administrators towards solving childhood obesity in each region. 
 
-# Spatial clustering of obesity
+# Spatial Clustering of Obesity
 
 Given the evidence of a directional bias of overweight prevalence in Singapore schools, we now consider whether there are spatial relationships for overweight prevalence in schools. Importantly, we want to identify if there are any spatial clusters of schools. Spatial clusters may be clusters of schools that have low overweight prevalence or high overweight prevalence.
 
@@ -695,7 +744,7 @@ To consider spatial clustering of obesity in schools, we need to define how scho
 
 To quantify spatial autocorrelation, we used the global Moran's I statistic as it is the most popular indicator of global spatial autocorrelation, and it captures the degree of dependence of one variable at a given location to similar variables at neighbouring locations. As the Moran’s I statistic is highly sensitive to the choice of spatial weights matrix, we include other spatial autocorrelation statistics (Join count analysis, Global and local Geary’s C statistic, Global and local Getis-Ord’s G) for robustness checks.
 
-We recommend skipping to the last sub-section to examine the autocorrelation of our selected spatial weights matrix, and our results from the spatial clustering analysis of childhood obesity in Singapore
+We recommend skipping to the last sub-section to examine the autocorrelation of our selected spatial weights matrix, as well as our results from the spatial clustering analysis of childhood obesity in Singapore.
 
 ```{r}
 # initialising empty data frame to collect Moran's I p-values
@@ -715,25 +764,29 @@ There are too few contiguous neighbours by URA region to analyse meaningfully (o
 There only 5 URA regions in Singapore, thus we do not run our spatial autocorrelation statistics here, as spatial clustering observed among these 5 regions would not give us meaningful insights.
 
 ```{r}
-# by Primary school
+tmap_mode("plot")
+
+# by Primary schools
 obesity_ura_regions_pri <- obesity_ura_regions %>% filter(LEVEL == "PRIMARY")
 ura_regions_nb_pri <- obesity_ura_regions_pri %>% poly2nb(queen = T)
 ura_regions_nb_line_pri <- ura_regions_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_regions_pri)))
-pri_map <- ura_regions_map +
-  ura_regions_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
-  st_point_on_surface(st_geometry(obesity_ura_regions_pri)) %>% tm_shape() + tm_symbols(size = 0.5)
+pri_map <- ura_regions_map + ura_regions_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
+  st_point_on_surface(st_geometry(obesity_ura_regions_pri)) %>% 
+  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_title("Contiguous neighbours: URA regions (Primary)")
 
-# by Secondary school
+# by Secondary schools
 obesity_ura_regions_sec <- obesity_ura_regions %>% filter(LEVEL == "SECONDARY")
 ura_regions_nb_sec <- obesity_ura_regions_sec %>% poly2nb(queen = T)
 ura_regions_nb_line_sec <- ura_regions_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_regions_sec)))
-sec_map <- ura_regions_map +
-  ura_regions_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
-  st_point_on_surface(st_geometry(obesity_ura_regions_sec)) %>% tm_shape() + tm_symbols(size = 0.5)
+sec_map <- ura_regions_map + ura_regions_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
+  st_point_on_surface(st_geometry(obesity_ura_regions_sec)) %>% 
+  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_title("Contiguous neighbours: URA regions (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 ### Contiguous neighbours by URA planning areas
@@ -741,7 +794,9 @@ tmap_arrange(pri_map, sec_map)
 There are 55 URA planning areas in Singapore, of which 28 contain primary schools, and 28 contain secondary schools. We consider continguous neighbours by planning area below. As only one planning area (for primary and secondary schools) was non-contiguous, we made that planning area contiguous in a gal file for our spatial analysis.
 
 ```{r}
-# by Primary school
+tmap_mode("plot")
+
+# by Primary schools
 obesity_ura_planning_areas_pri <- obesity_ura_planning_areas %>%
   filter(LEVEL == "PRIMARY") %>%
   rowid_to_column("index")
@@ -756,28 +811,23 @@ obesity_ura_planning_areas_pri <- obesity_ura_planning_areas %>%
 ura_planning_areas_nb_pri <- read.gal("galFiles/ura_planning_areas_nb_pri.gal")
 ura_planning_areas_nb_line_pri <- ura_planning_areas_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)))
-pri_map <- ura_planning_areas_map +
-  obesity_ura_planning_areas_pri %>% tm_shape() +
+pri_map <- ura_planning_areas_map + obesity_ura_planning_areas_pri %>% tm_shape() +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
       values = "brewer.yl_or_rd"
       ), 
-    fill.legend = tm_legend(
-      title = "Overweight prevalence",
-      # orientation = "landscape", 
-      position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
-      )
+    fill.legend = tm_legend_hide()
     ) + 
   ura_planning_areas_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) +
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)) %>% 
-  tm_shape() + tm_symbols(size = 0.5)
+  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_title("Contiguous neighbours: URA planning areas (Primary)")
 
-# by Secondary school
+# by Secondary schools
 obesity_ura_planning_areas_sec <- obesity_ura_planning_areas %>% 
-  filter(LEVEL == "SECONDARY")  %>%
+  filter(LEVEL == "SECONDARY") %>%
   rowid_to_column("index")
 
 # # Manually connecting 1 observation with no neighbours with its nearest neighbour
@@ -797,21 +847,17 @@ sec_map <- ura_planning_areas_map +
       breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
       values = "brewer.yl_or_rd"
       ), 
-    fill.legend = tm_legend(
-      title = "Overweight prevalence",
-      # orientation = "landscape", 
-      position = c("BOTTOM", "LEFT"),
-      item.height = 0.5, item.width = 2.1
-      )
+    fill.legend = tm_legend_hide()
     ) + 
   ura_planning_areas_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) +
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_sec)) %>% 
-  tm_shape() + tm_symbols(size = 0.5)
+  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_title("Contiguous neighbours: URA planning areas (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
-*Spatial autocorrelation statistics*
+**Spatial autocorrelation statistics**
 
 ```{r}
 # by Primary schools
@@ -959,23 +1005,31 @@ par(mfrow=c(1,1))
 There are 323 URA subzones in Singapore, of which 115 contain primary schools, and 100 contain secondary schools. As there were are many non-contiguous subzones, we do not run our we do not run our spatial autocorrelation statistics here.
 
 ```{r}
+tmap_mode("plot")
+
+# by Primary schools
 obesity_ura_subzones_pri <- obesity_ura_subzones %>% filter(LEVEL == "PRIMARY")
 ura_subzones_nb_pri <- obesity_ura_subzones_pri %>% poly2nb(queen = T)
 ura_subzones_nb_line_pri <- ura_subzones_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_subzones_pri)))
 pri_map <- ura_subzones_map +
   ura_subzones_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
-  st_point_on_surface(st_geometry(obesity_ura_subzones_pri)) %>% tm_shape() + tm_symbols(size = 0.5)
+  st_point_on_surface(st_geometry(obesity_ura_subzones_pri)) %>% 
+  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_title("Contiguous neighbours: URA subzones (Primary)")
 
+# by Secondary schools
 obesity_ura_subzones_sec <- obesity_ura_subzones %>% filter(LEVEL == "SECONDARY")
 ura_subzones_nb_sec <- obesity_ura_subzones_sec %>% poly2nb(queen = T)
 ura_subzones_nb_line_sec <- ura_subzones_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_subzones_sec)))
 sec_map <- ura_subzones_map +
   ura_subzones_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
-  st_point_on_surface(st_geometry(obesity_ura_subzones_sec)) %>% tm_shape() + tm_symbols(size = 0.5)
+  st_point_on_surface(st_geometry(obesity_ura_subzones_sec)) %>% 
+  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_title("Contiguous neighbours: URA subzones (Secondary)")
 
-tmap_arrange(pri_map, sec_map)
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 ## Social Neighbours analysis ("Social distance")
@@ -1009,16 +1063,13 @@ write_gal <- function(data, filename) {
   close(fileConn)
 }
 
-# Write to a .gal file
+tmap_mode("plot")
+
+# by Primary schools
 moe_clusters_pri <- obesity_pri_sch %>%
   st_drop_geometry() %>%
   select(PT_ID, SCHOOL, CLUSTER)
-write_gal(moe_clusters_pri, "galFiles/moe_clusters_pri.gal")
-
-moe_clusters_sec <- obesity_sec_sch %>%
-  st_drop_geometry() %>%
-  select(PT_ID, SCHOOL, CLUSTER)
-write_gal(moe_clusters_sec, "galFiles/moe_clusters_sec.gal")
+write_gal(moe_clusters_pri, "galFiles/moe_clusters_pri.gal") # Write to a .gal file
 
 obesity_moe_clusters_pri <- obesity_pri_sch %>% filter(LEVEL == "PRIMARY")
 moe_clusters_nb_pri <-
@@ -1028,6 +1079,12 @@ moe_clusters_nb_line_pri <- moe_clusters_nb_pri %>%
 pri_map <- moe_clusters_map +
   moe_clusters_nb_line_pri %>% tm_shape() + tm_lines(lwd = 0.5) +
   pri_sch_map
+
+# by Secondary schools
+moe_clusters_sec <- obesity_sec_sch %>%
+  st_drop_geometry() %>%
+  select(PT_ID, SCHOOL, CLUSTER)
+write_gal(moe_clusters_sec, "galFiles/moe_clusters_sec.gal") # Write to a .gal file
 
 obesity_moe_clusters_sec <- obesity_sec_sch %>% filter(LEVEL == "SECONDARY")
 moe_clusters_nb_sec <-
@@ -1041,7 +1098,7 @@ sec_map <- moe_clusters_map +
 tmap_arrange(pri_map, sec_map)
 ```
 
-*Spatial autocorrelation statistics*
+**Spatial autocorrelation statistics**
 
 ```{r}
 # by Primary schools
@@ -1165,6 +1222,8 @@ We also examine neighbours based on popular algorithms for determining graph nei
 Delaunay triangulation of a set of points in the plane subdivides their convex hull into triangles whose circumcircles do not contain any of the points, maximising the size of the smallest angle in any of the triangles. The [neighbour relationships are defined by the triangulation](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours), which extends outwards to the convex hull of the points and which is planar. This algorithm may be useful for generating neighbour links.
 
 ```{r}
+tmap_mode("plot")
+
 # by Primary schools
 # obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
 del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch), 
@@ -1182,7 +1241,7 @@ sec_map <- tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch)))
 tmap_arrange(pri_map, sec_map)
 ```
 
-*Spatial autocorrelation statistics*
+**Spatial autocorrelation statistics**
 
 ```{r}
 # by Primary schools
@@ -1333,6 +1392,8 @@ par(mfrow=c(1,1))
 Points are [Sphere of Influence neighbours (SOI)](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) if circles centred on the points, of radius equal to the points’ nearest neighbour distances, intersect in two places. As Delauney Triangulation joins distant points around the convex hull, Sphere of Influence graphs help to thin the triangulation, removing links that are relatively long. This may be more accurate than Delauney Triangulation for establishing neighbour links in Singapore.
 
 ```{r}
+tmap_mode("plot")
+
 # by Primary schools
 if (require(dbscan, quietly=TRUE)) {
   soi_nb_pri <- graph2nb(soi.graph(del_nb_pri, st_geometry(obesity_pri_sch)))
@@ -1354,7 +1415,7 @@ sec_map <- tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch)))
 tmap_arrange(pri_map, sec_map)
 ```
 
-*Spatial autocorrelation statistics*
+**Spatial autocorrelation statistics**
 
 ```{r}
 # by Primary schools
@@ -1485,6 +1546,8 @@ We determine distance-based neighbours by choosing the [k nearest neighbours](ht
 We consider just the nearest school as a school's neighbour.
 
 ```{r}
+tmap_mode("plot")
+
 # by Primary schools
 knn1_nb_pri <- obesity_pri_sch %>% 
   knearneigh(k = 1) %>% 
@@ -1502,7 +1565,7 @@ sec_map <- tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-*Spatial autocorrelation statistics*
+**Spatial autocorrelation statistics**
 
 ```{r}
 # by Primary schools
@@ -1622,6 +1685,8 @@ tmap_arrange(pri_map, sec_map)
 We consider the 2 nearest schools as a school's neighbours.
 
 ```{r}
+tmap_mode("plot")
+
 # by Primary schools
 knn2_nb_pri <- obesity_pri_sch %>% 
   knearneigh(k = 2) %>% 
@@ -1639,7 +1704,7 @@ sec_map <- tm_shape(nb2lines(knn2_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-*Spatial autocorrelation statistics*
+**Spatial autocorrelation statistics**
 
 ```{r}
 # by Primary schools
@@ -1759,6 +1824,8 @@ tmap_arrange(pri_map, sec_map)
 We consider the 3 nearest schools as a school's neighbours.
 
 ```{r}
+tmap_mode("plot")
+
 # by Primary schools
 knn3_nb_pri <- obesity_pri_sch %>% 
   knearneigh(k = 3) %>% 
@@ -1776,7 +1843,7 @@ sec_map <- tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))
 tmap_arrange(pri_map, sec_map)
 ```
 
-*Spatial autocorrelation statistics*
+**Spatial autocorrelation statistics**
 
 ```{r}
 # by Primary schools
@@ -1889,8 +1956,6 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 
 tmap_arrange(pri_map, sec_map)
 ```
-
-
 
 ## Conclusions on spatial clustering analysis of obesity
 
@@ -4051,7 +4116,7 @@ Based on the joint count analysis, there is no significant spatial clustering of
 
 # Controlling for effects of COVID
 ```{r}
-oso_pri_hist = read_excel("oso_primary.xlsx")
+oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
 
 oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
   drop_na()
