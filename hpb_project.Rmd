@@ -34,14 +34,13 @@ rm(pkgs)
 if (requireNamespace("rstudioapi", quietly = TRUE)) {
   setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 }
-
 ```
 
 To support spatial and statistical analysis, several R libraries were loaded. tidyverse was used for data manipulation, sf for spatial data handling, and tmap for thematic mapping. aspace and spdep enabled spatial analysis, while corrplot visualised correlations. readxl facilitated reading Excel files, and spatialreg supported spatial regression modelling. These libraries ensure a robust analysis of childhood obesity trends in Singapore.
 
 ## Loading and joining datasets
 
-```{r}
+```{r, results = FALSE}
 # Loading Singapore URA subzone boundary data
 sg_ura_boundaries <- 
   st_read("DataFiles/MasterPlan2014SubzoneBoundaryWebSHP/MP14_SUBZONE_WEB_PL.shp") %>% 
@@ -188,17 +187,20 @@ In addition to the prior data cleaning done by Professor Liu, we decided to remo
 
 ```{r}
 tmap_mode("plot")
-tm_shape(sg_ura_boundaries) + tm_borders() +
+
+a <- tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
   tm_shape(hmsp_data_sf) +
   tm_symbols(size = 0.4, fill = "HMSP_Tier", 
              fill.scale = tm_scale(values = "brewer.set1"), 
-             fill.legend = tm_legend(title = "HMSP Tiers"))
+             fill.legend = tm_legend(title = "HMSP Tiers", bg.color = "white"))
 
-tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
+b <- tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
   tm_shape(hmsp_data_sf) +
   tm_symbols(size = 0.4, fill = "ZONE", 
              fill.scale = tm_scale(values = "brewer.set1"), 
-             fill.legend = tm_legend(title = "School zones"))
+             fill.legend = tm_legend(title = "School zones", bg.color = "white"))
+
+tmap_arrange(a, b, nrow = 1)
 
 tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
   tm_shape(hmsp_data_sf) +
@@ -1389,10 +1391,12 @@ par(mfrow=c(1,1))
 
 ### Sphere of Influence neighbours
 
-Points are [Sphere of Influence neighbours (SOI)](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) if circles centred on the points, of radius equal to the points’ nearest neighbour distances, intersect in two places. As Delauney Triangulation joins distant points around the convex hull, Sphere of Influence graphs help to thin the triangulation, removing links that are relatively long. This may be more accurate than Delauney Triangulation for establishing neighbour links in Singapore.
+Points are [Sphere of Influence neighbours (SOI)](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) if circles centred on the points, of radius equal to the points’ nearest neighbour distances, intersect in two places. As Delauney Triangulation joins distant points around the convex hull, Sphere of Influence graphs help to thin the triangulation, removing links that are relatively long. This may be more accurate than Delauney Triangulation for establishing neighbour links in Singapore. 
+
+By definition, sphere of influence also ensures that there are no points with zero neighbour links (no empty neighbour sets). This ensures the validity of row-standardised weights matrices and validity of spatial autocorrelation tests used.
 
 ```{r}
-tmap_mode("plot")
+tmap_mode("view")
 
 # by Primary schools
 if (require(dbscan, quietly=TRUE)) {
@@ -2025,7 +2029,22 @@ From a policy perspective, targeted interventions in primary school clusters cou
 
 To identify spatial clusters and for our subsequent spatial model, we decided to use the Sphere of Influence spatial weights matrix:
 
-Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3).
+Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3). 
+
+```{r}
+# Visualisation of graph-based and distanced-base neighbours
+par(mfrow = c(1,3))
+plot(st_union(sg_ura_boundaries), border="grey60", axes=F,  main="Delauney triangulation neighbours")
+plot(del_nb_pri, st_coordinates(obesity_pri_sch), pch=19, cex=0.6, add=T)
+plot(st_union(sg_ura_boundaries), border="grey60", axes=F,  main="SOI neighbours")
+plot(soi_nb_pri, st_coordinates(obesity_pri_sch), pch=19, cex=0.6, add=T)
+plot(st_union(sg_ura_boundaries), border="grey60", axes=F, main="k nearest neighbours")
+plot(knn3_nb_pri, st_coordinates(obesity_pri_sch), col="red4", pch=19, cex=0.6, add=T)
+plot(knn2_nb_pri, st_coordinates(obesity_pri_sch), col="red", pch=19, cex=0.6, add=T)
+plot(knn1_nb_pri, st_coordinates(obesity_pri_sch), col="pink", pch=19, cex=0.6, add=T)
+legend("bottomright", c("k=1", "k=2", "k=3"), col=c("pink", "red", "red4"), lty=1)
+par(mfrow = c(1,1))
+```
 
 Additionally, graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design, that is if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
 
@@ -2184,11 +2203,6 @@ Targeting these 5 identified primary schools for obesity reduction could have po
 
 ```{r}
 # Low-Low Primary school clusters
-obesity_pri_sch %>%
-  st_drop_geometry() %>% 
-  filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
-  arrange(desc(LMORANZ))
-
 ll_pri <- obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
   arrange(desc(LMORANZ))
@@ -2256,7 +2270,7 @@ For primary schools, the Henry Park Primary School and Nanyang Primary School cl
 
 Observing these 3 identified primary schools and 2 identified secondary schools for upticks in obesity would be useful to implement obesity mitigation measures on neighbouring schools in the clusters, which may receive spillover effects from obesity increases. 
 
-# Elite metrics
+# Popular School metrics
 
 We obtain a Yes/No binary metric based on the popularity of primary & secondary schools in Singapore, which we dub as the "elite" metric. We derive this using the following methodology: Primary schools: We take the [Phase 2C balloting information](https://www.moe.gov.sg/primary/p1-registration/past-vacancies-and-balloting-data/) from the 2024 Primary 1 Registration Exercise for all 180 primary schools. If the number of applicants in Phase 2C is greater than the number of vacancies, the school is marked as popular (Yes) reflecting oversubscribing due to high demand for the school's coveted vacancies. If the number of applicants in Phase 2C is less than or equal to the number of vacancies, the school is marked as not popular (No). Based on this methodology, there are 82 popular schools (Yes) and 98 non-popular schools (No). Secondary schools: We obtain the [2024 secondary school PSLE cutoff points](https://sgschooling.com/secondary/cop/all.html) from SG Schooling in the IP/PG3 (Express) streams. We take the cutoff point for each secondary school if given as a single value, or the highest value in a given point range, ignoring all secondary criteria for the Mother Tongue Grade (D/M/P) to get data for 138 secondary schools. We then calculate the top quartile of cutoff points, which ends up as 13, and label all secondary schools with cutoff points less than or equal to this value as popular schools (Y) and all other schools as non-popular (N). Using this methodology, we obtain 35 popular schools (Y) and 103 non-popular schools (N). For the secondary schools with no given PSLE cutoff point for 2024, we conduct the following manual adjustments: - School of the Arts, NUS High School and School of Science and Technology: These schools only accept admissions by Direct School Admission, so there is no PSLE cutoff range. From our research, these three schools are prestigious in their unique domains with many applicants each year. As such, we labelled these three schools as popular (Y). - Crest Secondary School, Assumption Pathway School and Northlight School: These schools offer specialised pathways for experiential and hands-on learning, allowing students to graduate with an ITE Skills certificate. As this is a non-mainstream pathway with only PG1/PG2 streams, we labelled these three schools as non-popular (N). In total, we have 144 secondary schools with 38 as popular (Y) and 106 as non-popular (N).
 
@@ -3518,7 +3532,7 @@ This map is a representation of how many DUS facilties are in each URA planning 
 
 Interestingly, certain regions of interest from the last visual representation are not shown here due to the complete absence of DUS facilities in these areas. These areas include Bukit Timah, Novena, Newton and River Valley, Museum - areas in which it was identified that schools had a greater distance to the nearest DUS facility. A raw metric of facility density does not take into account the distribution of schools in these areas, which may be a reason for the lack of facilities in these areas.
 
-# Modelling obesity in Singapore schools
+# Modelling Obesity in Singapore Schools
 
 ## Joining data variables
 
@@ -3961,7 +3975,7 @@ BIC(ols_sec) # -590.1164
 
 Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see in both tests where SLM and SEM are alternatives that the p-value is much larger than 0.05, showing there is insufficient evidence at 5% significance level to reject the null OLS. This is further supported by the LM test results, where adjRSlag and adjRSerr p-values are very large. This suggests the OLS may be a more suitable model than the spatial models SLM and SEM. Finally, considering the AIC and BIC values, we see ols_sec has smaller AIC and BIC values than both SEM and OLS. This brings us to our conclusion that OLS is the most suitable for modelling obesity prevalence in primary schools, more so than any type of spatial model.
 
-# Time series
+# Time Series Analysis
 
 ```{r}
 library(tidyverse)
@@ -4212,7 +4226,7 @@ Based on the joint count analysis, there is no significant spatial clustering of
 Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of \>1)
 
 
-# Controlling for effects of COVID
+# Controlling for Effects of COVID
 ```{r}
 oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
 
