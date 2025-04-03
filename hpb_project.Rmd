@@ -435,7 +435,6 @@ Given the difference in obesity levels in primary schools versus secondary schoo
 
 The spatial mean centre (unweighted) and spatial variance (using the standard deviation distance and standard deviation ellipse) are calculated and plotted for each educational level.
 
-
 ```{r}
 ### by Primary School
 
@@ -896,7 +895,7 @@ p-value for Global Moran's I test (Secondary school): 0.5256 \
 p-value for Global Geary's C test (Secondary school): 0.5418 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.8072
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Join count analysis
 
 # Setting an overweight cutoff point
@@ -923,7 +922,7 @@ joincount.multi(obesity_ura_planning_areas_sec$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Moran's I statistic
 
 # by Primary school
@@ -945,7 +944,7 @@ sec_map <- tm_shape(obesity_ura_planning_areas_sec) + tm_polygons(fill = "LMORAN
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Getis-Ord's G statistics
 
 # by Primary school
@@ -965,7 +964,7 @@ sec_map <- tm_shape(obesity_ura_planning_areas_sec) + tm_polygons("GO_STAT") +
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Correlogram
 
 # by Primary school
@@ -1135,7 +1134,7 @@ p-value for Global Moran's I test (Secondary school): 0.1768 \
 p-value for Global Geary's C test (Secondary school): 0.1768 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.8314
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Join count analysis
 
 # Setting an overweight cutoff point
@@ -1171,7 +1170,7 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Moran's I statistic
 
 # by Primary school
@@ -1193,7 +1192,7 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Getis-Ord's G statistics
 
 # by Primary school
@@ -1220,23 +1219,21 @@ We also examine neighbours based on popular algorithms for determining graph nei
 
 ### Delauney Triangulation neighbours
 
-Delaunay triangulation of a set of points in the plane subdivides their convex hull into triangles whose circumcircles do not contain any of the points, maximising the size of the smallest angle in any of the triangles. The [neighbour relationships are defined by the triangulation](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours), which extends outwards to the convex hull of the points and which is planar. This algorithm may be useful for generating neighbour links.
+Delauney triangulation of a set of points in the plane subdivides their convex hull into triangles whose circumcircles do not contain any of the points, maximising the size of the smallest angle in any of the triangles. The [neighbour relationships are defined by the triangulation](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours), which extends outwards to the convex hull of the points and which is planar. This algorithm may be useful for generating neighbour links.
 
 ```{r}
 tmap_mode("plot")
 
 # by Primary schools
 # obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
-del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch), 
-                     row.names = obesity_pri_sch$PT_ID) 
+del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch), row.names = obesity_pri_sch$PT_ID) 
 pri_map <- sg_map + tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
   tm_lines(lwd = 0.5) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
   tm_title("Delauney triangulation neighbours (Primary)")
 
 # by Secondary schools
 # obesity_sec_sch_jitter <- st_jitter(obesity_sec_sch) 
-del_nb_sec <- tri2nb(st_coordinates(obesity_sec_sch), 
-                     row.names = obesity_sec_sch$PT_ID) 
+del_nb_sec <- tri2nb(st_coordinates(obesity_sec_sch), row.names = obesity_sec_sch$PT_ID) 
 sec_map <- sg_map + tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch))) +
   tm_lines(lwd = 0.5) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
   tm_title("Delauney triangulation neighbours (Secondary)")
@@ -1280,7 +1277,7 @@ p-value for Global Moran's I test (Secondary school): 0.0001695 \
 p-value for Global Geary's C test (Secondary school): 9.452e-05 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.2914
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 ####  Join count analysis
 OVERWEIGHT_CUTOFF <- 0.14 # Setting an overweight cutoff point
 
@@ -1314,7 +1311,7 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 ####  Local Moran's I statistic
 
 # by Primary school
@@ -1336,7 +1333,7 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Getis-Ord's G statistics
 
 # by Primary school
@@ -1356,7 +1353,7 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Correlogram
 
 # by Primary school
@@ -1399,7 +1396,8 @@ tmap_mode("plot")
 
 # by Primary schools
 if (require(dbscan, quietly=TRUE)) {
-  soi_nb_pri <- graph2nb(soi.graph(del_nb_pri, st_geometry(obesity_pri_sch)))
+  soi_nb_pri <- graph2nb(soi.graph(del_nb_pri, st_geometry(obesity_pri_sch)), 
+                         row.names = obesity_pri_sch$PT_ID)
 } else {
   soi_nb = NULL
 }
@@ -1409,7 +1407,8 @@ pri_map <- sg_map + tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_p
 
 # by Secondary schools
 if (require(dbscan, quietly=TRUE)) {
-  soi_nb_sec <- graph2nb(soi.graph(del_nb_sec, st_geometry(obesity_sec_sch)))
+  soi_nb_sec <- graph2nb(soi.graph(del_nb_sec, st_geometry(obesity_sec_sch)),
+                         row.names = obesity_sec_sch$PT_ID)
 } else {
   soi_nb = NULL
 }
@@ -1456,7 +1455,7 @@ p-value for Global Moran's I test (Secondary school): 0.0004617 \
 p-value for Global Geary's C test (Secondary school): 0.0002675 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.3102
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Join count analysis
 
 # Setting an overweight cutoff point
@@ -1491,7 +1490,7 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Moran's I statistic
 
 # by Primary school
@@ -1521,7 +1520,7 @@ soi_sec_map <-
 tmap_arrange(soi_pri_map, soi_sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Getis-Ord's G statistics
 
 # by Primary school
@@ -1608,7 +1607,7 @@ p-value for Global Moran's I test (Secondary school): 0.0004819 \
 p-value for Global Geary's C test (Secondary school): 0.004126 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.234
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Join count analysis
 
 # Setting an overweight cutoff point
@@ -1644,7 +1643,7 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Moran's I statistic
 
 # by Primary school
@@ -1666,7 +1665,7 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Getis-Ord's G statistics
 
 # by Primary school
@@ -1749,7 +1748,7 @@ p-value for Global Moran's I test (Secondary school): 0.003471 \
 p-value for Global Geary's C test (Secondary school): 0.03461 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.2781
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Join count analysis
 
 # Setting an overweight cutoff point
@@ -1785,7 +1784,7 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Moran's I statistic
 
 # by Primary school
@@ -1807,7 +1806,7 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Getis-Ord's G statistics
 
 # by Primary school
@@ -1890,7 +1889,7 @@ p-value for Global Moran's I test (Secondary school): 0.000427 \
 p-value for Global Geary's C test (Secondary school): 0.002858 \
 p-value for Global Getis-Ord's G test (Secondary school): 0.3985
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Join count analysis
 
 # Setting an overweight cutoff point
@@ -1926,7 +1925,7 @@ joincount.multi(obesity_sec_sch$HIGH_PREVALENCE,
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Moran's I statistic
 
 # by Primary school
@@ -1948,7 +1947,7 @@ sec_map <- tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) 
 tmap_arrange(pri_map, sec_map)
 ```
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 #### Local Getis-Ord's G statistics
 
 # by Primary school
@@ -1993,12 +1992,12 @@ nb_pval_sec %>% gt() %>%
   )
 ```
 
-$H_0:$ No spatial autocorrelation present
+$H_0:$ No spatial autocorrelation present \
 $H_1:$ Positive spatial autocorrelation present
 
 Based on the spatial autocorrelation tests conducted using Moran’s I, Geary’s C, and Getis-Ord’s G statistics, we can conclude the following:
 
-**Positive spatial autocorrelation for Primary Schools**
+**Strong evidence of positive spatial autocorrelation for Primary Schools**
 
 There is strong evidence of spatial clustering of obesity, in primary schools, observed under most of the spatial weight matrices.
 
@@ -2006,7 +2005,7 @@ The Moran’s I test indicates highly significant (p-values < 0.01) positive spa
 
 Geary’s C test further supports the presence of spatial dependence at the 1% significance level, reinforcing the finding of clustering (with the exception of social neighbours and k = 1 nearest neighbours). Getis-Ord’s G test results are less consistent, though some configurations (Delaunay triangulation, Sphere of Influence, and k = 2, 3 nearest neighbours) continue to suggest moderately significant (p-values < 0.10) clustering of obesity in Primary schools.
 
-**Weaker evidence of autocorrelation for Secondary Schools**
+**Weak evidence of positive spatial autocorrelation for Secondary Schools**
 
 The evidence for spatial clustering is weaker for secondary schools.
 
@@ -2016,7 +2015,7 @@ Geary’s C test further supports the presence of spatial dependence at the 1% s
 
 **Further conclusions**
 
-There is strong spatial clustering of obesity among primary schools across Singapore, suggesting that spatial factors and neighbourhood effects significantly influence childhood obesity rates. In contrast, secondary schools exhibit weaker and less consistent spatial clustering, implying that obesity prevalence may be more influenced by non-spatial factors.
+There is strong spatial clustering of obesity among primary schools across Singapore, suggesting that spatial factors and neighbourhood effects significantly influence childhood obesity rates. In contrast, secondary schools exhibit weaker and less consistent spatial clustering, implying that obesity prevalence may be more influenced by non-spatial factors. We will consider both non-spatial and spatial models later. 
 
 The insignificant results for social neighbours (primary and secondary schools) indicates that there is insufficient evidence to suggest that "social distance" might lead to spatial clustering of obesity in schools. From a policy perspective, administrators of MOE clusters do not influence obesity in schools, through MOE cluster specific policies or programmes for example. This could be due to MOE's macro approach to administrating policies across all schools in Singapore. Evidently, MOE works with HPB to implement the HMSP nationwide.
 
@@ -2036,7 +2035,9 @@ We use local autocorrelation statistics to identify spatial clusters:
 
 Local Moran's I, returned as a z-score, is used to identify the degree to which one areal unit is autocorrelated relative to it’s neighbour. 
 
-Local Getis-Ord's G, returned as a z-score, suggests a high-high prevalence clusters or hot spot for positive z-values, and low-low prevalence clusters or cold spots for negative z-values.
+Local Getis-Ord's G, returned as a z-score, suggests a high-high overweight prevalence clusters or hot spot for positive z-values, and low-low overweight prevalence clusters or cold spots for negative z-values.
+
+We will use Local Moran's I to identify schools with high positive spatial autocorrelation, and Local Getis-Ord's G to identify the high-high overweight prevalence clusters.
 
 **SOI Spatial autocorrelation statistics**
 
@@ -2057,7 +2058,7 @@ pri_map <- sg_map + obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_legend() +
-  tm_title("Join count analysis")
+  tm_title("Join count analysis (Primary)")
 joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, soi_lw_B_pri)
 
 # by Secondary school
@@ -2069,9 +2070,8 @@ sec_map <- sg_map + obesity_sec_sch %>%
     fill = "HIGH_PREVALENCE", 
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
-  tm_title("Join count analysis")
-joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, 
-                soi_lw_B_sec)
+  tm_title("Join count analysis (Secondary)")
+joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, soi_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
@@ -2084,43 +2084,44 @@ tmap_mode("view")
 localm_soi_pri <- localmoran(obesity_pri_sch$PREVALENCE, soi_lw_pri)
 obesity_pri_sch$LMORANZ <- localm_soi_pri[,4]
 pri_map <- 
-  tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + 
-  tm_shape(obesity_pri_sch) + 
-  tm_symbols(fill = "LMORANZ", size = 0.5) + 
-  tm_title("Local Moran's I Z-Statistic")
+  tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) + tm_lines(lwd = 2) + 
+  tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
+  tm_legend(bg.color = "white") +
+  tm_title("Local Moran's I Z-Statistic (Primary)")
 
 # by Secondary school
 localm_soi_sec <- localmoran(obesity_sec_sch$PREVALENCE, soi_lw_sec)
 obesity_sec_sch$LMORANZ <- localm_soi_sec[,4]
 sec_map <- 
-  tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + 
+  tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) + tm_lines(lwd = 2) + 
   tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
-  tm_title("Local Moran's I Z-Statistic")
+  tm_legend(bg.color = "white") +
+  tm_title("Local Moran's I Z-Statistic (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
 ```{r}
 #### Local Getis-Ord's G statistics
-tmap_mode("plot")
+tmap_mode("view")
 
 # by Primary school
 obesity_pri_sch$GO_STAT <- localG(obesity_pri_sch$PREVALENCE, knn3_lw_B_pri)
-pri_map <-
-  tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + 
-  tm_shape(obesity_pri_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
-  tm_title("Local Getis-Ord's G statistics")
+pri_map <- 
+  tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) + tm_lines(lwd = 2) + 
+  tm_shape(obesity_pri_sch) + 
+  tm_symbols(fill = "GO_STAT", fill.scale = tm_scale(breaks = -4:4), size = 0.5) +
+  tm_legend(bg.color = "white") +
+  tm_title("Local Getis-Ord's G statistics (Primary)")
 
 # by Secondary school
 obesity_sec_sch$GO_STAT <- localG(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec)
 sec_map <- 
-  tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + 
-  tm_shape(obesity_sec_sch) + tm_symbols(fill = "GO_STAT", size = 0.5) +
-  tm_title("Local Getis-Ord's G statistics")
+  tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) + tm_lines(lwd = 2) + 
+  tm_shape(obesity_sec_sch) + 
+  tm_symbols(fill = "GO_STAT", fill.scale = tm_scale(breaks = -4:4), size = 0.5) +
+  tm_legend(bg.color = "white") +
+  tm_title("Local Getis-Ord's G statistics (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
@@ -2130,20 +2131,42 @@ As sphere of influence neighbours have subgraphs with just 2 schools, we will no
 ### High-High overweight prevalence clusters
 
 ```{r}
+tmap_mode("view")
+
 # High-High Primary school clusters
-obesity_pri_sch %>%
-  st_drop_geometry() %>% 
+hh_pri <- obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT > 0) %>% 
   arrange(desc(LMORANZ))
+hh_pri %>% 
+  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  st_drop_geometry() 
+
+hh_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch)) %>% 
+  filter(i_ID %in% hh_pri$PT_ID)
+
+hh_pri_neighbours %>% 
+  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  tm_shape() + tm_lines(lwd = 2) +
+  obesity_pri_sch %>% filter(PT_ID %in% hh_pri_neighbours$j_ID) %>% tm_shape() + tm_symbols(
+    fill = "PREVALENCE", size = 0.5, 
+    fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
+    ) + 
+  hh_pri %>% tm_shape() + tm_symbols(
+    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, fill.legend = tm_legend(show = F),
+    fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
+    ) + 
+  tm_legend(bg.color = "white") +
+  tm_title("High-High overweight prevalence clusters (Primary)")
 
 # High-High Secondary school clusters
-obesity_sec_sch %>%
-  st_drop_geometry() %>% 
+hh_sec <- obesity_sec_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT > 0) %>% 
+  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
   arrange(desc(LMORANZ))
+hh_sec %>% st_drop_geometry()
 ```
 
-Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value > 0), the following primary schools (and their respective SOI neighbours) were identified as High-High overweight prevalence clusters:
+Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value > 0) (we filter for LMORANZ >= 2.576, GO_STAT > 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the map), and their respective SOI neighbours, were identified as High-High overweight prevalence clusters: 
 
 -   Northland Primary School (SOI neighbours: Jiemin Primary School, Peiying Primary School, Naval Base Primary School, Huamin Primary School)
 -   Yishun Primary School (SOI neighbours: Xishan Primary School, Ahmad Ibrahim Primary School, Jiemin Primary School)
@@ -2151,7 +2174,7 @@ Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G 
 -   Marsiling Primary School (SOI neighbours: Fuchun Primary School)
 -   Si Ling Primary School (SOI neighbours: Fuchun Primary School, Qihua Primary School, Woodlands Primary School, Woodgrove Primary School, Innova Primary School)
 
-No secondary schools were identified as High-High overweight prevalence clusters.
+On the other hand, no secondary schools were identified as High-High overweight prevalence clusters.
 
 The Northland Primary School, Yishun Primary School and Peiying Primary School clusters can be considered as one spatial cluster of relatively high overweight prevalence levels, given the common SOI neighbours. Likewise, the Marsiling Primary School and Si Ling Primary School clusters can also be considered as a High-High cluster.
 
@@ -2166,14 +2189,59 @@ obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
   arrange(desc(LMORANZ))
 
-# Low-Low Secondary school clusters
-obesity_sec_sch %>%
-  st_drop_geometry() %>% 
+ll_pri <- obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
   arrange(desc(LMORANZ))
+ll_pri %>% 
+  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  st_drop_geometry()
+
+ll_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch)) %>% 
+  filter(i_ID %in% ll_pri$PT_ID)
+
+pri_map <- ll_pri_neighbours %>% 
+  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  tm_shape() + tm_lines(lwd = 2) +
+  obesity_pri_sch %>% filter(PT_ID %in% ll_pri_neighbours$j_ID) %>% tm_shape() + tm_symbols(
+    fill = "PREVALENCE", size = 0.5, 
+    fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
+    ) + 
+  ll_pri %>% tm_shape() + tm_symbols(
+    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, fill.legend = tm_legend(show = F),
+    fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
+    ) + 
+  tm_legend(bg.color = "white") +
+  tm_title("Low-Low overweight prevalence clusters (Primary)")
+
+# Low-Low Secondary school clusters
+ll_sec <- obesity_sec_sch %>%
+  filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
+  arrange(desc(LMORANZ))
+ll_sec %>% 
+  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  st_drop_geometry()
+
+ll_sec_neighbours <- nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch)) %>% 
+  filter(i_ID %in% ll_sec$PT_ID)
+
+sec_map <- ll_sec_neighbours %>% 
+  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  tm_shape() + tm_lines(lwd = 2) +
+  obesity_sec_sch %>% filter(PT_ID %in% ll_sec_neighbours$j_ID) %>% tm_shape() + tm_symbols(
+    fill = "PREVALENCE", size = 0.5, 
+    fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
+    ) + 
+  ll_sec %>% tm_shape() + tm_symbols(
+    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, fill.legend = tm_legend(show = F),
+    fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
+    ) + 
+  tm_legend(bg.color = "white") +
+  tm_title("Low-Low overweight prevalence clusters (Secondary)")
+
+tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
-Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value < 0), the following primary schools (and their respective SOI neighbours) were identified as Low-Low overweight prevalence clusters:
+Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value < 0) (we filter for LMORANZ >= 2.576, GO_STAT < 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the map), and their respective SOI neighbours, were identified as Low-Low overweight prevalence clusters:
 
 -   Henry Park Primary School (SOI neighbours: Pei Tong Primary School, Fairfield Methodist School (Primary), New Town Primary School, Nanyang Primary School, Methodist Girls' School (Primary))
 -   Nanyang Primary School (SOI neighbours: Henry Park Primary School, Raffles Girls' Primary School)
