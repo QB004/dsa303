@@ -2157,14 +2157,14 @@ hh_pri <- obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT > 0) %>% 
   arrange(desc(LMORANZ))
 hh_pri %>% 
-  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
   st_drop_geometry() 
 
 hh_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch)) %>% 
   filter(i_ID %in% hh_pri$PT_ID)
 
 hh_pri_neighbours %>% 
-  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
   tm_shape() + tm_lines(lwd = 2) +
   obesity_pri_sch %>% filter(PT_ID %in% hh_pri_neighbours$j_ID) %>% tm_shape() + tm_symbols(
     fill = "PREVALENCE", size = 0.5, 
@@ -2180,7 +2180,7 @@ hh_pri_neighbours %>%
 # High-High Secondary school clusters
 hh_sec <- obesity_sec_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT > 0) %>% 
-  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
+  select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
   arrange(desc(LMORANZ))
 hh_sec %>% st_drop_geometry()
 ```
