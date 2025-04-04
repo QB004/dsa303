@@ -579,7 +579,7 @@ tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 1)
 
 For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance spans the North-South length of Singapore. The standard deviation ellipse also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
 
-When we consider the weighted standard deviational ellipse instead, we observe a  directional bias towards the North and North-West directions. This suggests that schools towards the North and North-West of the spatial mean have higher overweight prevalence levels. This observation corresponds with what HPB had observed, that schools nearer to Singapore's Northern border (near the causeway to Malaysia) tended to have higher obesity rates. 
+When we consider the weighted standard deviational ellipse instead, we observe a directional bias towards the North and North-West directions. This suggests that schools towards the North and North-West of the spatial mean have higher overweight prevalence levels. This observation corresponds with what HPB had observed, that schools nearer to Singapore's Northern border (near the causeway to Malaysia) tended to have higher obesity rates. 
 
 With a visual glance of the overweight prevalence map, one might also notice lower overweight prevalence levels in the South and Central regions of Singapore. Thus, this indication of a directional bias motivates us to examine spatial clusters of obesity as well as propose spatial models for childhood obesity in Singapore.
 
@@ -744,7 +744,7 @@ To consider spatial clustering of obesity in schools, we need to define how scho
 
 To quantify spatial autocorrelation, we used the global Moran's I statistic as it is the most popular indicator of global spatial autocorrelation, and it captures the degree of dependence of one variable at a given location to similar variables at neighbouring locations. As the Moran’s I statistic is highly sensitive to the choice of spatial weights matrix, we include other spatial autocorrelation statistics (Join count analysis, Global and local Geary’s C statistic, Global and local Getis-Ord’s G) for robustness checks.
 
-We recommend skipping to the last sub-section to examine the autocorrelation of our selected spatial weights matrix, as well as our results from the spatial clustering analysis of childhood obesity in Singapore.
+We recommend skipping to the second last sub-section in this section to examine the autocorrelation of our selected spatial weights matrix, as well as our results from the spatial clustering analysis of childhood obesity in Singapore.
 
 ```{r}
 # initialising empty data frame to collect Moran's I p-values
@@ -2155,16 +2155,13 @@ tmap_mode("view")
 # High-High Primary school clusters
 hh_pri <- obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT > 0) %>% 
+  select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
   arrange(desc(LMORANZ))
-hh_pri %>% 
-  select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
-  st_drop_geometry() 
+hh_pri %>% select(-PT_ID) %>% st_drop_geometry() 
 
 hh_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch)) %>% 
   filter(i_ID %in% hh_pri$PT_ID)
-
 hh_pri_neighbours %>% 
-  select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
   tm_shape() + tm_lines(lwd = 2) +
   obesity_pri_sch %>% filter(PT_ID %in% hh_pri_neighbours$j_ID) %>% tm_shape() + tm_symbols(
     fill = "PREVALENCE", size = 0.5, 
@@ -2181,11 +2178,10 @@ hh_pri_neighbours %>%
 hh_sec <- obesity_sec_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT > 0) %>% 
   select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
-  arrange(desc(LMORANZ))
-hh_sec %>% st_drop_geometry()
+  arrange(desc(LMORANZ)) # no clustering for secondary schools 
 ```
 
-Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value > 0) (we filter for LMORANZ >= 2.576, GO_STAT > 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the map), and their respective SOI neighbours, were identified as High-High overweight prevalence clusters: 
+Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value > 0) (we filter for LMORANZ >= 2.576, GO_STAT > 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the visualisation), and their respective SOI neighbours, were identified as High-High overweight prevalence clusters: 
 
 -   Northland Primary School (SOI neighbours: Jiemin Primary School, Peiying Primary School, Naval Base Primary School, Huamin Primary School)
 -   Yishun Primary School (SOI neighbours: Xishan Primary School, Ahmad Ibrahim Primary School, Jiemin Primary School)
@@ -2205,14 +2201,12 @@ Targeting these 5 identified primary schools for obesity reduction could have po
 # Low-Low Primary school clusters
 ll_pri <- obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
+  select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
   arrange(desc(LMORANZ))
-ll_pri %>% 
-  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
-  st_drop_geometry()
+ll_pri %>% select(-PT_ID) %>% st_drop_geometry() 
 
 ll_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch)) %>% 
   filter(i_ID %in% ll_pri$PT_ID)
-
 pri_map <- ll_pri_neighbours %>% 
   # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
   tm_shape() + tm_lines(lwd = 2) +
@@ -2230,14 +2224,12 @@ pri_map <- ll_pri_neighbours %>%
 # Low-Low Secondary school clusters
 ll_sec <- obesity_sec_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
+  select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
   arrange(desc(LMORANZ))
-ll_sec %>% 
-  # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
-  st_drop_geometry()
+ll_sec %>% select(-PT_ID) %>% st_drop_geometry() 
 
 ll_sec_neighbours <- nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch)) %>% 
   filter(i_ID %in% ll_sec$PT_ID)
-
 sec_map <- ll_sec_neighbours %>% 
   # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
   tm_shape() + tm_lines(lwd = 2) +
@@ -2255,13 +2247,13 @@ sec_map <- ll_sec_neighbours %>%
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
-Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value < 0) (we filter for LMORANZ >= 2.576, GO_STAT < 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the map), and their respective SOI neighbours, were identified as Low-Low overweight prevalence clusters:
+Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value < 0) (we filter for LMORANZ >= 2.576, GO_STAT < 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the visualisation), and their respective SOI neighbours, were identified as Low-Low overweight prevalence clusters:
 
 -   Henry Park Primary School (SOI neighbours: Pei Tong Primary School, Fairfield Methodist School (Primary), New Town Primary School, Nanyang Primary School, Methodist Girls' School (Primary))
 -   Nanyang Primary School (SOI neighbours: Henry Park Primary School, Raffles Girls' Primary School)
 -   Anglo-Chinese School (Primary) (SOI neighbours: Singapore Chinese Girls' School (Primary), St. Joseph's Institution Junior, Anglo-Chinese School (Junior))
 
-Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value < 0), the following primary schools (and their respective SOI neighbours) were identified as Low-Low overweight prevalence clusters:
+Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value < 0), the following secondary schools (and their respective SOI neighbours) were identified as Low-Low overweight prevalence clusters:
 
 -   Hwa Chong Institution (SOI neighbours: Nanyang Girls' High School, Methodist Girls' School (Secondary), St. Margaret's Secondary School, National Junior College (Junior High))
 -   Nanyang Girls' High School (SOI neighbours: Hwa Chong Institution, National Junior College (Junior High), Methodist Girls' School (Secondary))
