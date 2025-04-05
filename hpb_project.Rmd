@@ -3077,7 +3077,7 @@ cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>%
   tm_shape(name = "Sports CCA Ratio per 100") +
   tm_polygons(
     fill = "RATIO_AGG",
-    fill.scale = tm_scale(values = "brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(values = "YlOrRd"), 
     fill.legend = tm_legend(
       title = "Sports CCAs per 100 Students",
       orientation = "landscape", 
@@ -3429,7 +3429,8 @@ pri_dus_avg_distance_map <- ura_planning_areas_map + pri_dus_avg_distance %>%
   tm_shape(name = "Average Distance to Nearest DUS Sports Facility") +
   tm_polygons(
     fill = "avg_distance",
-    fill.scale = tm_scale(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(values = "YlOrRd",
+                          breaks = c(0, 500, 1000, 1500, 2000, 2500, 3000, 3500)),
     fill.legend = tm_legend(
       title = "Average Distance in Metres",
       orientation = "landscape", 
@@ -3457,7 +3458,7 @@ sec_dus_avg_distance_map <- ura_planning_areas_map + sec_dus_avg_distance %>%
   tm_shape(name = "Average Distance to Nearest DUS Sports Facility") +
   tm_polygons(
     fill = "avg_distance",
-    fill.scale = tm_scale(values = "-brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(values = "YlOrRd"), 
     fill.legend = tm_legend(
       title = "Average Distance in Metres",
       orientation = "landscape", 
