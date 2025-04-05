@@ -2621,7 +2621,6 @@ sdd_pri_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_p
     st_cast("LINESTRING"))
 
 sde_pri_food = calc_sde(id=4, calccentre = T, weighted=F, points= obesity_pri_food_coords)
-ls()
 LC_sde_line_pri = sde_pri_food$LOCATIONS %>%
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_pri_food)) %>% 
     st_combine() %>% 
@@ -2671,6 +2670,8 @@ mean_median_pri
 
 
 ```
+We can observe that the weighted SDE for Primary Schools is skewed Southwest compared to the SDE. Such is the case for Secondary Schools as well. This can be seen through the prevalence of a large number of food outlets concentrated in the Bukit Merah and Tanglin areas.
+
 
 ## Distance of the nearest food option to each school
 
