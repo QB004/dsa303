@@ -2509,7 +2509,7 @@ pri_food_map = ura_regions_map +
   tm_shape(obesity_pri_food) +
   tm_symbols(
     size = 0.5,
-    fill = "num_food_outlets"
+    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd")
   ) +
   tm_title("Food Outlet Density by Primary School")
 
@@ -2529,12 +2529,15 @@ sec_food_map = ura_regions_map +
   tm_shape(obesity_sec_food) +
   tm_symbols(
     size = 0.5,
-    fill = "num_food_outlets"
+    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd")
   ) +
   tm_title("Food Outlet Density by Secondary School")
 
 print(sec_food_map)
 ```
+As a proxy for food options, we use McDonald's outlets, 7-11 outlets and Hawker Centres as these are frequented by youths and are easily accessible. 
+
+Based on the descriptive maps, we can observe a large number of food outlets concentrated towards the south. The converse is true for schools located in the North, where food options range from 0 to 5. 
 
 ## Spatial Descriptive Summary Measures of Education Years
 ```{r}
@@ -2704,13 +2707,16 @@ food_combined_sf = obesity_data_sf_2023_OSO %>%
 #Plot graph 
 ura_regions_map +
   tm_shape(food_combined_sf) +
-  tm_symbols(size = 0.5, fill = "distance_to_nearest_food_option", fill.scale = tm_scale(values = "brewer.yl_or_rd"))
+  tm_symbols(size = 0.5, fill = "distance_to_nearest_food_option", fill.scale = tm_scale(values = "-brewer.yl_or_rd"))
              
 coords_dist <- st_coordinates(food_combined_sf)
 knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 
 ```
+We also explore the distance to the nearest food option to investigate the ease of accessibility for Primary and Secondary School students for meals outside of school. 
+
+Based on the descriptive maps, we observe that schools in the central region have the largest distances to the nearest food option available. 
 
 ## Bivariate Choropleth maps
 
