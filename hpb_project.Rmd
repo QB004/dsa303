@@ -2495,8 +2495,7 @@ macs_sf = mutate(macs, outlet = "mcdonalds")
 hawker_sf = mutate(hawker, outlet = "hawker")
 food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
 
-
-##### Primary school analysis
+#Primary school analysis
 obesity_pri_food = obesity_pri_sch 
 st_crs(obesity_pri_food)$units 
 pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
@@ -2504,7 +2503,6 @@ pri_intersections <- st_intersects(pri_schools_buffer1, food)
 
 #Calculate the number of food outlets within a 1km radius of each school
 obesity_pri_food$num_food_outlets <- lengths(pri_intersections)
-obesity_pri_food
 
 #Show density via choropleth map
 pri_food_map = ura_regions_map + 
@@ -2517,8 +2515,7 @@ pri_food_map = ura_regions_map +
 
 print(pri_food_map)
 
-
-####Secondary school analysis
+#Secondary school analysis
 obesity_sec_food = obesity_sec_sch 
 st_crs(obesity_sec_food)$units 
 sec_schools_buffer1 <- st_buffer(obesity_sec_food, dist = 1000) %>% st_geometry()
@@ -2526,7 +2523,6 @@ sec_intersections <- st_intersects(sec_schools_buffer1, food)
 
 #Calculate the number of food outlets within a 1km radius of each school
 obesity_sec_food$num_food_outlets <- lengths(sec_intersections)
-obesity_sec_food
 
 #Show density via choropleth map
 sec_food_map = ura_regions_map + 
@@ -2538,10 +2534,11 @@ sec_food_map = ura_regions_map +
   tm_title("Food Outlet Density by Secondary School")
 
 print(sec_food_map)
+```
 
-
-
-###Spatial analysis - Secondary school
+## Spatial Descriptive Summary Measures of Education Years
+```{r}
+#Spatial analysis - Secondary school
 st_crs(obesity_sec_food)$proj 
 obesity_sec_food_coords = st_coordinates(obesity_sec_food)
 
@@ -2573,7 +2570,6 @@ LC_sde_line_sec_food_weighted = sde_sec_food_weighted$LOCATIONS %>%
     st_as_sf(coords=c("x","y"), crs=st_crs(obesity_sec_food))) 
 
 mean_median_sec$id =  c("Spatial Mean","Spatial Median") 
-mean_median_sec
 
 
 #Plot the summary measures
@@ -2605,9 +2601,7 @@ mean_median_sec
     tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
     tm_title("Number of Food Outlets for Secondary Schools"))
 
-
-
-##Spatial analysis - Primary school
+#Spatial analysis - Primary school
 st_crs(obesity_pri_food)$proj 
 obesity_pri_food_coords = st_coordinates(obesity_pri_food)
 
@@ -2637,7 +2631,6 @@ LC_sde_line_pri_food_weighted = sde_pri_food_weighted$LOCATIONS %>%
     st_as_sf(coords=c("x","y"), crs=st_crs(obesity_pri_food))) 
 
 mean_median_pri$id =  c("Spatial Mean","Spatial Median") 
-mean_median_pri
 
 #Plot the summary measures 
 (pri_food_map <- ura_planning_areas_map +
@@ -2698,14 +2691,13 @@ find_nearest_food_options <- function(schools_sf, food_options_sf) {
       distance_to_nearest_food_option = as.numeric(nearest_distances),
       outlet_type = nearest_outlet_types
     ) %>%
-    select(SCHOOL, distance_to_nearest_food_option, outlet_type, geometry)
+    dplyr::select(SCHOOL, distance_to_nearest_food_option, outlet_type, geometry)
   
   print(result_sf)
 }
 
 
 nearest_outlet_distance = find_nearest_food_options(obesity_data_sf_2023_OSO, food)
-nearest_outlet_distance
 
 #Combine data into original sf object
 food_combined_sf = obesity_data_sf_2023_OSO %>%
@@ -2714,10 +2706,8 @@ food_combined_sf = obesity_data_sf_2023_OSO %>%
 #Plot graph 
 ura_regions_map +
   tm_shape(food_combined_sf) +
-  tm_symbols(size = 0.5, fill = "distance_to_nearest_food_option")
-
-
-food_combined_sf
+  tm_symbols(size = 0.5, fill = "distance_to_nearest_food_option", fill.scale = tm_scale(values = "brewer.yl_or_rd"))
+             
 coords_dist <- st_coordinates(food_combined_sf)
 knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
