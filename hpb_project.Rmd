@@ -2692,8 +2692,6 @@ find_nearest_food_options <- function(schools_sf, food_options_sf) {
       outlet_type = nearest_outlet_types
     ) %>%
     dplyr::select(SCHOOL, distance_to_nearest_food_option, outlet_type, geometry)
-  
-  print(result_sf)
 }
 
 
@@ -2722,12 +2720,12 @@ library(classInt);library(dplyr)
 #Select the two variables for the bivariate map
 food_distance <- food_combined_sf %>% 
   filter(!is.na(distance_to_nearest_food_option), !is.na(PREVALENCE)) %>%
-  select(SCHOOL,LEVEL, distance_to_nearest_food_option, PREVALENCE, geometry)
+  dplyr::select(SCHOOL,LEVEL, distance_to_nearest_food_option, PREVALENCE, geometry)
 
 #primary school
 pri_obesity_food <- food_combined_sf %>%
   filter(LEVEL == "PRIMARY") %>%
-  select(-LEVEL)
+  dplyr::select(-LEVEL)
 
 pri_food_prevalence <- st_join(ura_planning_areas, pri_obesity_food) %>% 
   group_by(PLN_AREA_N) %>% 
@@ -2765,11 +2763,9 @@ bivariate_colors <- c(
 
 pri_bivariate_food_map <-ura_planning_areas_map +
   tm_shape(pri_bc_food) +
-  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories (Food - Obesity)") +
+  tm_polygons(fill = "bivariate_class", fill.scale = tm_scale(bivariate_colors), fill.legend = tm_legend("Bivariate Categories (Food - Obesity)")) +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Distance to the Nearest Food Option and Obesity Prevalence by URA Planning Areas (Primary Schools)")
-
-pri_bivariate_food_map
 
 
 # Secondary school bivariate map
@@ -2819,7 +2815,7 @@ bivariate_colors <- c(
 
 sec_bivariate_food_map <-ura_planning_areas_map +
   tm_shape(sec_bc_food) +
-  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories (Food - Obesity)") +
+  tm_polygons(fill = "bivariate_class", fill.scale = tm_scale(bivariate_colors), fill.legend = tm_legend("Bivariate Categories (Food - Obesity)")) +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Distance to the Nearest Food Option and Obesity Prevalence by URA Planning Areas (Secondary Schools)")
 
