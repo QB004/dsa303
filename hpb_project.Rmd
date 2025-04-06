@@ -440,7 +440,7 @@ The spatial mean centre (unweighted) and spatial variance (using the standard de
 ```{r}
 ### by Primary School
 
-tmap_mode("view")
+tmap_mode("plot")
 
 # filter out by educational level and remove NA values to calculate SDE
 obesity_pri_sch <- obesity_data_sf_2023_OSO %>% 
@@ -487,7 +487,7 @@ pri_sch_map <-
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence by school", 
+      title = "Overweight prevalence", 
       position = c("BOTTOM", "LEFT"), 
       item.height = 0.5, 
       item.width = 2.1
@@ -495,15 +495,15 @@ pri_sch_map <-
     )
 
 pri_sch_map_summ <- pri_sch_map +
-  tm_shape(pri_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
+  tm_shape(pri_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
   tm_shape(pri_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(pri_sch_sde_weighted_line, name = "weighted SDE") + 
   tm_lines(col = "red", lwd = 2, lty = 3) +
   tm_shape(pri_sch_mean_median, name = "Summary measures") + 
   tm_dots(size = 0.5, shape = "id", fill = "white", shape.legend = tm_legend("Summary measures")) + 
-  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
-  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
   tm_title("Overweight prevalence in Primary Schools")
 
 ### by Secondary School
@@ -554,14 +554,14 @@ sec_sch_map <-
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
-      title = "Overweight prevalence by school",
+      title = "Overweight prevalence",
       position = c("BOTTOM", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
     )
 
 sec_sch_map_summ <- sec_sch_map +
-  tm_shape(sec_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) + 
+  tm_shape(sec_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
   tm_shape(sec_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(sec_sch_sde_weighted_line, name = "weighted SDE") + 
   tm_lines(col = "red", lwd = 2, lty = 3) +
@@ -569,9 +569,9 @@ sec_sch_map_summ <- sec_sch_map +
     size = 0.5, shape = "id", fill = "white", 
     shape.legend = tm_legend("Summary measures")
     ) + 
-  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
-  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
   tm_title("Overweight prevalence in Secondary Schools")
 
 tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 1)
