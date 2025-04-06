@@ -2509,7 +2509,8 @@ pri_food_map = ura_regions_map +
   tm_shape(obesity_pri_food) +
   tm_symbols(
     size = 0.5,
-    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd")
+    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd",
+                                                     breaks = c(0,5,10,15,20,25,30,35))
   ) +
   tm_title("Food Outlet Density by Primary School")
 
@@ -2529,7 +2530,8 @@ sec_food_map = ura_regions_map +
   tm_shape(obesity_sec_food) +
   tm_symbols(
     size = 0.5,
-    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd")
+    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd",
+                                                     breaks = c(0,5,10,15,20,25,30,35))
   ) +
   tm_title("Food Outlet Density by Secondary School")
 
