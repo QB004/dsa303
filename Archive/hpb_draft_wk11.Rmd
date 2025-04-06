@@ -2097,6 +2097,21 @@ To identify spatial clusters and for our subsequent spatial model, we decided to
 
 Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3).
 
+```{r}
+# Visualisation of graph-based and distanced-base neighbours
+par(mfrow = c(1,3))
+plot(st_union(sg_ura_boundaries), border="grey60", axes=F,  main="Delauney triangulation neighbours")
+plot(del_nb_pri, st_coordinates(obesity_pri_sch), pch=19, cex=0.6, add=T)
+plot(st_union(sg_ura_boundaries), border="grey60", axes=F,  main="SOI neighbours")
+plot(soi_nb_pri, st_coordinates(obesity_pri_sch), pch=19, cex=0.6, add=T)
+plot(st_union(sg_ura_boundaries), border="grey60", axes=F, main="k nearest neighbours")
+plot(knn3_nb_pri, st_coordinates(obesity_pri_sch), col="red4", pch=19, cex=0.6, add=T)
+plot(knn2_nb_pri, st_coordinates(obesity_pri_sch), col="red", pch=19, cex=0.6, add=T)
+plot(knn1_nb_pri, st_coordinates(obesity_pri_sch), col="pink", pch=19, cex=0.6, add=T)
+legend("bottomright", c("k=1", "k=2", "k=3"), col=c("pink", "red", "red4"), lty=1)
+par(mfrow = c(1,1))
+```
+
 Additionally, graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design, that is if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
 
 As such, we determined that Sphere of Influence was the best choice to model neighbour links.
