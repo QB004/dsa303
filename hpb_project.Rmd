@@ -440,7 +440,7 @@ The spatial mean centre (unweighted) and spatial variance (using the standard de
 ```{r}
 ### by Primary School
 
-tmap_mode("plot")
+tmap_mode("view")
 
 # filter out by educational level and remove NA values to calculate SDE
 obesity_pri_sch <- obesity_data_sf_2023_OSO %>% 
@@ -771,9 +771,9 @@ obesity_ura_regions_pri <- obesity_ura_regions %>% filter(LEVEL == "PRIMARY")
 ura_regions_nb_pri <- obesity_ura_regions_pri %>% poly2nb(queen = T)
 ura_regions_nb_line_pri <- ura_regions_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_regions_pri)))
-pri_map <- ura_regions_map + ura_regions_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
+pri_map <- ura_regions_map + ura_regions_nb_line_pri %>% tm_shape() + tm_lines(lwd = 1) + 
   st_point_on_surface(st_geometry(obesity_ura_regions_pri)) %>% 
-  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("Contiguous neighbours: URA regions (Primary)")
 
 # by Secondary schools
@@ -781,9 +781,9 @@ obesity_ura_regions_sec <- obesity_ura_regions %>% filter(LEVEL == "SECONDARY")
 ura_regions_nb_sec <- obesity_ura_regions_sec %>% poly2nb(queen = T)
 ura_regions_nb_line_sec <- ura_regions_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_regions_sec)))
-sec_map <- ura_regions_map + ura_regions_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
+sec_map <- ura_regions_map + ura_regions_nb_line_sec %>% tm_shape() + tm_lines(lwd = 1) + 
   st_point_on_surface(st_geometry(obesity_ura_regions_sec)) %>% 
-  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("Contiguous neighbours: URA regions (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -820,9 +820,9 @@ pri_map <- ura_planning_areas_map + obesity_ura_planning_areas_pri %>% tm_shape(
       ), 
     fill.legend = tm_legend_hide()
     ) + 
-  ura_planning_areas_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) +
+  ura_planning_areas_nb_line_pri %>% tm_shape() + tm_lines(lwd = 1) +
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_pri)) %>% 
-  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("Contiguous neighbours: URA planning areas (Primary)")
 
 # by Secondary schools
@@ -849,9 +849,9 @@ sec_map <- ura_planning_areas_map +
       ), 
     fill.legend = tm_legend_hide()
     ) + 
-  ura_planning_areas_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) +
+  ura_planning_areas_nb_line_sec %>% tm_shape() + tm_lines(lwd = 1) +
   st_point_on_surface(st_geometry(obesity_ura_planning_areas_sec)) %>% 
-  tm_shape() + tm_symbols(size = 0.5) + 
+  tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("Contiguous neighbours: URA planning areas (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -1013,9 +1013,9 @@ ura_subzones_nb_pri <- obesity_ura_subzones_pri %>% poly2nb(queen = T)
 ura_subzones_nb_line_pri <- ura_subzones_nb_pri %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_subzones_pri)))
 pri_map <- ura_subzones_map +
-  ura_subzones_nb_line_pri %>% tm_shape() + tm_lines(lwd = 2) + 
+  ura_subzones_nb_line_pri %>% tm_shape() + tm_lines(lwd = 1) + 
   st_point_on_surface(st_geometry(obesity_ura_subzones_pri)) %>% 
-  tm_shape() + tm_symbols(size = 0.4) + 
+  tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("Contiguous neighbours: URA subzones (Primary)")
 
 # by Secondary schools
@@ -1024,9 +1024,9 @@ ura_subzones_nb_sec <- obesity_ura_subzones_sec %>% poly2nb(queen = T)
 ura_subzones_nb_line_sec <- ura_subzones_nb_sec %>% 
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_ura_subzones_sec)))
 sec_map <- ura_subzones_map +
-  ura_subzones_nb_line_sec %>% tm_shape() + tm_lines(lwd = 2) + 
+  ura_subzones_nb_line_sec %>% tm_shape() + tm_lines(lwd = 1) + 
   st_point_on_surface(st_geometry(obesity_ura_subzones_sec)) %>% 
-  tm_shape() + tm_symbols(size = 0.4) + 
+  tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("Contiguous neighbours: URA subzones (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -1078,7 +1078,7 @@ moe_clusters_nb_line_pri <- moe_clusters_nb_pri %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_pri)))
 pri_map <- sg_map + moe_clusters_map + 
   moe_clusters_nb_line_pri %>% tm_shape() + tm_lines(lwd = 0.5) + 
-  obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Social neighbours: MOE clusters (Primary)")
 
 # by Secondary schools
@@ -1094,7 +1094,7 @@ moe_clusters_nb_line_sec <- moe_clusters_nb_sec %>%
   nb2lines(coords = st_point_on_surface(st_geometry(obesity_moe_clusters_sec)))
 sec_map <- sg_map + moe_clusters_map +
   moe_clusters_nb_line_sec %>% tm_shape() + tm_lines(lwd = 0.5) +
-  obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Social neighbours: MOE clusters (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -1230,14 +1230,14 @@ tmap_mode("plot")
 # obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
 del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch), row.names = obesity_pri_sch$PT_ID) 
 pri_map <- sg_map + tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 0.5) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_lines(lwd = 0.5) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Delauney triangulation neighbours (Primary)")
 
 # by Secondary schools
 # obesity_sec_sch_jitter <- st_jitter(obesity_sec_sch) 
 del_nb_sec <- tri2nb(st_coordinates(obesity_sec_sch), row.names = obesity_sec_sch$PT_ID) 
 sec_map <- sg_map + tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 0.5) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_lines(lwd = 0.5) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Delauney triangulation neighbours (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -1396,7 +1396,7 @@ Points are [Sphere of Influence neighbours (SOI)](https://cran.r-project.org/web
 By definition, sphere of influence also ensures that there are no points with zero neighbour links (no empty neighbour sets). This ensures the validity of row-standardised weights matrices and validity of spatial autocorrelation tests used.
 
 ```{r}
-tmap_mode("view")
+tmap_mode("plot")
 
 # by Primary schools
 if (require(dbscan, quietly=TRUE)) {
@@ -1406,7 +1406,7 @@ if (require(dbscan, quietly=TRUE)) {
   soi_nb = NULL
 }
 pri_map <- sg_map + tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_lines(lwd = 1) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Sphere of influence neighbours (Primary)")
 
 # by Secondary schools
@@ -1417,7 +1417,7 @@ if (require(dbscan, quietly=TRUE)) {
   soi_nb = NULL
 }
 sec_map <- sg_map + tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_lines(lwd = 1) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Sphere of influence neighbours (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -1561,7 +1561,7 @@ knn1_nb_pri <- obesity_pri_sch %>%
   knearneigh(k = 1) %>% 
   knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
 pri_map <- sg_map + tm_shape(nb2lines(knn1_nb_pri, coords = st_geometry(obesity_pri_sch))) + 
-  tm_lines(lwd = 2) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_lines(lwd = 1) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("k = 1 nearest neighbour (Primary)")
 
 # by Secondary schools
@@ -1569,7 +1569,7 @@ knn1_nb_sec <- obesity_sec_sch %>%
   knearneigh(k = 1) %>% 
   knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
 sec_map <- sg_map + tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) +
+  tm_lines(lwd = 1) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("k = 1 nearest neighbour (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -1702,7 +1702,7 @@ knn2_nb_pri <- obesity_pri_sch %>%
   knearneigh(k = 2) %>% 
   knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
 pri_map <- sg_map + tm_shape(nb2lines(knn2_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.4) + 
+  tm_lines(lwd = 1) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("k = 2 nearest neighbour (Primary)")
 
 # by Secondary schools
@@ -1710,7 +1710,7 @@ knn2_nb_sec <- obesity_sec_sch %>%
   knearneigh(k = 2) %>% 
   knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
 sec_map <- sg_map + tm_shape(nb2lines(knn2_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) + 
+  tm_lines(lwd = 1) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("k = 2 nearest neighbour (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -1843,7 +1843,7 @@ knn3_nb_pri <- obesity_pri_sch %>%
   knearneigh(k = 3) %>% 
   knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
 pri_map <- sg_map + tm_shape(nb2lines(knn3_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) + 
+  tm_lines(lwd = 1) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("k = 3 nearest neighbour (Primary)")
 
 # by Secondary schools
@@ -1851,7 +1851,7 @@ knn3_nb_sec <- obesity_sec_sch %>%
   knearneigh(k = 3) %>% 
   knn2nb(row.names = obesity_sec_sch$PT_ID) # nearest neighbour
 sec_map <- sg_map + tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))) +
-  tm_lines(lwd = 2) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.4) + 
+  tm_lines(lwd = 1) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("k = 3 nearest neighbour (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -2032,19 +2032,35 @@ To identify spatial clusters and for our subsequent spatial model, we decided to
 Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3). 
 
 ```{r}
-# Visualisation of graph-based and distanced-base neighbours
-par(mfrow = c(1,3))
-plot(st_union(sg_ura_boundaries), border="grey60", axes=F,  main="Delauney triangulation neighbours")
-plot(del_nb_pri, st_coordinates(obesity_pri_sch), pch=19, cex=0.6, add=T)
-plot(st_union(sg_ura_boundaries), border="grey60", axes=F,  main="SOI neighbours")
-plot(soi_nb_pri, st_coordinates(obesity_pri_sch), pch=19, cex=0.6, add=T)
-plot(st_union(sg_ura_boundaries), border="grey60", axes=F, main="k nearest neighbours")
-plot(knn3_nb_pri, st_coordinates(obesity_pri_sch), col="red4", pch=19, cex=0.6, add=T)
-plot(knn2_nb_pri, st_coordinates(obesity_pri_sch), col="red", pch=19, cex=0.6, add=T)
-plot(knn1_nb_pri, st_coordinates(obesity_pri_sch), col="pink", pch=19, cex=0.6, add=T)
-legend("bottomright", c("k=1", "k=2", "k=3"), col=c("pink", "red", "red4"), lty=1)
-par(mfrow = c(1,1))
+tmap_mode("view")
+
+# Delauney triangulation
+map1 <- tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 0.5) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
+  tm_title("Delauney triangulation neighbours (Primary)")
+
+# Sphere of influence
+map2 <- tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 1) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
+  tm_title("Sphere of influence neighbours (Primary)")
+
+# k nearest neighbour
+map3 <- tm_shape(nb2lines(knn3_nb_pri, coords = st_geometry(obesity_pri_sch))) + 
+  tm_lines(lwd = 1, col = "red") + 
+  tm_shape(nb2lines(knn2_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 1.5, col = "green") + 
+  tm_shape(nb2lines(knn1_nb_pri, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2, col = "black") +
+  tm_legend(c("k=1", "k=2", "k=3"), col=c("pink", "red", "red4"), lty=1) +
+  obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
+  tm_add_legend(type = "lines", labels = "k=3", lwd = 1, col = "red") +
+  tm_add_legend(type = "lines", labels = "k=2", lwd = 1.5, col = "green") +
+  tm_add_legend(type = "lines", labels = "k=1", lwd = 2, col = "black") +
+  tm_title("k nearest neighbour (Primary)")
+
+tmap_arrange(map1, map2, map3, nrow = 1)
 ```
+
 
 Additionally, graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design, that is if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
 
@@ -2062,7 +2078,7 @@ We will use Local Moran's I to identify schools with high positive spatial autoc
 
 ```{r}
 #### Join count analysis
-tmap_mode("plot")
+tmap_mode("view")
 
 # Setting an overweight cutoff point
 OVERWEIGHT_CUTOFF <- 0.14
@@ -2070,20 +2086,19 @@ OVERWEIGHT_CUTOFF <- 0.14
 # by Primary school
 obesity_pri_sch$HIGH_PREVALENCE <- 
   as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
-pri_map <- sg_map + obesity_pri_sch %>% 
+pri_map <- obesity_pri_sch %>% 
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
     fill = "HIGH_PREVALENCE", 
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
-  tm_legend() +
   tm_title("Join count analysis (Primary)")
 joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, soi_lw_B_pri)
 
 # by Secondary school
 obesity_sec_sch$HIGH_PREVALENCE <- 
   as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
-sec_map <- sg_map + obesity_sec_sch %>% 
+sec_map <- obesity_sec_sch %>% 
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
     fill = "HIGH_PREVALENCE", 
@@ -2105,7 +2120,6 @@ obesity_pri_sch$LMORANZ <- localm_soi_pri[,4]
 pri_map <- 
   tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) + tm_lines(lwd = 2) + 
   tm_shape(obesity_pri_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
-  tm_legend(bg.color = "white") +
   tm_title("Local Moran's I Z-Statistic (Primary)")
 
 # by Secondary school
@@ -2114,7 +2128,6 @@ obesity_sec_sch$LMORANZ <- localm_soi_sec[,4]
 sec_map <- 
   tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) + tm_lines(lwd = 2) + 
   tm_shape(obesity_sec_sch) + tm_symbols(fill = "LMORANZ", size = 0.5) + 
-  tm_legend(bg.color = "white") +
   tm_title("Local Moran's I Z-Statistic (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -2130,7 +2143,6 @@ pri_map <-
   tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) + tm_lines(lwd = 2) + 
   tm_shape(obesity_pri_sch) + 
   tm_symbols(fill = "GO_STAT", fill.scale = tm_scale(breaks = -4:4), size = 0.5) +
-  tm_legend(bg.color = "white") +
   tm_title("Local Getis-Ord's G statistics (Primary)")
 
 # by Secondary school
@@ -2139,7 +2151,6 @@ sec_map <-
   tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) + tm_lines(lwd = 2) + 
   tm_shape(obesity_sec_sch) + 
   tm_symbols(fill = "GO_STAT", fill.scale = tm_scale(breaks = -4:4), size = 0.5) +
-  tm_legend(bg.color = "white") +
   tm_title("Local Getis-Ord's G statistics (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
@@ -2157,7 +2168,15 @@ hh_pri <- obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT > 0) %>% 
   select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
   arrange(desc(LMORANZ))
-hh_pri %>% select(-PT_ID) %>% st_drop_geometry() 
+hh_pri %>% select(-PT_ID) %>% st_drop_geometry() %>% gt() %>%
+  tab_header(
+    title = "High obesity schools with high spatial autocorrelation",
+    subtitle = "Primary schools"
+  ) %>%
+  fmt_number(
+    columns = c(PREVALENCE, LMORANZ, GO_STAT),
+    decimals = 4
+  )
 
 hh_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch)) %>% 
   filter(i_ID %in% hh_pri$PT_ID)
@@ -2203,7 +2222,15 @@ ll_pri <- obesity_pri_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
   select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
   arrange(desc(LMORANZ))
-ll_pri %>% select(-PT_ID) %>% st_drop_geometry() 
+ll_pri %>% select(-PT_ID) %>% st_drop_geometry() %>% gt() %>%
+  tab_header(
+    title = "Low obesity schools with high spatial autocorrelation",
+    subtitle = "Primary schools"
+  ) %>%
+  fmt_number(
+    columns = c(PREVALENCE, LMORANZ, GO_STAT),
+    decimals = 4
+  )
 
 ll_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch)) %>% 
   filter(i_ID %in% ll_pri$PT_ID)
@@ -2226,7 +2253,15 @@ ll_sec <- obesity_sec_sch %>%
   filter(LMORANZ >= 2.576, GO_STAT < 0) %>% 
   select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>%
   arrange(desc(LMORANZ))
-ll_sec %>% select(-PT_ID) %>% st_drop_geometry() 
+ll_sec %>% select(-PT_ID) %>% st_drop_geometry() %>% gt() %>%
+  tab_header(
+    title = "Low obesity schools with high spatial autocorrelation",
+    subtitle = "Secondary schools"
+  ) %>%
+  fmt_number(
+    columns = c(PREVALENCE, LMORANZ, GO_STAT),
+    decimals = 4
+  )
 
 ll_sec_neighbours <- nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch)) %>% 
   filter(i_ID %in% ll_sec$PT_ID)
