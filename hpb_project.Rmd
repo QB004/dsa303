@@ -592,7 +592,7 @@ According to the URA, each [Planning Region](https://data.gov.sg/collections/171
 We aggregate overweight counts and school enrolment data by the different administrative regions, and fill in the regions to get visualise overweight prevalence by region.
 
 ```{r}
-tmap_mode("plot")
+tmap_mode("view")
 
 # Aggregating overweight counts by URA regions
 obesity_ura_regions <- st_join(ura_regions, obesity_data_sf) %>% 
@@ -613,7 +613,7 @@ ura_regions_map + obesity_ura_regions %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "LEFT"),
+      position = c("BOTTOM", "RIGHT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
@@ -639,7 +639,7 @@ ura_planning_areas_map + obesity_ura_planning_areas %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "LEFT"),
+      position = c("BOTTOM", "RIGHT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
@@ -665,7 +665,7 @@ ura_subzones_map + obesity_ura_subzones %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "LEFT"),
+      position = c("BOTTOM", "RIGHT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
@@ -711,7 +711,7 @@ obesity_moe_clusters <-
     geometry = st_union(geometry)
     )
 
-sg_map + moe_clusters_map + obesity_moe_clusters %>% 
+moe_clusters_map + obesity_moe_clusters %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
@@ -722,7 +722,7 @@ sg_map + moe_clusters_map + obesity_moe_clusters %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "LEFT"),
+      position = c("BOTTOM", "RIGHT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
@@ -2429,8 +2429,8 @@ income_map <- ura_planning_areas_map +
     tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
     tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
     tm_title("Income Distribution across SG Planning Areas")
-tmap_mode("view")
-income_map
+
+print(income_map)
 ```
 
 Analysing the spatial descriptive summary measures for income variable, we observe all spatial measures (spatial mean, spatial median, SDD, SDE and weighted SDE) are directionally skewed towards the southeast, though much more skewed towards the south than the eastern direction. This matches the observation that most of the higher income planning areas are concentrated in the south, with middle range income planning areas in the east. The weighted SDE (red dotted line) being more skewed towards the south than the SDE (black dotted line) further reflects this spatial pattern.
@@ -2493,8 +2493,8 @@ education_map <- ura_planning_areas_map +
     tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
     tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
     tm_title("Education Years Across SG Planning Areas")
-tmap_mode("view")
-education_map
+
+print(education_map)
 ```
 
 Analysing the spatial descriptive summary measures for education variable, we observe all spatial measures (spatial mean, spatial median, SDD, SDE and weighted SDE) are directionally skewed towards the southeast, though much more skewed towards the south than the eastern direction. Visually comparing with the spatial descriptive measures for the income variable, the spatial mean and median are in approximately the same location (within the same planning area at least) while the SDE and weighted SDE for the education variable are slightly less skewed towards the south than the income variable. This could be because of the nature of the variable since income ranges (max-min = \$8,000) have a much larger spread than education years (max - min = 4 years). This matches the observation that most of the planning areas with best educated residents are concentrated in the south, with planning areas in the east having more years of education than planning areas in the west. The weighted SDE (red dotted line) being more skewed towards the south than the SDE (black dotted line) further reflects this spatial pattern, although there appears to be less of a southbound skewing effect for the education variable than the income variable.
