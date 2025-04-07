@@ -3724,6 +3724,9 @@ For the primary school variables, the intercept is the most statistically signif
 
 ```{r}
 #BSS for Pri
+nb_varno_pri <- nb_varno_sec <- 
+  data.frame("Selection.method" = c(), "Largest.adjr2" = c(), 
+             "Smallest.bic" = c())
 library(leaps)
 regfitbss.all_pri <- regsubsets(PREVALENCE~., obesity_model_analysis_pri) # run the Best Subset Selection
 regbss.summary_pri <- summary(regfitbss.all_pri)
@@ -3733,6 +3736,8 @@ coef(regfitbss.all_pri, res_bss_pri)
 c_bss_pri <- which.min(regbss.summary_pri$bic)
 c_bss_pri
 coef(regfitbss.all_pri, c_bss_pri)
+nb_varno_pri <- rbind(nb_varno_pri, data.frame(
+  "Selection.method" = "Best Subset Selection", "Largest.adjr2" = res_bss_pri, "Smallest.bic" = c_bss_pri))
 #BSS for Sec
 regfitbss.all_sec <- regsubsets(PREVALENCE~., obesity_model_analysis_sec) # run the Best Subset Selection
 regbss.summary_sec <- summary(regfitbss.all_sec)
@@ -3742,6 +3747,8 @@ coef(regfitbss.all_sec, res_bss_sec)
 c_bss_sec <- which.min(regbss.summary_sec$bic)
 c_bss_sec
 coef(regfitbss.all_sec, c_bss_sec)
+nb_varno_sec <- rbind(nb_varno_sec, data.frame(
+  "Selection.method" = "Best Subset Selection", "Largest.adjr2" = res_bss_sec, "Smallest.bic" = c_bss_sec))
 
 #Forward Selection for Pri
 regfitfwd.all_pri <- regsubsets(PREVALENCE~., obesity_model_analysis_pri,method="forward") # run the Forward Selection
@@ -3752,6 +3759,8 @@ coef(regfitfwd.all_pri, res_fwd_pri)
 c_fwd_pri <- which.min(regfwd.summary_pri$bic)
 c_fwd_pri
 coef(regfitfwd.all_pri, c_fwd_pri)
+nb_varno_pri <- rbind(nb_varno_pri, data.frame(
+  "Selection.method" = "Forward Selection", "Largest.adjr2" = res_fwd_pri, "Smallest.bic" = c_fwd_pri))
 #Forward Selection for Sec
 regfitfwd.all_sec <- regsubsets(PREVALENCE~., obesity_model_analysis_sec,method="forward") # run the Forward Selection
 regfwd.summary_sec <- summary(regfitfwd.all_sec)
@@ -3761,6 +3770,8 @@ coef(regfitfwd.all_sec, res_fwd_sec)
 c_fwd_sec <- which.min(regfwd.summary_sec$bic)
 c_fwd_sec
 coef(regfitfwd.all_sec, c_fwd_sec)
+nb_varno_sec <- rbind(nb_varno_sec, data.frame(
+  "Selection.method" = "Forward Selection", "Largest.adjr2" = res_fwd_sec, "Smallest.bic" = c_fwd_sec))
 
 #Backward Selection for Pri
 regfitbwd.all_pri <- regsubsets(PREVALENCE~., obesity_model_analysis_pri,method="backward") # run the Backward Selection
@@ -3771,6 +3782,8 @@ coef(regfitbwd.all_pri, res_bwd_pri)
 c_bwd_pri <- which.min(regbwd.summary_pri$bic)
 c_bwd_pri
 coef(regfitbwd.all_pri, c_bwd_pri)
+nb_varno_pri <- rbind(nb_varno_pri, data.frame(
+  "Selection.method" = "Backward Selection", "Largest.adjr2" = res_bwd_pri, "Smallest.bic" = c_bwd_pri))
 #Backward Selection for Sec
 regfitbwd.all_sec <- regsubsets(PREVALENCE~., obesity_model_analysis_sec,method="backward") # run the Backward Selection
 regbwd.summary_sec <- summary(regfitbwd.all_sec)
@@ -3784,21 +3797,46 @@ ols_pri<-lm(PREVALENCE~Education+is_popular_sch+is_govt_sch+is_coed_sch,data=obe
 summary(ols_pri)
 ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
 summary(ols_sec)
+nb_varno_sec <- rbind(nb_varno_sec, data.frame(
+  "Selection.method" = "Backward Selection", "Largest.adjr2" = res_bwd_sec, "Smallest.bic" = c_bwd_sec))
+
+# Summary of spatial autocorrelation test p-values
+nb_varno_pri %>% gt() %>%
+  tab_header(
+    title = "Number of Predictors for Model Selection Techniques",
+    subtitle = "Primary schools"
+  ) %>%
+  fmt_number(
+    columns = c(Largest.adjr2, Smallest.bic),
+    decimals = 0
+  )
+
+# Summary of spatial autocorrelation test p-values
+nb_varno_sec %>% gt() %>%
+  tab_header(
+    title = "Number of Predictors for Model Selection Techniques",
+    subtitle = "Secondary schools"
+  ) %>%
+  fmt_number(
+    columns = c(Largest.adjr2, Smallest.bic),
+    decimals = 0
+  )
+
 ```
 
-Based on the three types of model selection, We observe that BSS and Backward selection recommend the same model for primary school variables with 4 terms based on smallest BIC criterion. This model was chosen because it has the fewest number of variables, facilitating simplicity in interpretation.
+Based on the three types of model selection, We observe that BSS and Backward selection recommend the same model for primary school variables with 4 predictor terms based on smallest BIC criterion. This model was chosen because it has the fewest number of predictors, facilitating simplicity in interpretation.
 
 The best linear model for obesity prevalence in primary schools is \
 PREVALENCE = 0.215854168 - 0.010527116 * Education - 0.008987562 * is_popular_sch + 0.014435592 * is_govt_sch + 0.016975461 * is_coed_sch 
 
 This is corroborated by the variable analysis where is_coed_sch, is_popular_sch and is_govt_sch are recognised as statistically significant variables. Interestingly, the variable for Education is also included in the best linear model despite not being statistically significant in the earlier analysis.
 
-We also observe all 3 approaches recommend the same model for secondary school variables with 2 terms based on smallest BIC criterion.
+We also observe all 3 approaches recommend the same model for secondary school variables with 2 predictor terms based on smallest BIC criterion.
 
 The best linear model for obesity prevalence in secondary schools is \
 PREVALENCE = 0.247219424 - 0.009114996 * Education - 0.043620675 * is_special_sch 
 
-This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant variables.
+This is corroborated by the variable analysis where Education and is_special_sch are the two most statistically significant predictor variables.
 
 ### Residual analysis for Primary Schools
 
