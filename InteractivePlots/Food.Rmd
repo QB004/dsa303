@@ -28,31 +28,20 @@ if (requireNamespace("rstudioapi", quietly = TRUE)) {
 ```
 
 ```{r}
-# saveRDS(sg_crs, "InteractivePlots/sg_crs.rds")
-obesity_data_sf_2023_OSO <-
-  readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/obesity_data_sf_2023_OSO.rds")
-sg_crs <-
-  readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/sg_crs.rds")
+hawker <- readRDS("InteractivePlots/hawker.rds")
+hawker_full <- readRDS("InteractivePlots/hawker_full.rds")
+macs <- readRDS("InteractivePlots/macs.rds")
+macs_full <- readRDS("InteractivePlots/macs_full.rds")
+seven_eleven_full <- readRDS("InteractivePlots/seven_eleven_full.rds")
+seven_eleven <- readRDS("InteractivePlots/seven_eleven.rds")
+obesity_pri_sch <- readRDS("InteractivePlots/obesity_pri_sch.rds")
+ura_regions_map <- readRDS("InteractivePlots/ura_regions_map.rds")
+obesity_sec_sch <- readRDS("InteractivePlots/obesity_sec_sch.rds")
 ```
 
 ```{r}
-# Food and Nutrition
-#Data transformation
-
-#Hawker Centres
-hawker_full = st_read("DataFiles/NEAMarketandFoodCentre.geojson") %>%
-  st_transform(crs = sg_crs)
 hawker = hawker_full["geometry"]
-
-#Fast Food Outlets 
-  #Mcdonald's
-macs_full = st_read("DataFiles/mcdonalds_singapore.geojson") %>%
-  st_transform(crs = sg_crs) 
 macs = macs_full[,"geometry"] 
-
-  #7-11 Outlets
-seven_eleven_full = st_read("DataFiles/711_singapore.geojson") %>%
-  st_transform(crs = sg_crs)
 seven_eleven = seven_eleven_full[,"geometry"]
 
 #Combine data into single SF object

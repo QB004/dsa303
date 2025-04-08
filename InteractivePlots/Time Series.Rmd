@@ -15,6 +15,14 @@ knitr::opts_chunk$set(message = FALSE)
 ```
 
 ```{r}
+oso_pri_hist <- readRDS("InteractivePlots/oso_pri_hist.rds")
+obesity_data_sf_2023_OSO <- readRDS("InteractivePlots/obesity_data_sf_2023_OSO.rds")
+ura_regions_map <- readRDS("InteractivePlots/ura_regions_map.rds")
+oso_hist_geom <- readRDS("InteractivePlots/oso_hist_geom.rds")
+pri_sch_map <- readRDS("InteractivePlots/pri_sch_map.rds")
+```
+
+```{r}
 start.time = Sys.time()
 pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", "gt", "broom",
          "tidyverse", "sf", "tmap", "aspace", "spdep", "corrplot", "readxl", "spatialreg")
@@ -27,13 +35,6 @@ if (requireNamespace("rstudioapi", quietly = TRUE)) {
 }
 ```
 
-```{r}
-# saveRDS(sg_crs, "InteractivePlots/sg_crs.rds")
-obesity_data_sf_2023_OSO <-
-  readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/obesity_data_sf_2023_OSO.rds")
-sg_crs <-
-  readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/sg_crs.rds")
-```
 
 ```{r}
 ###Primary School Z-Score Change Map for Model 1
@@ -47,8 +48,6 @@ library(vars)
 library(trend)
 library(readxl)
 library(dplyr)
-
-oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
 
 oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
   drop_na()
@@ -122,7 +121,6 @@ ura_regions_map +
 ```
 The plot contains the Z-score changes for each Primary School, with darker red colours representing worsening obesity levels and lighter colours representing improving obesity levels.
 
-
 ```{r}
 # by Primary schools
 # obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
@@ -186,8 +184,6 @@ The plots provide a descriptive view of Primary Schools with improving and worse
 
 ```{r}
 #Model 2: Contingency Table of Primary Schools with Worsening Obesity Levels, controlled for COVID
-
-oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
 
 oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
   drop_na()
@@ -278,7 +274,4 @@ scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_ch
 
 #Plot of Contingency Table for Primary School Obesity Rates Controlled for COVID
 plotly::ggplotly(scatterplot_of_schools)
-
-
-
 ```
