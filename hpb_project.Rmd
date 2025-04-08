@@ -4194,7 +4194,7 @@ pri_map_z_increase <- ura_regions_map + oso_hist_geom1 %>%
   tm_title("Join count analysis")
 
 
-# by Primary school - with decreased obesity levels ##TO ASK PROF: here, the bigger circles are smaller decreases. should i change everything to positive values so that it shows up correctly?
+# by Primary school
 oso_hist_geom2 = oso_hist_geom %>%
   filter(z_change < 0)
 oso_hist_geom2$z_change_high_decrease <- 
