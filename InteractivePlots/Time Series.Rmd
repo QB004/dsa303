@@ -1,0 +1,41 @@
+---
+title: "Spatial Descriptive Measures of Obesity"
+output: 
+  html_document
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+```{r}
+start.time = Sys.time()
+pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", "gt", "broom",
+         "tidyverse", "sf", "tmap", "aspace", "spdep", "corrplot", "readxl", "spatialreg")
+invisible(lapply(pkgs, function(pkg) {
+  suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+}))
+rm(pkgs)
+if (requireNamespace("rstudioapi", quietly = TRUE)) {
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+}
+```
+
+```{r}
+# saveRDS(sg_crs, "InteractivePlots/sg_crs.rds")
+obesity_data_sf_2023_OSO <-
+  readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/obesity_data_sf_2023_OSO.rds")
+sg_crs <-
+  readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/sg_crs.rds")
+```
+
+```{r}
+
+```
+
