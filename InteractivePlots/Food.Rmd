@@ -35,7 +35,7 @@ sg_crs <-
   readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/sg_crs.rds")
 ```
 
-```{r}
+```{r, results = FALSE}
 # Food and Nutrition
 #Data transformation
 
@@ -79,7 +79,6 @@ pri_food_map = ura_regions_map +
   ) +
   tm_title("Food Outlet Density by Primary School")
 
-print(pri_food_map)
 
 #Secondary school analysis
 obesity_sec_food = obesity_sec_sch 
