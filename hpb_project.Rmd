@@ -2501,7 +2501,7 @@ Analysing the spatial descriptive summary measures for education variable, we ob
 
 # Food and Nutrition
 
-```{r}
+```{r, results = FALSE}
 #Data transformation
 
 #Hawker Centres
@@ -2513,16 +2513,12 @@ hawker = hawker_full["geometry"]
   #Mcdonald's
 macs_full = st_read("DataFiles/mcdonalds_singapore.geojson") %>%
   st_transform(crs = sg_crs) 
-table(st_is_valid(macs_full))
-st_crs(macs_full)$epsg 
 macs = macs_full[,"geometry"] 
 
   #7-11 Outlets
 seven_eleven_full = st_read("DataFiles/711_singapore.geojson") %>%
   st_transform(crs = sg_crs)
 seven_eleven = seven_eleven_full[,"geometry"]
-table(st_is_valid(seven_eleven)) 
-st_crs(seven_eleven)$epsg 
 
 #Combine data into single SF object
 seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
@@ -2532,7 +2528,6 @@ food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
 
 #Primary school analysis
 obesity_pri_food = obesity_pri_sch 
-st_crs(obesity_pri_food)$units 
 pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
 pri_intersections <- st_intersects(pri_schools_buffer1, food)
 
@@ -2549,11 +2544,8 @@ pri_food_map = ura_regions_map +
   ) +
   tm_title("Food Outlet Density by Primary School")
 
-print(pri_food_map)
-
 #Secondary school analysis
 obesity_sec_food = obesity_sec_sch 
-st_crs(obesity_sec_food)$units 
 sec_schools_buffer1 <- st_buffer(obesity_sec_food, dist = 1000) %>% st_geometry()
 sec_intersections <- st_intersects(sec_schools_buffer1, food)
 
@@ -2570,16 +2562,17 @@ sec_food_map = ura_regions_map +
   ) +
   tm_title("Food Outlet Density by Secondary School")
 
-print(sec_food_map)
+tmap_arrange(pri_food_map, sec_food_map)
 ```
-As a proxy for food options, we use McDonald's outlets, 7-11 outlets and Hawker Centres as these are frequented by youths and are easily accessible. 
+As a proxy for food options, we use the presence of McDonald's outlets, 7-Eleven stores, and Hawker Centres. These establishments were chosen because they are popular among youths, offer affordable and convenient food options, and are typically located in easily accessible areas. Their widespread presence across Singapore also makes them suitable indicators for analyzing food accessibility in the vicinity of schools.
 
-Based on the descriptive maps, we can observe a large number of food outlets concentrated towards the south. The converse is true for schools located in the North, where food options range from 0 to 5. 
+Based on the descriptive maps, we can observe a large number of food outlets concentrated towards the south. This could be attributed to these schools being located near the Central Business District. The converse is true for schools located in the North, where food options range from 0 to 5. This could be due to lower population density, less commercial development, or more residential zoning in the North. 
+
+Despite these regional differences, the data does not reveal a strong spatial pattern. 
 
 ## Spatial Descriptive Summary Measures of Food
 ```{r}
 #Spatial analysis - Secondary school
-st_crs(obesity_sec_food)$proj 
 obesity_sec_food_coords = st_coordinates(obesity_sec_food)
 
 mean_sec_food = calc_mnc(id = 1, points = obesity_sec_food_coords)
@@ -2592,7 +2585,6 @@ LC_sdd_line_sec_food = sdd_sec_food$LOCATIONS %>%
     st_cast("LINESTRING") 
 
 sde_sec_food = calc_sde(id=4, calccentre = T, weighted=F, points= obesity_sec_food_coords)
-ls()
 LC_sde_line_sec = sde_sec_food$LOCATIONS %>%
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_sec_food)) %>% 
     st_combine() %>% 
@@ -2613,7 +2605,7 @@ mean_median_sec$id =  c("Spatial Mean","Spatial Median")
 
 
 #Plot the summary measures
-(sec_food_map <- ura_planning_areas_map +
+sec_food_map_spatial <- ura_planning_areas_map +
     tm_shape(obesity_sec_food, name = "num_food_outlets") +
     tm_symbols(
         size = "num_food_outlets",
@@ -2639,20 +2631,19 @@ mean_median_sec$id =  c("Spatial Mean","Spatial Median")
     tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
     tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
     tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
-    tm_title("Number of Food Outlets for Secondary Schools"))
+    tm_title("Number of Food Outlets for Secondary Schools")
 
 #Spatial analysis - Primary school
-st_crs(obesity_pri_food)$proj 
 obesity_pri_food_coords = st_coordinates(obesity_pri_food)
 
 mean_pri_food = calc_mnc(id = 1, points = obesity_pri_food_coords)
 median_pri_food = calc_mdc(id = 2, points = obesity_pri_food_coords)
 
 sdd_pri_food = calc_sdd(id = 3, calccentre = T, weighted = F, points = obesity_pri_food_coords)
-(LC_sdd_line_pri_food = sdd_pri_food$LOCATIONS %>% 
+LC_sdd_line_pri_food = sdd_pri_food$LOCATIONS %>% 
     st_as_sf(coords = c("x", "y"), crs=st_crs(obesity_pri_food)) %>% 
     st_combine() %>% 
-    st_cast("LINESTRING"))
+    st_cast("LINESTRING")
 
 sde_pri_food = calc_sde(id=4, calccentre = T, weighted=F, points= obesity_pri_food_coords)
 LC_sde_line_pri = sde_pri_food$LOCATIONS %>%
@@ -2666,14 +2657,14 @@ LC_sde_line_pri_food_weighted = sde_pri_food_weighted$LOCATIONS %>%
     st_combine() %>% 
     st_cast("LINESTRING") 
 
-(mean_median_pri = rbind(mean_pri_food$LOCATIONS, median_pri_food$LOCATIONS) %>% 
+mean_median_pri = rbind(mean_pri_food$LOCATIONS, median_pri_food$LOCATIONS) %>% 
     data.frame() %>% 
-    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_pri_food))) 
+    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_pri_food)) 
 
 mean_median_pri$id =  c("Spatial Mean","Spatial Median") 
 
 #Plot the summary measures 
-(pri_food_map <- ura_planning_areas_map +
+pri_food_map_spatial <- ura_planning_areas_map +
     tm_shape(obesity_pri_food, name = "num_food_outlets") +
     tm_symbols(
         size = "num_food_outlets",
@@ -2699,12 +2690,14 @@ mean_median_pri$id =  c("Spatial Mean","Spatial Median")
     tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
     tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
     tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
-    tm_title("Number of Food Outlets for Primary Schools"))
+    tm_title("Number of Food Outlets for Primary Schools")
 
+tmap_arrange(pri_food_map_spatial, sec_food_map_spatial)
 
 ```
-We can observe that the weighted SDE for Primary Schools is skewed Southwest compared to the SDE. Such is the case for Secondary Schools as well. This can be seen through the prevalence of a large number of food outlets concentrated in the Bukit Merah and Tanglin areas.
+From the spatial distribution maps, we can observe that the weighted SDE for both primary and secondary schools is skewed toward the southwestern region when compared to the unweighted SDE. This suggests that schools in the southwest tend to have a disproportionately higher number of nearby food outlets. 
 
+This skew is apparent in areas such as Bukit Merah and Tanglin, where there is a higher density of food outlets near several schools. For example, Cantonment Primary School has 18 food outlets nearby, which is one of the highest for Primary Schools. For Secondary Schools, School of the Arts has 47 food outlets nearby. Such schools pull the weighted SDE ellipse toward the southwest, as they contribute more significantly to the overall spatial pattern due to their higher food outlet counts.
 
 ## Distance of the nearest food option to each school
 
@@ -2750,10 +2743,15 @@ coords_dist <- st_coordinates(food_combined_sf)
 knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 
-```
-We also explore the distance to the nearest food option to investigate the ease of accessibility for Primary and Secondary School students for meals outside of school. 
+summary(nearest_outlet_distance)
 
-Based on the descriptive maps, we observe that schools in the central region have the largest distances to the nearest food option available. 
+```
+To better understand the accessibility of food options for students, we also analysed the distance from each school to the nearest food outlet, using McDonald’s, 7-Eleven, and Hawker Centres as proxies once again. This captures how close the nearest source of food is and reflects the ease of access of which students can access meals or snacks.
+
+The minimum distance to the nearest food outlet is approximately 29.3 metres. The median distance to the nearest food outlet is 390.3 metres, and the mean distance is 421.7 metres, suggesting that for the average school, the closest food option is likely within a 5 to 10 minute walk. 
+
+However, the maximum distance recorded is over 1.1 km. This means that certain schools, especially those located near the Central Water Catchment area are relatively isolated from fast food options. This disparity in food access is further emphasized by the interquartile range: while 25% of schools have a food outlet within approximately 278 metres, the top 25% must walk more than 539 metres to reach the nearest food option.
+
 
 ## Bivariate Choropleth maps
 
@@ -2866,6 +2864,9 @@ sec_bivariate_food_map <-ura_planning_areas_map +
 sec_bivariate_food_map
 pri_bivariate_food_map
 ```
+From the Bivariate Choropleth maps obtained, for Secondary Schools, we observe that Jurong East is of the low distance and high obesity category. On average, there is an obesity prevalence of 0.19, with the average distance to the nearest food option at 313.5m. This places them in the high obesity category.
+
+For Secondary Schools, we observe three regions with the low distance and high obesity category, namely Yishun, Jurong West and Kallang. 
 
 # Sports CCAs in Schools
 
@@ -4121,7 +4122,8 @@ oso_hist_geom = oso_hist_geom_full %>%
 # School obesity map plot (z-score change)
 ura_regions_map +
   tm_shape(oso_hist_geom) +
-  tm_symbols(size = 0.5, fill = "z_change",  fill.scale = tm_scale(values = "brewer.yl_or_rd"))
+  tm_symbols(size = 0.5, fill = "z_change",  fill.scale = tm_scale(values = "brewer.yl_or_rd"))+
+  tm_title("Map of Z-score Change for Primary Schools")
 
 # Schools which saw a 1 standard deviation increase in OSO levels
 oso_hist_geom %>% 
@@ -4133,7 +4135,10 @@ oso_hist_geom %>%
 oso_hist_geom %>% 
   st_drop_geometry() %>% 
   filter(z_change <= -1) %>% 
-  arrange(desc(z_change)) # 10 schools identified
+  arrange(desc(z_change)) %>%
+  kable()
+
+
 ```
 
 ## Sphere of influence neighbours
@@ -4171,7 +4176,7 @@ geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
 Average number of links (Primary school): 3.094972\
 p-value for Global Moran's I test (Primary school): 0.5712 p-value for Global Geary's C test (Primary school): 0.3879
 
-Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019.
+Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019. 
 
 #### Join count analysis
 
@@ -4216,6 +4221,7 @@ pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>%
 pri_map_z_decrease1
 pri_map_z_increase
 ```
+The plots provide a descriptive view of Primary Schools with improving and worsening obesity levels over time. The blue circles represent extreme cases. 
 
 ## Joint count considering only extremes
 
@@ -4267,10 +4273,9 @@ joincount.multi(oso_hist_geom1$z_change_high_increase,
 
 ```
 
-Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme decrease in obesity (of \<1)
+To assess whether changes in obesity rates are spatially clustered across schools, we conducted a joint count analysis on schools that experienced extreme changes in obesity levels. Specifically, we looked at schools with a z-score change in obesity of less than -1 (extreme decreases) and greater than +1 (extreme increases).
 
-Based on the joint count analysis, there is no significant spatial clustering of any schools which had an extreme increase in obesity (of \>1)
-
+The results indicate that there is no statistically significant spatial clustering of schools experiencing either extreme increases or decreases in obesity rates. This means that such schools tend to be spatially isolated from one another, rather than forming contiguous clusters. In other words, a sharp increase or decrease in obesity at one school does not have a spillover effect on nearby schools. 
 
 # Controlling for Effects of COVID
 ```{r}
