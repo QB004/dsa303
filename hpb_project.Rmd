@@ -4121,7 +4121,7 @@ oso_hist_geom = oso_hist_geom_full %>%
 # School obesity map plot (z-score change)
 ura_regions_map +
   tm_shape(oso_hist_geom) +
-  tm_symbols(size = 0.5, fill = "z_change")
+  tm_symbols(size = 0.5, fill = "z_change",  fill.scale = tm_scale(values = "brewer.yl_or_rd"))
 
 # Schools which saw a 1 standard deviation increase in OSO levels
 oso_hist_geom %>% 
