@@ -2576,7 +2576,7 @@ As a proxy for food options, we use McDonald's outlets, 7-11 outlets and Hawker 
 
 Based on the descriptive maps, we can observe a large number of food outlets concentrated towards the south. The converse is true for schools located in the North, where food options range from 0 to 5. 
 
-## Spatial Descriptive Summary Measures of Education Years
+## Spatial Descriptive Summary Measures of Food
 ```{r}
 #Spatial analysis - Secondary school
 st_crs(obesity_sec_food)$proj 
