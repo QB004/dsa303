@@ -35,7 +35,7 @@ sg_crs <-
   readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/sg_crs.rds")
 ```
 
-```{r, results = FALSE}
+```{r}
 # Food and Nutrition
 #Data transformation
 
