@@ -99,6 +99,7 @@ sec_food_map = ura_regions_map +
   tm_title("Food Outlet Density by Secondary School")
 
 tmap_arrange(pri_food_map, sec_food_map, nrow = 1)
-```
+
 ```
 
+The above provides a map of food outlet density at the school level, with darker colours representing more food options. 
