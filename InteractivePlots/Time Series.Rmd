@@ -1,5 +1,5 @@
 ---
-title: "Spatial Descriptive Measures of Obesity"
+title: "Time Series Analysis of Obesity"
 output: 
   html_document
 editor_options: 
@@ -15,14 +15,6 @@ knitr::opts_chunk$set(message = FALSE)
 ```
 
 ```{r}
-oso_pri_hist <- readRDS("InteractivePlots/oso_pri_hist.rds")
-obesity_data_sf_2023_OSO <- readRDS("InteractivePlots/obesity_data_sf_2023_OSO.rds")
-ura_regions_map <- readRDS("InteractivePlots/ura_regions_map.rds")
-oso_hist_geom <- readRDS("InteractivePlots/oso_hist_geom.rds")
-pri_sch_map <- readRDS("InteractivePlots/pri_sch_map.rds")
-```
-
-```{r}
 start.time = Sys.time()
 pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", "gt", "broom",
          "tidyverse", "sf", "tmap", "aspace", "spdep", "corrplot", "readxl", "spatialreg")
@@ -35,6 +27,14 @@ if (requireNamespace("rstudioapi", quietly = TRUE)) {
 }
 ```
 
+```{r}
+oso_pri_hist <- readRDS("oso_pri_hist.rds")
+obesity_data_sf_2023_OSO <- readRDS("obesity_data_sf_2023_OSO.rds")
+ura_regions_map <- readRDS("ura_regions_map.rds")
+oso_hist_geom <- readRDS("oso_hist_geom.rds")
+pri_sch_map <- readRDS("pri_sch_map.rds")
+obesity_pri_sch <- readRDS("obesity_pri_sch.rds")
+```
 
 ```{r}
 ###Primary School Z-Score Change Map for Model 1
@@ -70,10 +70,10 @@ oso_hist_int = oso_pri_hist_long %>%
   ungroup() 
 
 # Showing general distribution of OSO in a histogram
-oso_hist_int %>% 
-  filter(year == 2023) %>% 
-  ggplot(aes(x = oso_int)) +
-  geom_histogram() # generally follows a normal distribution
+# oso_hist_int %>% 
+#   filter(year == 2023) %>% 
+#   ggplot(aes(x = oso_int)) +
+#   geom_histogram() # generally follows a normal distribution
 
 #Get the Z-scores
 # Compute z-scores before and after 2019
@@ -113,11 +113,9 @@ oso_hist_geom = oso_hist_geom_full %>%
 
 # School obesity map plot (z-score change)
 ura_regions_map +
-  tm_shape(oso_hist_geom) +
+  tm_shape(oso_hist_geom, name = "Overweight prevalence") +
   tm_symbols(size = 0.5, fill = "z_change", fill.scale = tm_scale(values = "brewer.yl_or_rd")) +
   tm_title("Graph of Z-score Changes in Obesity Prevalence for Primary Schools")
-
-
 ```
 The plot contains the Z-score changes for each Primary School, with darker red colours representing worsening obesity levels and lighter colours representing improving obesity levels.
 
@@ -156,6 +154,7 @@ pri_map_z_increase <- ura_regions_map + oso_hist_geom1 %>%
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
     fill = "z_change_high_increase", 
+    fill.legend = tm_legend(title = "High increase in obesity", position = c("TOP", "LEFT")),
     size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Primary Schools with Worsening Obesity Levels")
@@ -165,22 +164,23 @@ oso_hist_geom3 = oso_hist_geom %>%
   filter(z_change < 0) %>%
   mutate(z_change = abs(z_change))
 
+Z_CHANGE_CUTOFF_DECREASE_1 = 1
 oso_hist_geom3$z_change_high_decrease <- 
   as.factor(oso_hist_geom3$z_change > Z_CHANGE_CUTOFF_DECREASE_1)
 pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>% 
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
     fill = "z_change_high_decrease", 
+    fill.legend = tm_legend(title = "High decrease in obesity", position = c("TOP", "LEFT")),
     size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Primary Schools with Improving Obesity Levels")
 
 
 #Maps:
-tmap_arrange(pri_map_z_decrease1, pri_map_z_increase, nrow = 1)
+tmap_arrange(pri_map_z_decrease1, pri_map_z_increase, nrow = 2)
 ```
 The plots provide a descriptive view of Primary Schools with improving and worsening obesity levels over time. The blue circles represent extreme cases.
-
 
 ```{r}
 #Model 2: Contingency Table of Primary Schools with Worsening Obesity Levels, controlled for COVID
@@ -275,3 +275,4 @@ scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_ch
 #Plot of Contingency Table for Primary School Obesity Rates Controlled for COVID
 plotly::ggplotly(scatterplot_of_schools)
 ```
+The plot above provides a contingency table for Primary School obesity rates when controlling for COVID effects.

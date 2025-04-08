@@ -1,5 +1,5 @@
 ---
-title: "Acess to External Sources of Food"
+title: "Access to External Sources of Food"
 output: 
   html_document
 editor_options: 
@@ -28,18 +28,20 @@ if (requireNamespace("rstudioapi", quietly = TRUE)) {
 ```
 
 ```{r}
-hawker <- readRDS("InteractivePlots/hawker.rds")
-hawker_full <- readRDS("InteractivePlots/hawker_full.rds")
-macs <- readRDS("InteractivePlots/macs.rds")
-macs_full <- readRDS("InteractivePlots/macs_full.rds")
-seven_eleven_full <- readRDS("InteractivePlots/seven_eleven_full.rds")
-seven_eleven <- readRDS("InteractivePlots/seven_eleven.rds")
-obesity_pri_sch <- readRDS("InteractivePlots/obesity_pri_sch.rds")
-ura_regions_map <- readRDS("InteractivePlots/ura_regions_map.rds")
-obesity_sec_sch <- readRDS("InteractivePlots/obesity_sec_sch.rds")
+hawker <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/hawker.rds")
+hawker_full <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/hawker_full.rds")
+macs <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/macs.rds")
+macs_full <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/macs_full.rds")
+seven_eleven_full <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/seven_eleven_full.rds")
+seven_eleven <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/seven_eleven.rds")
+obesity_pri_sch <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/obesity_pri_sch.rds")
+ura_regions_map <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/ura_regions_map.rds")
+obesity_sec_sch <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/obesity_sec_sch.rds")
 ```
 
 ```{r}
+tmap_mode("view")
+
 hawker = hawker_full["geometry"]
 macs = macs_full[,"geometry"] 
 seven_eleven = seven_eleven_full[,"geometry"]
@@ -60,11 +62,12 @@ obesity_pri_food$num_food_outlets <- lengths(pri_intersections)
 
 #Show density via choropleth map
 pri_food_map = ura_regions_map + 
-  tm_shape(obesity_pri_food) +
+  tm_shape(obesity_pri_food, name = "No. of food outlets") +
   tm_symbols(
     size = 0.5,
     fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd",
-                                                     breaks = c(0,5,10,15,20,25,30,35))
+                                                     breaks = c(0,5,10,15,20,25,30,35)),
+    fill.legend = tm_legend(title = "No. of food outlets", position = c("TOP", "LEFT"))
   ) +
   tm_title("Food Outlet Density by Primary School")
 
@@ -79,16 +82,16 @@ obesity_sec_food$num_food_outlets <- lengths(sec_intersections)
 
 #Show density via choropleth map
 sec_food_map = ura_regions_map + 
-  tm_shape(obesity_sec_food) +
+  tm_shape(obesity_sec_food, name = "No. of food outlets") +
   tm_symbols(
-    size = 0.5,
+    size = 0.5, 
     fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd",
-                                                     breaks = c(0,5,10,15,20,25,30,35))
+                                                     breaks = c(0,5,10,15,20,25,30,35)),
+    fill.legend = tm_legend(title = "No. of food outlets", position = c("TOP", "LEFT"))
   ) +
   tm_title("Food Outlet Density by Secondary School")
 
-tmap_arrange(pri_food_map, sec_food_map, nrow = 1)
-
+tmap_arrange(pri_food_map, sec_food_map, nrow = 2)
 ```
 
-The above provides a map of food outlet density at the school level, with darker colours representing more food options. 
+The maps above show food outlet density at the school level, with darker colours representing more food options. 

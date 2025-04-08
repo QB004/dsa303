@@ -16,8 +16,7 @@ knitr::opts_chunk$set(message = FALSE)
 
 ```{r}
 start.time = Sys.time()
-pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", "gt", "broom",
-         "tidyverse", "sf", "tmap", "aspace", "spdep", "corrplot", "readxl", "spatialreg")
+pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", "gt", "broom", "tidyverse", "sf", "tmap", "aspace", "spdep", "corrplot", "readxl", "spatialreg")
 invisible(lapply(pkgs, function(pkg) {
   suppressPackageStartupMessages(library(pkg, character.only = TRUE))
 }))
@@ -86,14 +85,14 @@ pri_sch_map <-
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence", 
-      position = c("BOTTOM", "LEFT"), 
+      position = c("TOP", "LEFT"), 
       item.height = 0.5, 
       item.width = 2.1
       )
     )
 
 pri_sch_map_summ <- pri_sch_map +
-  tm_shape(pri_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
+  # tm_shape(pri_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
   tm_shape(pri_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(pri_sch_sde_weighted_line, name = "weighted SDE") + 
   tm_lines(col = "red", lwd = 2, lty = 3) +
@@ -101,7 +100,7 @@ pri_sch_map_summ <- pri_sch_map +
   tm_dots(size = 0.5, shape = "id", fill = "white", shape.legend = tm_legend("Summary measures")) + 
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
   tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
-  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  # tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
   tm_title("Overweight prevalence in Primary Schools")
 
 ### by Secondary School
@@ -153,13 +152,13 @@ sec_sch_map <-
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "LEFT"),
+      position = c("TOP", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
     )
 
 sec_sch_map_summ <- sec_sch_map +
-  tm_shape(sec_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
+  # tm_shape(sec_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
   tm_shape(sec_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
   tm_shape(sec_sch_sde_weighted_line, name = "weighted SDE") + 
   tm_lines(col = "red", lwd = 2, lty = 3) +
@@ -169,10 +168,10 @@ sec_sch_map_summ <- sec_sch_map +
     ) + 
   tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
   tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
-  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  # tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
   tm_title("Overweight prevalence in Secondary Schools")
 
-tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 1)
+tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 2)
 ```
 
 The standard deviational ellipse, when accounting for school obesity (red band), is being "pulled" towards the North. (spatial clustering of high obesity schools)
