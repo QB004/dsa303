@@ -36,6 +36,70 @@ sg_crs <-
 ```
 
 ```{r}
+# Food and Nutrition
+#Data transformation
 
+#Hawker Centres
+hawker_full = st_read("DataFiles/NEAMarketandFoodCentre.geojson") %>%
+  st_transform(crs = sg_crs)
+hawker = hawker_full["geometry"]
+
+#Fast Food Outlets 
+  #Mcdonald's
+macs_full = st_read("DataFiles/mcdonalds_singapore.geojson") %>%
+  st_transform(crs = sg_crs) 
+macs = macs_full[,"geometry"] 
+
+  #7-11 Outlets
+seven_eleven_full = st_read("DataFiles/711_singapore.geojson") %>%
+  st_transform(crs = sg_crs)
+seven_eleven = seven_eleven_full[,"geometry"]
+
+#Combine data into single SF object
+seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
+macs_sf = mutate(macs, outlet = "mcdonalds")
+hawker_sf = mutate(hawker, outlet = "hawker")
+food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
+
+#Primary school analysis
+obesity_pri_food = obesity_pri_sch 
+pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
+pri_intersections <- st_intersects(pri_schools_buffer1, food)
+
+#Calculate the number of food outlets within a 1km radius of each school
+obesity_pri_food$num_food_outlets <- lengths(pri_intersections)
+
+#Show density via choropleth map
+pri_food_map = ura_regions_map + 
+  tm_shape(obesity_pri_food) +
+  tm_symbols(
+    size = 0.5,
+    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd",
+                                                     breaks = c(0,5,10,15,20,25,30,35))
+  ) +
+  tm_title("Food Outlet Density by Primary School")
+
+print(pri_food_map)
+
+#Secondary school analysis
+obesity_sec_food = obesity_sec_sch 
+sec_schools_buffer1 <- st_buffer(obesity_sec_food, dist = 1000) %>% st_geometry()
+sec_intersections <- st_intersects(sec_schools_buffer1, food)
+
+#Calculate the number of food outlets within a 1km radius of each school
+obesity_sec_food$num_food_outlets <- lengths(sec_intersections)
+
+#Show density via choropleth map
+sec_food_map = ura_regions_map + 
+  tm_shape(obesity_sec_food) +
+  tm_symbols(
+    size = 0.5,
+    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd",
+                                                     breaks = c(0,5,10,15,20,25,30,35))
+  ) +
+  tm_title("Food Outlet Density by Secondary School")
+
+tmap_arrange(pri_food_map, sec_food_map, nrow = 1)
+```
 ```
 
