@@ -142,7 +142,7 @@ pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom)
 
 
 # by Primary schools
-(soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W"))
+soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W")
 soi_lw_B_pri_z <- nb2listw(soi_nb_pri_z, style = "B")
 
 # Setting an overweight cutoff point
@@ -179,8 +179,7 @@ pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>%
 
 
 #Maps:
-pri_map_z_decrease1
-pri_map_z_increase
+tmap_arrange(pri_map_z_decrease1, pri_map_z_increase, nrow = 1)
 ```
 The plots provide a descriptive view of Primary Schools with improving and worsening obesity levels over time. The blue circles represent extreme cases.
 
@@ -242,9 +241,6 @@ oso_covid_geom_full = obesity_data_sf_2023_OSO %>%
 oso_covid_geom = oso_covid_geom_full %>%
   dplyr::select(c("PT_ID", "SCHOOL", "geometry", "after_covid_change", "before_covid_change"))
 
-
-summary(oso_covid_geom$before_covid_change)
-summary(oso_covid_geom$after_covid_change)
 
 #Classify
 oso_covid_geom_classes <- oso_covid_geom %>%
