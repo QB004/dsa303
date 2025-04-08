@@ -4180,7 +4180,7 @@ Based on the Moran's I and Geary's C tests, there is no significant spatial auto
 Z_CHANGE_CUTOFF_INCREASE <- 1 #increase in obesity levels before and after 2019
 Z_CHANGE_CUTOFF_DECREASE <- -1 #decrease in obesity levels before and after 2019
 
-# by Primary school - with increased obesity levels
+# by Primary school - Worsening Obesity Levels
 oso_hist_geom1 = oso_hist_geom %>%
   filter(z_change > 0)
 oso_hist_geom1$z_change_high_increase <- 
@@ -4194,21 +4194,7 @@ pri_map_z_increase <- ura_regions_map + oso_hist_geom1 %>%
   tm_title("Join count analysis")
 
 
-# by Primary school
-oso_hist_geom2 = oso_hist_geom %>%
-  filter(z_change < 0)
-oso_hist_geom2$z_change_high_decrease <- 
-  as.factor(oso_hist_geom2$z_change < Z_CHANGE_CUTOFF_DECREASE)
-pri_map_z_decrease <- ura_regions_map + oso_hist_geom2 %>% 
-  tm_shape(name = "Overweight prevalence") + 
-  tm_symbols(
-    fill = "z_change_high_decrease", 
-    size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
-    size.legend = tm_legend_hide()) +
-  tm_title("Join count analysis")
-
-
-#example with absolute values
+# by Primary school - Improving Obesity Levels
 Z_CHANGE_CUTOFF_DECREASE_1 = 1
 
 oso_hist_geom3 = oso_hist_geom %>%
@@ -4227,7 +4213,6 @@ pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>%
 
 
 #Maps:
-#pri_map_z_decrease
 pri_map_z_decrease1
 pri_map_z_increase
 ```
