@@ -4,9 +4,9 @@ subtitle: "Interactive Plots"
 author: "Colin, Lucas, Nina, Qasim"
 date: "11 April 2025"
 output: 
-  html_document:
+  prettydoc::html_pretty:
+    theme: cayman
     toc: true
-    toc_float: true
     number_sections: true
 editor_options: 
   chunk_output_type: console
@@ -182,7 +182,9 @@ sec_sch_map_summ <- sec_sch_map +
 tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 2)
 ```
 
-The standard deviational ellipse, when accounting for school obesity (red band), is being "pulled" towards the North. (spatial clustering of high obesity schools)
+The standard deviational ellipse, when accounting for school obesity
+(red band), is being "pulled" towards the North. (spatial clustering of
+high obesity schools)
 
 # Outside-of-School Food Options
 
@@ -255,7 +257,8 @@ sec_food_map = ura_regions_map +
 tmap_arrange(pri_food_map, sec_food_map, nrow = 2)
 ```
 
-The maps above show food outlet density at the school level, with darker colours representing more food options. 
+The maps above show food outlet density at the school level, with darker
+colours representing more food options.
 
 # Changes in Obesity over Time
 
@@ -350,7 +353,9 @@ ura_regions_map +
   tm_title("Graph of Z-score Changes in Obesity Prevalence for Primary Schools")
 ```
 
-The plot contains the Z-score changes for each Primary School, with darker red colours representing worsening obesity levels and lighter colours representing improving obesity levels.
+The plot contains the Z-score changes for each Primary School, with
+darker red colours representing worsening obesity levels and lighter
+colours representing improving obesity levels.
 
 ## Obesity in Schools: Improving or Worsening?
 
@@ -416,7 +421,9 @@ pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>%
 tmap_arrange(pri_map_z_decrease1, pri_map_z_increase, nrow = 2)
 ```
 
-The plots provide a descriptive view of Primary Schools with improving and worsening obesity levels over time. The blue circles represent extreme cases.
+The plots provide a descriptive view of Primary Schools with improving
+and worsening obesity levels over time. The blue circles represent
+extreme cases.
 
 ## Change in Obesity: Before vs. After COVID
 
@@ -514,4 +521,5 @@ scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_ch
 plotly::ggplotly(scatterplot_of_schools)
 ```
 
-The plot above provides a contingency table for Primary School obesity rates when controlling for COVID effects.
+The plot above provides a contingency table for Primary School obesity
+rates when controlling for COVID effects.
