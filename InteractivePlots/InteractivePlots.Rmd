@@ -1,0 +1,517 @@
+---
+title: "Spatial Analysis of Obesity"
+subtitle: "Interactive Plots"
+author: "Colin, Lucas, Nina, Qasim"
+date: "11 April 2025"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+# Spatial Distribution of Obesity in Singapore
+
+```{r}
+start.time = Sys.time()
+pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", "gt", "broom", "tidyverse", "sf", "tmap", "aspace", "spdep", "corrplot", "readxl", "spatialreg")
+invisible(lapply(pkgs, function(pkg) {
+  suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+}))
+rm(pkgs)
+if (requireNamespace("rstudioapi", quietly = TRUE)) {
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+}
+```
+
+```{r}
+# saveRDS(sg_crs, "InteractivePlots/sg_crs.rds")
+obesity_data_sf_2023_OSO <-
+  readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/obesity_data_sf_2023_OSO.rds")
+sg_crs <-
+  readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/sg_crs.rds")
+```
+
+```{r}
+### by Primary School
+
+tmap_mode("view")
+
+# filter out by educational level and remove NA values to calculate SDE
+obesity_pri_sch <- obesity_data_sf_2023_OSO %>% 
+  filter(LEVEL == "PRIMARY", !is.na(PREVALENCE))
+
+# Mean centre, standard deviation distance, standard deviation ellipse
+pri_sch_mean <- calc_mnc(id = 1, points = st_coordinates(obesity_pri_sch))
+pri_sch_median <- calc_mdc(id = 2, points = st_coordinates(obesity_pri_sch))
+pri_sch_mean_median <- rbind(pri_sch_mean$LOCATIONS, pri_sch_median$LOCATIONS) %>%
+  data.frame() %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs)
+pri_sch_mean_median$id <- c("Spatial mean", "Spatial median")
+
+pri_sch_sdd <- calc_sdd(id = 3, points = st_coordinates(obesity_pri_sch))
+pri_sch_sdd_line <- pri_sch_sdd$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_pri_sch))
+# pri_sch_sde$ATTRIBUTES[,10] # theta = 92.55625
+pri_sch_sde_line <- pri_sch_sde$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_sch_sde_weighted <- calc_sde(
+  id = 5, calccentre = T, weighted = T, weights = obesity_pri_sch$PREVALENCE,
+  points = st_coordinates(obesity_pri_sch))
+pri_sch_sde_weighted_line <- pri_sch_sde_weighted$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+pri_sch_map <- 
+  tm_shape(obesity_pri_sch, name = "Overweight prevalence") +
+  tm_symbols(
+    size = "PREVALENCE",
+    size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide(),
+    fill = "PREVALENCE", 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30), 
+      values = "brewer.yl_or_rd"
+      ), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence", 
+      position = c("TOP", "LEFT"), 
+      item.height = 0.5, 
+      item.width = 2.1
+      )
+    )
+
+pri_sch_map_summ <- pri_sch_map +
+  # tm_shape(pri_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
+  tm_shape(pri_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+  tm_shape(pri_sch_sde_weighted_line, name = "weighted SDE") + 
+  tm_lines(col = "red", lwd = 2, lty = 3) +
+  tm_shape(pri_sch_mean_median, name = "Summary measures") + 
+  tm_dots(size = 0.5, shape = "id", fill = "white", shape.legend = tm_legend("Summary measures")) + 
+  tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+  # tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  tm_title("Overweight prevalence in Primary Schools")
+
+### by Secondary School
+
+# filter out by educational level and remove NA values to calculate SDE
+obesity_sec_sch <- obesity_data_sf_2023_OSO %>% 
+  filter(LEVEL == "SECONDARY", !is.na(PREVALENCE))
+
+# Mean centre, standard deviation distance, standard deviation ellipse
+sec_sch_mean <- calc_mnc(id = 1, points = st_coordinates(obesity_sec_sch))
+sec_sch_median <- calc_mdc(id = 2, points = st_coordinates(obesity_sec_sch))
+sec_sch_mean_median <- rbind(sec_sch_mean$LOCATIONS, sec_sch_median$LOCATIONS) %>% 
+  data.frame() %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs)
+sec_sch_mean_median$id = c("Spatial mean", "Spatial median")
+
+sec_sch_sdd <- calc_sdd(id = 3, points = st_coordinates(obesity_sec_sch))
+sec_sch_sdd_line <- sec_sch_sdd$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+sec_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_sec_sch))
+# sec_sch_sde$ATTRIBUTES[,10] # theta = 92.3718
+sec_sch_sde_line <- sec_sch_sde$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+sec_sch_sde_weighted <- calc_sde(
+  id = 5, calccentre = T, weighted = T, weights = obesity_sec_sch$PREVALENCE,
+  points = st_coordinates(obesity_sec_sch))
+sec_sch_sde_weighted_line <- sec_sch_sde_weighted$LOCATIONS %>% 
+  st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
+  st_combine() %>% 
+  st_cast("LINESTRING")
+
+sec_sch_map <- 
+  tm_shape(obesity_sec_sch, name = "Overweight prevalence") +
+  tm_symbols(
+    shape = 22,
+    size = "PREVALENCE",
+    size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide(),
+    fill = "PREVALENCE", 
+    fill.scale = tm_scale(
+      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      values = "brewer.yl_or_rd"
+      ), 
+    fill.legend = tm_legend(
+      title = "Overweight prevalence",
+      position = c("TOP", "LEFT"),
+      item.height = 0.5, item.width = 2.1
+      )
+    )
+
+sec_sch_map_summ <- sec_sch_map +
+  # tm_shape(sec_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
+  tm_shape(sec_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+  tm_shape(sec_sch_sde_weighted_line, name = "weighted SDE") + 
+  tm_lines(col = "red", lwd = 2, lty = 3) +
+  tm_shape(sec_sch_mean_median, name = "Summary measures") + tm_dots(
+    size = 0.5, shape = "id", fill = "white", 
+    shape.legend = tm_legend("Summary measures")
+    ) + 
+  tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
+  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
+  # tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  tm_title("Overweight prevalence in Secondary Schools")
+
+tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 2)
+```
+
+The standard deviational ellipse, when accounting for school obesity (red band), is being "pulled" towards the North. (spatial clustering of high obesity schools)
+
+# Outside-of-School Food Options
+
+```{r}
+hawker <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/hawker.rds")
+hawker_full <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/hawker_full.rds")
+macs <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/macs.rds")
+macs_full <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/macs_full.rds")
+seven_eleven_full <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/seven_eleven_full.rds")
+seven_eleven <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/seven_eleven.rds")
+obesity_pri_sch <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/obesity_pri_sch.rds")
+ura_regions_map <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/ura_regions_map.rds")
+obesity_sec_sch <- readRDS("~/Desktop/RStudio/Spatial Data DSA303 codes/dsa303/InteractivePlots/obesity_sec_sch.rds")
+```
+
+## No. of Food Outlets near Schools
+
+```{r}
+tmap_mode("view")
+
+hawker = hawker_full["geometry"]
+macs = macs_full[,"geometry"] 
+seven_eleven = seven_eleven_full[,"geometry"]
+
+#Combine data into single SF object
+seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
+macs_sf = mutate(macs, outlet = "mcdonalds")
+hawker_sf = mutate(hawker, outlet = "hawker")
+food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
+
+#Primary school analysis
+obesity_pri_food = obesity_pri_sch 
+pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
+pri_intersections <- st_intersects(pri_schools_buffer1, food)
+
+#Calculate the number of food outlets within a 1km radius of each school
+obesity_pri_food$num_food_outlets <- lengths(pri_intersections)
+
+#Show density via choropleth map
+pri_food_map = ura_regions_map + 
+  tm_shape(obesity_pri_food, name = "No. of food outlets") +
+  tm_symbols(
+    size = 0.5,
+    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd",
+                                                     breaks = c(0,5,10,15,20,25,30,35)),
+    fill.legend = tm_legend(title = "No. of food outlets", position = c("TOP", "LEFT"))
+  ) +
+  tm_title("Food Outlet Density by Primary School")
+
+
+#Secondary school analysis
+obesity_sec_food = obesity_sec_sch 
+sec_schools_buffer1 <- st_buffer(obesity_sec_food, dist = 1000) %>% st_geometry()
+sec_intersections <- st_intersects(sec_schools_buffer1, food)
+
+#Calculate the number of food outlets within a 1km radius of each school
+obesity_sec_food$num_food_outlets <- lengths(sec_intersections)
+
+#Show density via choropleth map
+sec_food_map = ura_regions_map + 
+  tm_shape(obesity_sec_food, name = "No. of food outlets") +
+  tm_symbols(
+    size = 0.5, 
+    fill = "num_food_outlets", fill.scale = tm_scale(values = "brewer.yl_or_rd",
+                                                     breaks = c(0,5,10,15,20,25,30,35)),
+    fill.legend = tm_legend(title = "No. of food outlets", position = c("TOP", "LEFT"))
+  ) +
+  tm_title("Food Outlet Density by Secondary School")
+
+tmap_arrange(pri_food_map, sec_food_map, nrow = 2)
+```
+
+The maps above show food outlet density at the school level, with darker colours representing more food options. 
+
+# Changes in Obesity over Time
+
+```{r}
+oso_pri_hist <- readRDS("oso_pri_hist.rds")
+obesity_data_sf_2023_OSO <- readRDS("obesity_data_sf_2023_OSO.rds")
+ura_regions_map <- readRDS("ura_regions_map.rds")
+oso_hist_geom <- readRDS("oso_hist_geom.rds")
+pri_sch_map <- readRDS("pri_sch_map.rds")
+obesity_pri_sch <- readRDS("obesity_pri_sch.rds")
+```
+
+```{r}
+###Primary School Z-Score Change Map for Model 1
+library(tidyverse)
+library(imputeTS)  # For interpolation
+library(fpp2)
+library(gridExtra)
+library(seasonal)
+library(urca)
+library(vars)
+library(trend)
+library(readxl)
+library(dplyr)
+
+oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
+  drop_na()
+  
+
+oso_pri_hist_long <- oso_pri_hist_years %>%
+  pivot_longer(
+    cols = matches("^\\d"),   # Select columns where names start with a number
+    names_to = "year",
+    values_to = "oso"
+  ) %>%
+  mutate(year = as.integer(paste0("20", str_extract(year, "^\\d{2}"))))  
+
+
+oso_hist_int = oso_pri_hist_long %>%
+  group_by(SCHOOL) %>%
+  complete(year = full_seq(year, 1)) %>%  # Adds missing years with NA values
+  mutate(oso = na_interpolation(oso, option = "spline"),
+         oso_int = na_interpolation(oso, option = "spline")) %>%
+  ungroup() 
+
+# Showing general distribution of OSO in a histogram
+# oso_hist_int %>% 
+#   filter(year == 2023) %>% 
+#   ggplot(aes(x = oso_int)) +
+#   geom_histogram() # generally follows a normal distribution
+
+#Get the Z-scores
+# Compute z-scores before and after 2019
+oso_hist_int = oso_hist_int %>%
+  group_by(year) %>%  # Group by year
+  mutate(
+    mean_oso = mean(oso_int, na.rm = TRUE),
+    sd_oso = sd(oso_int, na.rm = TRUE),
+    z_score = (oso_int - mean_oso) / sd_oso
+  ) %>%
+  ungroup()
+
+# Label the periods
+oso_hist_int_2 <- oso_hist_int %>%
+  mutate(period = ifelse(year <= 2019, "Before 2019", "After 2019"))
+
+z_scores_summary <- oso_hist_int_2 %>%
+  group_by(SCHOOL, period) %>%
+  summarise(avg_z = mean(z_score, na.rm = TRUE)) %>%
+  ungroup()
+
+z_scores_change= z_scores_summary %>%
+  pivot_wider(names_from = period, values_from = avg_z) %>%
+  mutate(z_change =`After 2019` - `Before 2019`) %>%
+  dplyr::select(c(1,4))
+
+
+# Merge with spatial data
+oso_hist_geom_full = obesity_data_sf_2023_OSO %>%
+  inner_join(z_scores_change, by = "SCHOOL")
+
+tmap_mode("view")
+
+oso_hist_geom = oso_hist_geom_full %>%
+  dplyr::select(c("PT_ID", "SCHOOL", "geometry", "z_change"))
+
+
+# School obesity map plot (z-score change)
+ura_regions_map +
+  tm_shape(oso_hist_geom, name = "Overweight prevalence") +
+  tm_symbols(size = 0.5, fill = "z_change", fill.scale = tm_scale(values = "brewer.yl_or_rd")) +
+  tm_title("Graph of Z-score Changes in Obesity Prevalence for Primary Schools")
+```
+
+The plot contains the Z-score changes for each Primary School, with darker red colours representing worsening obesity levels and lighter colours representing improving obesity levels.
+
+## Obesity in Schools: Improving or Worsening?
+
+```{r}
+# by Primary schools
+# obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
+del_nb_pri_z <- tri2nb(st_coordinates(oso_hist_geom), 
+                     row.names = oso_hist_geom$PT_ID) 
+pri_map <- tm_shape(nb2lines(del_nb_pri_z, coords = st_geometry(obesity_pri_sch))) +
+  tm_lines(lwd = 2) + pri_sch_map
+
+# by Primary schools
+if (require(dbscan, quietly=TRUE)) {
+  soi_nb_pri_z <- graph2nb(soi.graph(del_nb_pri_z, st_geometry(oso_hist_geom)))
+} else {
+  soi_nb = NULL
+}
+pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom))) +
+  tm_lines(lwd = 2) + pri_sch_map
+
+
+# by Primary schools
+soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W")
+soi_lw_B_pri_z <- nb2listw(soi_nb_pri_z, style = "B")
+
+# Setting an overweight cutoff point
+Z_CHANGE_CUTOFF_INCREASE <- 1 #increase in obesity levels before and after 2019
+Z_CHANGE_CUTOFF_DECREASE <- -1 #decrease in obesity levels before and after 2019
+
+# by Primary school - with increased obesity levels
+oso_hist_geom1 = oso_hist_geom %>%
+  filter(z_change > 0)
+oso_hist_geom1$z_change_high_increase <- 
+  as.factor(oso_hist_geom1$z_change > Z_CHANGE_CUTOFF_INCREASE)
+pri_map_z_increase <- ura_regions_map + oso_hist_geom1 %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "z_change_high_increase", 
+    fill.legend = tm_legend(title = "High increase in obesity", position = c("TOP", "LEFT")),
+    size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Primary Schools with Worsening Obesity Levels")
+
+# by Primary school - Decrease in Obesity Levels
+oso_hist_geom3 = oso_hist_geom %>%
+  filter(z_change < 0) %>%
+  mutate(z_change = abs(z_change))
+
+Z_CHANGE_CUTOFF_DECREASE_1 = 1
+oso_hist_geom3$z_change_high_decrease <- 
+  as.factor(oso_hist_geom3$z_change > Z_CHANGE_CUTOFF_DECREASE_1)
+pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>% 
+  tm_shape(name = "Overweight prevalence") + 
+  tm_symbols(
+    fill = "z_change_high_decrease", 
+    fill.legend = tm_legend(title = "High decrease in obesity", position = c("TOP", "LEFT")),
+    size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
+    size.legend = tm_legend_hide()) +
+  tm_title("Primary Schools with Improving Obesity Levels")
+
+
+#Maps:
+tmap_arrange(pri_map_z_decrease1, pri_map_z_increase, nrow = 2)
+```
+
+The plots provide a descriptive view of Primary Schools with improving and worsening obesity levels over time. The blue circles represent extreme cases.
+
+## Change in Obesity: Before vs. After COVID
+
+```{r}
+#Model 2: Contingency Table of Primary Schools with Worsening Obesity Levels, controlled for COVID
+
+oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
+  drop_na()
+  
+oso_pri_hist_long <- oso_pri_hist_years %>%
+  pivot_longer(
+    cols = matches("^\\d"),   # Select columns where names start with a number
+    names_to = "year",
+    values_to = "oso"
+  ) %>%
+  mutate(year = as.integer(paste0("20", str_extract(year, "^\\d{2}"))))  
+
+
+oso_hist_int_1 = oso_pri_hist_long  
+
+
+#Get the Z-scores
+# Compute z-scores before and after 2019
+oso_hist_int_1 = oso_hist_int_1 %>%
+  group_by(year) %>%  # Group by year
+  mutate(
+    mean_oso = mean(oso, na.rm = TRUE),
+    sd_oso = sd(oso, na.rm = TRUE),
+    z_score = (oso - mean_oso) / sd_oso
+  ) %>%
+  ungroup()
+
+
+oso_covid = oso_hist_int_1 %>%
+  mutate(covid_period = case_when(
+    year < 2022 ~ "BEFORE_COVID",
+    year == 2022 ~ "DURING_COVID",
+    year == 2023 ~ "AFTER_COVID",
+    TRUE ~ NA_character_
+  )) %>%
+  group_by(SCHOOL, covid_period) %>%
+  summarise(avg_z_score = mean(z_score, na.rm = TRUE), .groups = "drop_last") %>%
+  pivot_wider(names_from = covid_period, values_from = avg_z_score) %>%
+  mutate(
+    after_covid_change = `AFTER_COVID` - `DURING_COVID`,
+    before_covid_change = `DURING_COVID` - `BEFORE_COVID`
+  )
+
+# Merge with spatial data
+oso_covid_geom_full = obesity_data_sf_2023_OSO %>%
+  left_join(oso_covid, by = "SCHOOL") %>%
+  filter(LEVEL == "PRIMARY") %>%
+  drop_na()
+
+
+oso_covid_geom = oso_covid_geom_full %>%
+  dplyr::select(c("PT_ID", "SCHOOL", "geometry", "after_covid_change", "before_covid_change"))
+
+
+#Classify
+oso_covid_geom_classes <- oso_covid_geom %>%
+  mutate(
+    before_covid_range = case_when(
+      before_covid_change < quantile(before_covid_change, 0.33) ~ "Low",
+      before_covid_change < quantile(before_covid_change, 0.66) ~ "Medium",
+      TRUE ~ "High"
+    ),
+    after_covid_range = case_when(
+      after_covid_change < quantile(after_covid_change, 0.33) ~ "Low",
+      after_covid_change < quantile(after_covid_change, 0.66) ~ "Medium",
+      TRUE ~ "High"
+    )
+  )
+
+oso_covid_hh = oso_covid_geom_classes %>%
+  filter(before_covid_range == "High" & after_covid_range == "High")
+
+oso_covid_lh = oso_covid_geom_classes %>%
+  filter(before_covid_range == "Low" & after_covid_range == "High")
+
+#Scatterplot of schools
+
+scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_change, y = after_covid_change, label = SCHOOL)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Change in Obesity: Before vs. After COVID",
+    x = "Before COVID",
+    y = "After COVID"
+  ) +
+  theme_minimal()
+
+#Plot of Contingency Table for Primary School Obesity Rates Controlled for COVID
+plotly::ggplotly(scatterplot_of_schools)
+```
+
+The plot above provides a contingency table for Primary School obesity rates when controlling for COVID effects.
