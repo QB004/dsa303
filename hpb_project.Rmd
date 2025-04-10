@@ -2597,9 +2597,9 @@ LC_sde_line_sec_food_weighted = sde_sec_food_weighted$LOCATIONS %>%
     st_combine() %>% 
     st_cast("LINESTRING") 
 
-(mean_median_sec = rbind(mean_sec_food$LOCATIONS, median_sec_food$LOCATIONS) %>% 
+mean_median_sec = rbind(mean_sec_food$LOCATIONS, median_sec_food$LOCATIONS) %>% 
     data.frame() %>% 
-    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_sec_food))) 
+    st_as_sf(coords=c("x","y"), crs=st_crs(obesity_sec_food))
 
 mean_median_sec$id =  c("Spatial Mean","Spatial Median") 
 
@@ -4165,7 +4165,7 @@ pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom)
 
 ```{r}
 # by Primary schools
-(soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W"))
+soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W")
 soi_lw_B_pri_z <- nb2listw(soi_nb_pri_z, style = "B")
 moran.test(oso_hist_geom$z_change, soi_lw_pri_z)
 moran.plot(oso_hist_geom$z_change, soi_lw_pri_z, main="Moran scatterplot")
@@ -4242,7 +4242,7 @@ if (require(dbscan, quietly=TRUE)) {
 #  tm_lines(lwd = 2) + pri_sch_map
 
 # by Primary schools
-(soi_lw_pri_z_increase <- nb2listw(soi_nb_pri_z_increase, style = "W"))
+soi_lw_pri_z_increase <- nb2listw(soi_nb_pri_z_increase, style = "W")
 soi_lw_B_pri_z_increase <- nb2listw(soi_nb_pri_z_increase, style = "B")
 
 #For decreases
@@ -4261,7 +4261,7 @@ if (require(dbscan, quietly=TRUE)) {
 #  tm_lines(lwd = 2) + pri_sch_map
 
 # by Primary schools
-(soi_lw_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "W"))
+soi_lw_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "W")
 soi_lw_B_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "B")
 
 
@@ -4379,5 +4379,5 @@ plotly::ggplotly(scatterplot_of_schools)
 
 According to the contingency table, Primary Schools that should be observed include Townsville Primary School, Fuchun Primary School, Farrer Park Primary School and Pioneer Primary School. These schools faced a steep increase in obesity levels post-Covid, compared to before COVID levels. 
 
-Such is the case for Telok Kurau Primary School, Seng Kang Primary School, Naval Base Primary School, St. Stephen's Primary School, Xinmin Primary School and Singapore Chinese Girls' School. The aforementioned schools had declining obesity levels prior to Covid. However, following the pandemic, these schools faced increasing levels of obesity which is a cause for concern.
+Other schools that could be observed include Telok Kurau Primary School, Seng Kang Primary School, Naval Base Primary School, St. Stephen's Primary School, Xinmin Primary School and Singapore Chinese Girls' School. The aforementioned schools had declining obesity levels prior to Covid. However, following the pandemic, these schools faced increasing levels of obesity which is a cause for concern.
 
