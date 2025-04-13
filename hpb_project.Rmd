@@ -185,7 +185,7 @@ In addition to the prior data cleaning done by Professor Liu, we decided to remo
 
 # Exploratory Data Analysis 
 
-```{r}
+```{r, results = FALSE}
 tmap_mode("plot")
 
 a <- tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
@@ -423,7 +423,7 @@ school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prev
     fill.scale = tm_scale(breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30), values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
-      position = c("BOTTOM", "LEFT"), item.height = 0.5, item.width = 2.1)
+      position = c("TOP", "LEFT"), item.height = 0.5, item.width = 2.1)
     )
 
 # Overview of overweight prevalence levels in Singapore schools
@@ -431,7 +431,7 @@ ura_regions_map + ura_planning_areas_map + ura_subzones_map + moe_zones_map + mo
   tm_title("Overview of overweight prevalence in Singapore schools")
 ```
 
-## Obesity prevalence by educational level
+## Spatial Descriptive Measures by educational level
 
 Given the difference in obesity levels in primary schools versus secondary schools, we separately examine overweight prevalence in by educational level. Primary school and secondary school students may have different characteristics that might affect overweight prevalence.
 
@@ -461,7 +461,7 @@ pri_sch_sdd_line <- pri_sch_sdd$LOCATIONS %>%
   st_cast("LINESTRING")
 
 pri_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_pri_sch))
-pri_sch_sde$ATTRIBUTES[,10] # theta = 92.55625
+cat("The angle of rotation is", pri_sch_sde$ATTRIBUTES[,10], "(primary schools).") # theta = 92.55625
 pri_sch_sde_line <- pri_sch_sde$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
@@ -488,7 +488,7 @@ pri_sch_map <-
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence", 
-      position = c("BOTTOM", "LEFT"), 
+      position = c("TOP", "LEFT"),
       item.height = 0.5, 
       item.width = 2.1
       )
@@ -527,7 +527,7 @@ sec_sch_sdd_line <- sec_sch_sdd$LOCATIONS %>%
   st_cast("LINESTRING")
 
 sec_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_sec_sch))
-sec_sch_sde$ATTRIBUTES[,10] # theta = 92.3718
+cat("The angle of rotation is", sec_sch_sde$ATTRIBUTES[,10], "(secondary schools).") # theta = 92.3718
 sec_sch_sde_line <- sec_sch_sde$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
@@ -555,7 +555,7 @@ sec_sch_map <-
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "LEFT"),
+      position = c("TOP", "LEFT"),
       item.height = 0.5, item.width = 2.1
       )
     )
@@ -577,9 +577,9 @@ sec_sch_map_summ <- sec_sch_map +
 tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 1)
 ```
 
-For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance spans the North-South length of Singapore. The standard deviation ellipse also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
+For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance (black circle) spans the North-South length of Singapore. The standard deviation ellipse (black dashed ellipse) also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
 
-When we consider the weighted standard deviational ellipse instead, we observe a directional bias towards the North and North-West directions. This suggests that schools towards the North and North-West of the spatial mean have higher overweight prevalence levels. This observation corresponds with what HPB had observed, that schools nearer to Singapore's Northern border (near the causeway to Malaysia) tended to have higher obesity rates. 
+When we consider the weighted standard deviational ellipse (accounting for obesity in schools) (red dashed ellipse), we observe a directional bias towards the North and North-West directions. This suggests that schools towards the North and North-West of the spatial mean have higher overweight prevalence levels. This observation corresponds with what HPB had observed, that schools nearer to Singapore's Northern border (near the causeway to Malaysia) tended to have higher obesity rates. 
 
 With a visual glance of the overweight prevalence map, one might also notice lower overweight prevalence levels in the South and Central regions of Singapore. Thus, this indication of a directional bias motivates us to examine spatial clusters of obesity as well as propose spatial models for childhood obesity in Singapore.
 
@@ -589,7 +589,7 @@ To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Si
 
 According to the URA, each [Planning Region](https://data.gov.sg/collections/1717/view) has a population size of more than 500,000 people and provide a mix of residential, commercial, business and recreational areas. Each Planning Region is then divided into [Planning Areas](https://data.gov.sg/collections/2104/view), which have a population of about 150,000 and are served by a town centre and several neighbourhood shopping centres. Each Planning Area is further divided into [Subzones](https://data.gov.sg/collections/1749/view), which are usually centred around a neighbourhood centre or activity node. 
 
-We aggregate overweight counts and school enrolment data by the different administrative regions, and fill in the regions to get visualise overweight prevalence by region.
+We aggregate overweight counts and school enrolment data by the different administrative regions, and fill in the regions to visualise overweight prevalence by region.
 
 ```{r}
 tmap_mode("view")
@@ -613,7 +613,7 @@ ura_regions_map + obesity_ura_regions %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "RIGHT"),
+      position = c("TOP", "LEFT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
@@ -639,7 +639,7 @@ ura_planning_areas_map + obesity_ura_planning_areas %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "RIGHT"),
+      position = c("TOP", "LEFT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
@@ -665,7 +665,7 @@ ura_subzones_map + obesity_ura_subzones %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "RIGHT"),
+      position = c("TOP", "LEFT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
@@ -675,7 +675,7 @@ ura_subzones_map + obesity_ura_subzones %>%
 # Aggregating overweight counts by MOE school zones
 obesity_moe_zones <- 
   # we left_join instead of st_join due to overlapping boundaries
-  left_join(moe_zones, st_drop_geometry(obesity_data_sf)) %>% 
+  left_join(moe_zones, st_drop_geometry(obesity_data_sf), by = join_by(ZONE)) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(ZONE, LEVEL) %>% 
   summarise(
@@ -683,7 +683,7 @@ obesity_moe_zones <-
     geometry = st_union(geometry)
     )
 
-sg_map + moe_zones_map + tm_legend_hide() + obesity_moe_zones %>% 
+sg_map + moe_zones_map + obesity_moe_zones %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
@@ -694,16 +694,16 @@ sg_map + moe_zones_map + tm_legend_hide() + obesity_moe_zones %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "LEFT"),
+      position = c("TOP", "LEFT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white", show = T
       )
     ) +
-  tm_title("Overweight prevalence by MOE clusters") +
+  tm_title("Overweight prevalence by MOE zones") +
   tm_facets_wrap(by = "LEVEL", nrow = 1)
 
 # Aggregating overweight counts by MOE clusters
 obesity_moe_clusters <- 
-  left_join(moe_clusters, st_drop_geometry(obesity_data_sf)) %>% 
+  left_join(moe_clusters, st_drop_geometry(obesity_data_sf), by = join_by(CLUSTER)) %>% 
   filter(YEAR == 2023, CATEGORY == "OSO") %>% 
   group_by(CLUSTER, LEVEL) %>% 
   summarise(
@@ -722,7 +722,7 @@ moe_clusters_map + obesity_moe_clusters %>%
       ), 
     fill.legend = tm_legend(
       title = "Overweight prevalence",
-      position = c("BOTTOM", "RIGHT"),
+      position = c("TOP", "LEFT"),
       item.height = 0.5, item.width = 2.1, bg.color = "white"
       )
     ) +
@@ -1227,14 +1227,14 @@ Delauney triangulation of a set of points in the plane subdivides their convex h
 tmap_mode("plot")
 
 # by Primary schools
-# obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
+# obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) # we do not jitter since analysis is separated by Pri and Sec schools already
 del_nb_pri <- tri2nb(st_coordinates(obesity_pri_sch), row.names = obesity_pri_sch$PT_ID) 
 pri_map <- sg_map + tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
   tm_lines(lwd = 0.5) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Delauney triangulation neighbours (Primary)")
 
 # by Secondary schools
-# obesity_sec_sch_jitter <- st_jitter(obesity_sec_sch) 
+# obesity_sec_sch_jitter <- st_jitter(obesity_sec_sch) # we do not jitter since analysis is separated by Pri and Sec schools already
 del_nb_sec <- tri2nb(st_coordinates(obesity_sec_sch), row.names = obesity_sec_sch$PT_ID) 
 sec_map <- sg_map + tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch))) +
   tm_lines(lwd = 0.5) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
@@ -1999,23 +1999,27 @@ nb_pval_sec %>% gt() %>%
 $H_0:$ No spatial autocorrelation present \
 $H_1:$ Positive spatial autocorrelation present
 
-Based on the spatial autocorrelation tests conducted using Moran’s I, Geary’s C, and Getis-Ord’s G statistics, we can conclude the following:
+Based on the spatial autocorrelation tests conducted using Moran’s I, Geary’s C, and Getis-Ord’s G test statistics, we can conclude the following:
 
 **Strong evidence of positive spatial autocorrelation for Primary Schools**
 
 There is strong evidence of spatial clustering of obesity, in primary schools, observed under most of the spatial weight matrices.
 
-The Moran’s I test indicates highly significant (p-values < 0.01) positive spatial autocorrelation for primary schools under all configurations except for social neighbours (MOE clusters). We can reject the null hypothesis at the 1% significance level in favour of the presence of positive spatial autocorrelation. 
+As the p-values for Moran’s I test are sufficiently small (p-values < 0.01) for most of the spatial weight matrices, we can reject the null hypothesis at the 1% significance level. There is sufficient evidence to suggest highly significant positive spatial autocorrelation for primary schools under all configurations except for social neighbours (MOE clusters).
 
-Geary’s C test further supports the presence of spatial dependence at the 1% significance level, reinforcing the finding of clustering (with the exception of social neighbours and k = 1 nearest neighbours). Getis-Ord’s G test results are less consistent, though some configurations (Delaunay triangulation, Sphere of Influence, and k = 2, 3 nearest neighbours) continue to suggest moderately significant (p-values < 0.10) clustering of obesity in Primary schools.
+Using Geary’s C test, we can reject the null hypothesis at the 1% significance level for most spatial weight matrices, further supporting the presence of spatial dependence and reinforcing the finding of clustering (with the exception of social neighbours and k = 1 nearest neighbours). 
+
+Getis-Ord’s G test results are less consistent. We can reject the null hypothesis at the 1% significance level only for some spatial weight matrices. Some configurations (Delaunay triangulation, Sphere of Influence, and k = 2, 3 nearest neighbours) continue to suggest moderately significant (p-values < 0.10) clustering of obesity in Primary schools.
 
 **Weak evidence of positive spatial autocorrelation for Secondary Schools**
 
 The evidence for spatial clustering is weaker for secondary schools.
 
-The Moran’s I test indicates highly significant (p-values < 0.01) positive spatial autocorrelation for primary schools under all configurations except for contiguous neighbours (Planning Areas) and social neighbours (MOE clusters).
+Using the Moran’s I test, we reject the null hypothesis at the 1% significance level for most spatial weight matrices. There is sufficient evidence to indicate highly significant (p-values < 0.01) positive spatial autocorrelation for primary schools under all configurations except for contiguous neighbours (Planning Areas) and social neighbours (MOE clusters).
 
-Geary’s C test further supports the presence of spatial dependence at the 1% significance level, but with the exception of contiguous neighbours, social neighbours and k = 2 nearest neighbours. However, Getis-Ord’s G test fails to reject the null hypothesis at the 10% significance level for all spatial weight matrices.
+Geary’s C test further supports the presence of spatial dependence at the 1% significance level, but with the exception of contiguous neighbours, social neighbours and k = 2 nearest neighbours. 
+
+However, using Getis-Ord’s G test, we do not reject the null hypothesis at the 1% significance level (and also the 10% significiance level) for all spatial weight matrices.
 
 **Further conclusions**
 
@@ -2029,44 +2033,65 @@ From a policy perspective, targeted interventions in primary school clusters cou
 
 To identify spatial clusters and for our subsequent spatial model, we decided to use the Sphere of Influence spatial weights matrix:
 
-Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3). 
-
 ```{r}
 tmap_mode("view")
 
-# Delauney triangulation
+# Primary schools
+## Delauney triangulation
 map1 <- tm_shape(nb2lines(del_nb_pri, coords = st_geometry(obesity_pri_sch))) +
   tm_lines(lwd = 0.5) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Delauney triangulation neighbours (Primary)")
 
-# Sphere of influence
+## Sphere of influence
 map2 <- tm_shape(nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 1) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
+  tm_lines(lwd = 1.5) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("Sphere of influence neighbours (Primary)")
 
-# k nearest neighbour
+## k nearest neighbour
 map3 <- tm_shape(nb2lines(knn3_nb_pri, coords = st_geometry(obesity_pri_sch))) + 
-  tm_lines(lwd = 1, col = "red") + 
+  tm_lines(lwd = 1.5, col = "red") + 
   tm_shape(nb2lines(knn2_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 1.5, col = "green") + 
+  tm_lines(lwd = 2, col = "green") + 
   tm_shape(nb2lines(knn1_nb_pri, coords = st_geometry(obesity_pri_sch))) +
   tm_lines(lwd = 2, col = "black") +
-  tm_legend(c("k=1", "k=2", "k=3"), col=c("pink", "red", "red4"), lty=1) +
+  tm_add_legend(labels=c("k=1", "k=2", "k=3"), type="lines", col=c("black", "green", "red"),
+                title="knn", lty=1, lwd=2) +
   obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) +
-  tm_add_legend(type = "lines", labels = "k=3", lwd = 1, col = "red") +
-  tm_add_legend(type = "lines", labels = "k=2", lwd = 1.5, col = "green") +
-  tm_add_legend(type = "lines", labels = "k=1", lwd = 2, col = "black") +
-  tm_title("k nearest neighbour (Primary)")
+  tm_title("k nearest neighbours (Primary)")
 
-tmap_arrange(map1, map2, map3, nrow = 1)
+# Secondary schools
+## Delauney triangulation
+map4 <- tm_shape(nb2lines(del_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 0.5) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
+  tm_title("Delauney triangulation neighbours (Secondary)")
+
+## Sphere of influence
+map5 <- tm_shape(nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 1.5) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
+  tm_title("Sphere of influence neighbours (Secondary)")
+
+## k nearest neighbour
+map6 <- tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))) + 
+  tm_lines(lwd = 1.5, col = "red") + 
+  tm_shape(nb2lines(knn2_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2, col = "green") + 
+  tm_shape(nb2lines(knn1_nb_sec, coords = st_geometry(obesity_sec_sch))) +
+  tm_lines(lwd = 2, col = "black") +
+  tm_add_legend(labels=c("k=1", "k=2", "k=3"), type="lines", col=c("black", "green", "red"),
+                title="knn", lty=1, lwd=2) +
+  obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
+  tm_title("k nearest neighbours (Secondary)")
+
+tmap_arrange(map1, map2, map3, map4, map5, map6, nrow = 2)
 ```
 
+Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. The visualisation above compares the graph-based and distance-based neighbour links for Primary and Secondary schools. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links between schools that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing these long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Thus, Sphere of Influence might more accurately reflect neighbour to neighbour relationships compared to Delauney triangluation.
 
-Additionally, graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design, that is if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
+Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3). Since graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design: that is, if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
 
 As such, we determined that Sphere of Influence was the best choice to model neighbour links.
 
-We use local autocorrelation statistics to identify spatial clusters:
+Next, we use local autocorrelation statistics to identify spatial clusters:
 
 Local Moran's I, returned as a z-score, is used to identify the degree to which one areal unit is autocorrelated relative to it’s neighbour. 
 
@@ -2081,11 +2106,12 @@ We will use Local Moran's I to identify schools with high positive spatial autoc
 tmap_mode("view")
 
 # Setting an overweight cutoff point
-OVERWEIGHT_CUTOFF <- 0.14
+OVERWEIGHT_CUTOFF_PRI <- mean(obesity_pri_sch$PREVALENCE)
+OVERWEIGHT_CUTOFF_SEC <- mean(obesity_sec_sch$PREVALENCE)
 
 # by Primary school
 obesity_pri_sch$HIGH_PREVALENCE <- 
-  as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+  as.factor(obesity_pri_sch$PREVALENCE > OVERWEIGHT_CUTOFF_PRI)
 pri_map <- obesity_pri_sch %>% 
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
@@ -2093,11 +2119,12 @@ pri_map <- obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis (Primary)")
+print("Join count analysis for Primary Schools (SOI)")
 joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, soi_lw_B_pri)
 
 # by Secondary school
 obesity_sec_sch$HIGH_PREVALENCE <- 
-  as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF)
+  as.factor(obesity_sec_sch$PREVALENCE > OVERWEIGHT_CUTOFF_SEC)
 sec_map <- obesity_sec_sch %>% 
   tm_shape(name = "Overweight prevalence") + 
   tm_symbols(
@@ -2105,10 +2132,13 @@ sec_map <- obesity_sec_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis (Secondary)")
+print("Join count analysis for Secondary Schools (SOI)")
 joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, soi_lw_B_sec)
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
+
+For robustness, we defined high obesity schools as schools with above average OSO levels (separately for primary and secondary schools) for a join count analysis for Sphere of Influence neighbours. For primary schools, we reject the null hypothesis at the 5% significance level (z=2.1763), but not at the 1% significance level previously used for Local Moran's I test. For secondary schools, we do not reject the null hypothesis at the 5% significance level (z=0.5217). The join count analysis suggests clustering of primary schools with above average obesity levels, but not for secondary schools.
 
 ```{r}
 #### Local Moran's I statistics
