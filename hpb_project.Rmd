@@ -3952,7 +3952,7 @@ No evidence of significant spatial autocorrelation in the OLS residuals based on
 
 ### Spatial Models (Primary Schools)
 
-```{r}
+```{r,results='hide'}
 # Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
 pri_sar <- spautolm(
   formula = PREVALENCE ~ 1, data = obesity_model_analysis_pri, listw = soi_lw_pri)
@@ -3977,18 +3977,26 @@ summary(pri_sarar)
 
 ### Spatial Tests for model comparison (Primary Schools)
 
-```{r}
+```{r,results='hide'}
 # Lagrange Multiplier tests
 
+nb_lm_pri <- nb_lm_sec <- 
+  data.frame("H0" = c(), "H1" = c(), 
+             "P.value" = c(),"Test.Result" = c())
 lm.LMtests(ols_pri, listw = soi_lw_pri, test = "all") 
 # RSerr = 1.8749, df = 1, p-value = 0.1709
 # RSlag = 3.8848, df = 1, p-value = 0.04873
 # adjRSerr = 0.4243, df = 1, p-value = 0.5148
 # adjRSlag = 2.4342, df = 1, p-value = 0.1187
 # SARMA = 4.3091, df = 2, p-value = 0.116
+nb_lm_pri <- rbind(nb_lm_pri, data.frame(
+  "H0" = c("OLS","OLS"), "H1" =c("SEM","SLM"), "P.value" = c(0.5148,0.1187),"Test.Result" = c("Do not reject H0","Do not reject H0")))
 
 # Likelihood Ratio tests
 
+nb_lr_pri <- nb_lr_sec <- 
+  data.frame("H0" = c(), "H1" = c(), 
+             "P.value" = c(),"Test.Result" = c())
 LR.Sarlm(pri_sem, pri_sarar) # p-value = 0.07437
 LR.Sarlm(pri_slm, pri_sarar) # p-value = 0.275
 LR.Sarlm(pri_slm, pri_sar) # p-value < 2.2e-16
@@ -3996,23 +4004,61 @@ LR.Sarlm(pri_sem, pri_sar) # p-value < 2.2e-16
 
 LR1.Sarlm(pri_slm) # p-value = 0.04966
 LR1.Sarlm(pri_sem) # p-value = 0.1725
+nb_lr_pri <- rbind(nb_lr_pri, data.frame(
+  "H0" = c("SEM","SLM","SAR","SAR","OLS","OLS"), "H1" =c("SARAR","SARAR","SEM","SLM","SEM","SLM"), "P.value" = c(0.5148,0.275,"< 2.2e-16","< 2.2e-16",0.1725,0.0497),"Test.Result" = c("Do not reject H0","Do not reject H0","Reject H0","Reject H0","Do not reject H0","Reject H0")))
 
 # Comparing AIC 
+nb_abic_pri <- nb_abic_sec <- 
+  data.frame("Criterion" = c(), "OLS" = c(), 
+             "SLM" = c(),"SEM" = c())
 AIC(pri_slm) # -921.7105
 AIC(pri_sem) # -919.7185
 AIC(ols_pri) # -919.8576
+nb_abic_pri <- rbind(nb_abic_pri, data.frame(
+  "Criterion" = "AIC", "OLS" = AIC(ols_pri), "SLM" = AIC(pri_slm),"SEM" = AIC(pri_sem)))
 
 # Comparing BIC
 BIC(pri_slm) # -899.321
 BIC(pri_sem) # -897.329
 BIC(ols_pri) # -900.6666
+nb_abic_pri <- rbind(nb_abic_pri, data.frame(
+  "Criterion" = "BIC", "OLS" = BIC(ols_pri), "SLM" = BIC(pri_slm),"SEM" = BIC(pri_sem)))
+```
+```{r}
+nb_lr_pri %>% gt() %>%
+    tab_header(
+        title = "Likelihood Ratio Test Results",
+        subtitle = "Primary schools"
+    ) %>%
+    fmt_number(
+        columns = c(H0,H1,P.value,Test.Result),
+        decimals = 4
+    )
+nb_lm_pri %>% gt() %>%
+    tab_header(
+        title = "Lagrange Multiplier Test Results",
+        subtitle = "Primary schools"
+    ) %>%
+    fmt_number(
+        columns = c(H0,H1,P.value,Test.Result),
+        decimals = 4
+    )
+nb_abic_pri %>% gt() %>%
+    tab_header(
+        title = "Model AIC & BIC Values",
+        subtitle = "Primary schools"
+    ) %>%
+    fmt_number(
+        columns = c(Criterion,OLS,SLM,SEM),
+        decimals = 4
+    )
 ```
 
-Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see that when SLM is the alternative the p-value is small (0.01429) which is sufficient evidence at 5% significance level that the alternative SLM is more suitable. On the other hand, when SEM is the alternative, the p-value is larger (0.05814), so there is insufficient evidence at 5% significance level to reject OLS. This is further supported by the LM test results, where adjRSlag has a much smaller p-value of 0.06073 as compared to adjRSerr p-value of 0.6956. This suggests the SLM is more suitable than SEM, though the significance of SLM relative to OLS may be difficult to determine at 5% significance level from this test alone. Finally, considering the AIC and BIC values, we see pri_slm has marginally smaller AIC and BIC values than both SEM and OLS. This brings us to our conclusion that SLM is the most suitable spatial model for modelling obesity prevalence in primary schools.
+Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see that when SLM is the alternative the p-value is small (0.01429) which is sufficient evidence at 5% significance level that the alternative SLM is more suitable. On the other hand, when SEM is the alternative, the p-value is larger (0.05814), so there is insufficient evidence at 5% significance level to reject OLS. This is further supported by the LM test results, where adjRSlag has a much smaller p-value of 0.1187 as compared to adjRSerr p-value of 0.5148. This suggests the SLM is more suitable than SEM, though the significance of SLM relative to OLS may be difficult to determine at 5% significance level from this test alone. Finally, considering the AIC and BIC values, we see pri_slm has a marginally smaller AIC value than SEM and OLS. This brings us to our conclusion that SLM is the most suitable spatial model for modelling obesity prevalence in primary schools.
 
 ### Spatial Models (Secondary Schools)
 
-```{r}
+```{r,results='hide'}
 # Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
 sec_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_sec, 
                     listw = soi_lw_sec)
@@ -4037,8 +4083,9 @@ summary(sec_sarar)
 
 ### Spatial Tests for model comparison (Secondary Schools)
 
-```{r}
+```{r,results='hide'}
 # Lagrange Multiplier tests
+
 
 lm.LMtests(ols_sec, listw = soi_lw_sec, test = "all") 
 # RSerr = 0.91006, df = 1, p-value = 0.3401
@@ -4046,6 +4093,8 @@ lm.LMtests(ols_sec, listw = soi_lw_sec, test = "all")
 # adjRSerr = 0.60109, df = 1, p-value = 0.4382
 # adjRSlag = 1.9907, df = 1, p-value = 0.1583
 # SARMA = 2.9008, df = 2, p-value = 0.2345
+nb_lm_sec <- rbind(nb_lm_sec, data.frame(
+  "H0" = c("OLS","OLS"), "H1" =c("SEM","SLM"), "P.value" = c(0.4382,0.1583),"Test.Result" = c("Do not reject H0","Do not reject H0")))
 
 # Likelihood Ratio tests
 
@@ -4056,16 +4105,51 @@ LR.Sarlm(sec_sem, sec_sar) # p-value = 2.331e-15
 
 LR1.Sarlm(sec_slm) # p-value = 0.08286
 LR1.Sarlm(sec_sem) # p-value = 0.08358
+nb_lr_sec <- rbind(nb_lr_sec, data.frame(
+  "H0" = c("SEM","SLM","SAR","SAR","OLS","OLS"), "H1" =c("SARAR","SARAR","SEM","SLM","SEM","SLM"), "P.value" = c(0.6651,0.6771,"2.331e-15","2.331e-15",0.08286,0.08358),"Test.Result" = c("Do not reject H0","Do not reject H0","Reject H0","Reject H0","Do not reject H0","Do not reject H0")))
 
 # Comparing AIC 
 AIC(sec_slm) # -600.2422
 AIC(sec_sem) # -600.2281
 AIC(ols_sec) # -601.9956
+nb_abic_sec <- rbind(nb_abic_sec, data.frame(
+  "Criterion" = "AIC", "OLS" = AIC(ols_sec), "SLM" = AIC(sec_slm),"SEM" = AIC(sec_sem)))
 
 # Comparing BIC
 BIC(sec_slm) # -579.4535
 BIC(sec_sem) # -579.4535
 BIC(ols_sec) # -590.1164
+nb_abic_sec <- rbind(nb_abic_sec, data.frame(
+  "Criterion" = "BIC", "OLS" = BIC(ols_sec), "SLM" = BIC(sec_slm),"SEM" = BIC(sec_sem)))
+```
+```{r}
+nb_lr_sec %>% gt() %>%
+    tab_header(
+        title = "Likelihood Ratio Test Results",
+        subtitle = "Secondary schools"
+    ) %>%
+    fmt_number(
+        columns = c(H0,H1,P.value,Test.Result),
+        decimals = 4
+    )
+nb_lm_sec %>% gt() %>%
+    tab_header(
+        title = "Lagrange Multiplier Test Results",
+        subtitle = "Secondary schools"
+    ) %>%
+    fmt_number(
+        columns = c(H0,H1,P.value,Test.Result),
+        decimals = 4
+    )
+nb_abic_sec %>% gt() %>%
+    tab_header(
+        title = "Model AIC & BIC Values",
+        subtitle = "Secondary schools"
+    ) %>%
+    fmt_number(
+        columns = c(Criterion,OLS,SLM,SEM),
+        decimals = 4
+    )
 ```
 
 Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see in both tests where SLM and SEM are alternatives that the p-value is much larger than 0.05, showing there is insufficient evidence at 5% significance level to reject the null OLS. This is further supported by the LM test results, where adjRSlag and adjRSerr p-values are very large. This suggests the OLS may be a more suitable model than the spatial models SLM and SEM. Finally, considering the AIC and BIC values, we see ols_sec has smaller AIC and BIC values than both SEM and OLS. This brings us to our conclusion that OLS is the most suitable for modelling obesity prevalence in primary schools, more so than any type of spatial model.
