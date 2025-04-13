@@ -2943,9 +2943,7 @@ obesity_joined_school_sports_data <-
 ```
 
 ## Visualising physical sports participation by school level
-
 ### Primary School
-
 ```{r}
 # Primary school sports participation
 
@@ -3165,12 +3163,7 @@ cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>%
   tm_title("Average Sports CCAs Ratio by URA planning areas") +
   tm_facets_wrap(by = "LEVEL")
 
-print(cca_planning_avg_map)
-
-
-
-
-
+cca_planning_avg_map
 
 
 #raw cca avg for COMBINED schools
@@ -3249,9 +3242,7 @@ pri_bivariate_map
 
 
 
-
 # Secondary school bivariate map
-
 
 sec_obesity_sports <- obesity_sports_data %>%
   filter(LEVEL == "SECONDARY") %>%
@@ -3309,7 +3300,7 @@ Regarding secondary schools, while the distribution is different, the same probl
 
 # Sports Fields and Facilities
 
-```{r}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Loading sports facilities data
 sports_facilities_file <- "DataFiles/SportSGSportFacilities.geojson"
 sports_facilities_sf <- st_read(sports_facilities_file) %>% 
