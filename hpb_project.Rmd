@@ -2958,7 +2958,7 @@ pri_cca_map <- ura_planning_areas_map+
     size.legend = tm_legend_hide(),
     shape = 21,  # circle
     fill = "sports_cca_per_100", 
-    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"),
+    fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
     fill.legend = tm_legend(
       title = "Sports CCAs per 100 Students",
       orientation = "landscape", 
@@ -2968,9 +2968,8 @@ pri_cca_map <- ura_planning_areas_map+
   ) + 
   tm_layout(
     legend.position = c("BOTTOM", "RIGHT"),
-    legend.title.size = 1.2,
-    main.title = "Ratio of Sports CCAs per 100 Students by Primary School"
-  )
+    legend.title.size = 1.2) + 
+    tm_title("Ratio of Sports CCAs per 100 Students by Primary School")
 
 pri_cca_map 
 
@@ -3013,7 +3012,7 @@ pri_cca_map_sde <- ura_planning_areas_map +
     size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide(),
     fill = "sports_cca_per_100", 
-    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"), 
+    fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
       title = "Sports CCAs per 100 Students",
       orientation = "landscape", 
@@ -3054,7 +3053,7 @@ sec_cca_map <- ura_planning_areas_map +
     size.legend = tm_legend_hide(),
     shape = 22,  #square
     fill = "sports_cca_per_100", 
-    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"),
+    fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"),
     fill.legend = tm_legend(
       title = "Sports CCAs per 100 Students",
       orientation = "landscape", 
@@ -3064,9 +3063,8 @@ sec_cca_map <- ura_planning_areas_map +
   ) + 
   tm_layout(
     legend.position = c("BOTTOM", "RIGHT"),
-    legend.title.size = 1.2,
-    main.title = "Ratio of Sports CCAs per 100 Students by Secondary School"
-  )
+    legend.title.size = 1.2) + 
+    tm_title("Ratio of Sports CCAs per 100 Students by Secondary School")
 
 
 sec_cca_map
@@ -3109,7 +3107,7 @@ sec_cca_map_sde <- ura_planning_areas_map +
     size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide(),
     fill = "sports_cca_per_100", 
-    fill.scale = tm_scale_continuous(values = "brewer.rd_yl_gn"), 
+    fill.scale = tm_scale_continuous(values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
       title = "Sports CCAs per 100 Students",
       orientation = "landscape", 
@@ -3152,7 +3150,7 @@ cca_planning_avg_map <- ura_planning_areas_map + cca_planning_avg %>%
   tm_shape(name = "Sports CCA Ratio per 100") +
   tm_polygons(
     fill = "RATIO_AGG",
-    fill.scale = tm_scale(values = "YlOrRd"), 
+    fill.scale = tm_scale(values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
       title = "Sports CCAs per 100 Students",
       orientation = "landscape", 
@@ -3176,7 +3174,7 @@ combined_cca_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_dat
   filter(!is.na(RATIO_AGG))
 ```
 
-Aggregating the sports CCA ratio by URA planning area, we observe no generalised pattern of school sports participation across Singapore. 
+Aggregating the sports CCA ratio by URA planning area, we observe no generalized pattern of school sports participation across Singapore. 
 
 While primary schools depict a much lower sports CCA ratio compared to secondary schools, this can likely be explained by the fact that CCA participation is not compulsory in primary schools (it is in secondary schools).
 
@@ -3233,13 +3231,14 @@ bivariate_colors <- c(
 
 pri_bivariate_map <-ura_planning_areas_map +
   tm_shape(pri_bc) +
-  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories (CCA - Obesity)") +
+  tm_polygons(fill = "bivariate_class", pallete = bivariate_colors, title = "Bivariate Categories (CCA - Obesity)") +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Sports CCAs and Obesity Prevalence by URA Planning Areas (Primary Schools)")
 
 
 pri_bivariate_map
 
+#note - unable to use 'values' instead of 'pallete' for bivariate_colors because it wasn't preserving the predetermined colors. Instead, it was using it's own color scheme which ruined the bivariate chloropleth map. These maps are still using tmap v3 as a result.
 
 
 # Secondary school bivariate map
@@ -3288,6 +3287,7 @@ sec_bivariate_map <-ura_planning_areas_map +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Sports CCAs and Obesity Prevalence by URA Planning Areas (Secondary Schools)")
 
+#note - unable to use 'values' instead of 'pallete' for bivariate_colors because it wasn't preserving the predetermined colors. Instead, it was using it's own color scheme which ruined the bivariate chloropleth map. These maps are still using tmap v3 as a result.
 
 sec_bivariate_map
 ```
@@ -3300,7 +3300,7 @@ Regarding secondary schools, while the distribution is different, the same probl
 
 # Sports Fields and Facilities
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, include=FALSE}
 # Loading sports facilities data
 sports_facilities_file <- "DataFiles/SportSGSportFacilities.geojson"
 sports_facilities_sf <- st_read(sports_facilities_file) %>% 
@@ -3309,7 +3309,24 @@ sports_facilities_sf <- st_read(sports_facilities_file) %>%
 st_make_valid(sports_facilities_sf) # Check for invalid geometries
 st_as_sf(st_make_valid(sports_facilities_sf)) # Fix invalid geometries
 
+# Loading Sports fields data
+fields_shp <- 
+  st_read("DataFiles/SportsFieldsSGSHP/PLAYSG.shp") %>% 
+  st_make_valid() %>%
+  st_as_sf() %>%
+  st_transform(crs = sg_crs) 
 
+#DATA SET OF CHOICE
+# Loading dual use facilities data
+
+dual_use_facilities <- 
+  st_read("DataFiles/DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>%
+  st_make_valid() %>%
+  st_as_sf() %>%
+  st_transform(crs = sg_crs)
+```
+
+```{r}
 sport_sg_facility_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf) +
   tm_polygons(size = 0.3,
           fill = "slateblue4",
@@ -3318,14 +3335,6 @@ sport_sg_facility_map <- ura_planning_areas_map + tm_shape(sports_facilities_sf)
 
 sport_sg_facility_map
 
-
-
-# Loading Sports fields data
-fields_shp <- 
-  st_read("DataFiles/SportsFieldsSGSHP/PLAYSG.shp") %>% 
-  st_make_valid() %>%
-  st_as_sf() %>%
-  st_transform(crs = sg_crs) 
 
 sports_fields_map <- ura_planning_areas_map + tm_shape(fields_shp) +
     tm_dots(size = 0.3,
@@ -3340,13 +3349,6 @@ sports_fields_map
 
 
 #DATA SET OF CHOICE
-# Loading dual use facilities data
-
-dual_use_facilities <- 
-  st_read("DataFiles/DualUseSchoolsSportsFacilitiesSHP/DUS_School_Sports_Facilities.shp") %>%
-  st_make_valid() %>%
-  st_as_sf() %>%
-  st_transform(crs = sg_crs) 
 
 dus_facility_map <- ura_planning_areas_map + tm_shape(dual_use_facilities) +
     tm_dots(size = 0.3,
@@ -3376,14 +3378,13 @@ pri_dus_map <- ura_planning_areas_map +
   ) +
   tm_layout(
     legend.position = c("BOTTOM", "RIGHT"),
-    legend.title.size = 1.2,
-    main.title = "C2 - Primary Schools and Dual Use Sports Facilities"
-  )
+    legend.title.size = 1.2) + 
+  tm_title("C2 - Primary Schools and Dual Use Sports Facilities")
 
 pri_dus_map
 
 
-#seconadry schools
+#seconadary schools
 sec_dus_map <- ura_planning_areas_map + 
   tm_shape(sec_cca_data) +
   tm_symbols(
@@ -3399,9 +3400,8 @@ sec_dus_map <- ura_planning_areas_map +
   ) +
   tm_layout(
     legend.position = c("BOTTOM", "RIGHT"),
-    legend.title.size = 1.2,
-    main.title = "C3 - Secondary Schools and Dual Use Sports Facilities"
-  )
+    legend.title.size = 1.2) + 
+    tm_title("C3 - Secondary Schools and Dual Use Sports Facilities")
 
 sec_dus_map
 ```
@@ -3495,7 +3495,7 @@ pri_dus_avg_distance_map <- ura_planning_areas_map + pri_dus_avg_distance %>%
   tm_shape(name = "Average Distance to Nearest DUS Sports Facility") +
   tm_polygons(
     fill = "avg_distance",
-    fill.scale = tm_scale(values = "YlOrRd",
+    fill.scale = tm_scale(values = "brewer.yl_or_rd",
                           breaks = c(0, 500, 1000, 1500, 2000, 2500, 3000, 3500)),
     fill.legend = tm_legend(
       title = "Average Distance in Metres",
@@ -3506,7 +3506,7 @@ pri_dus_avg_distance_map <- ura_planning_areas_map + pri_dus_avg_distance %>%
     ) +
   tm_title("Average Distance to Nearest DUS Sports Facility from Primary Schools")
 
-print(pri_dus_avg_distance_map)
+pri_dus_avg_distance_map
 
 
 
@@ -3524,7 +3524,7 @@ sec_dus_avg_distance_map <- ura_planning_areas_map + sec_dus_avg_distance %>%
   tm_shape(name = "Average Distance to Nearest DUS Sports Facility") +
   tm_polygons(
     fill = "avg_distance",
-    fill.scale = tm_scale(values = "YlOrRd"), 
+    fill.scale = tm_scale(values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
       title = "Average Distance in Metres",
       orientation = "landscape", 
@@ -3534,7 +3534,7 @@ sec_dus_avg_distance_map <- ura_planning_areas_map + sec_dus_avg_distance %>%
     ) +
   tm_title("Average Distance to Nearest DUS Sports Facility from Secondary Schools")
 
-print(sec_dus_avg_distance_map)
+sec_dus_avg_distance_map
 ```
 A manually constructed equation is used to find the nearest 3 DUS facilities to each school (in metres)
 
