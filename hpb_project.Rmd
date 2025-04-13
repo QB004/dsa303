@@ -3231,7 +3231,7 @@ bivariate_colors <- c(
 
 pri_bivariate_map <-ura_planning_areas_map +
   tm_shape(pri_bc) +
-  tm_polygons(fill = "bivariate_class", pallete = bivariate_colors, title = "Bivariate Categories (CCA - Obesity)") +
+  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, title = "Bivariate Categories (CCA - Obesity)") +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Sports CCAs and Obesity Prevalence by URA Planning Areas (Primary Schools)")
 
