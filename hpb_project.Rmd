@@ -3592,7 +3592,7 @@ Interestingly, certain regions of interest from the last visual representation a
 
 ## Joining data variables
 
-```{r}
+```{r, include=FALSE}
 # Selecting relevant columns
 census_merge_data <- census_merge %>% 
   st_drop_geometry() %>% 
@@ -3742,7 +3742,7 @@ Furthermore, there is a negative linear relationship between overweight prevalen
 
 ## Model Creation (LM, BSS, Foward/Backward Selection)
 
-```{r}
+```{r, include=FALSE}
 obesity_model_analysis_pri <- obesity_model_pri %>%
   select(-COUNT, -ENROLMENT,-is_sap_sch,-is_gifted_sch)
 lm.all_pri<- lm(PREVALENCE~.,data=obesity_model_analysis_pri)
@@ -3755,7 +3755,7 @@ summary(lm.all_sec)
 
 For the primary school variables, the intercept is the most statistically significant with p-value close to 0. Other statistically significant variables include is_coed_sch (p-value \<0.01), is_popular_sch (p-value\<0.05), while moderately significant variables are is_govt_sch, is_special_sch and num_food_outlets (p-value\<0.1) For the secondary school variables, is_special_sch is the most statistically significant with p-value close to 0. Other statistically significant variables include the intercept (p-value\<0.05) and is_popular_sch (p-value\<0.1).
 
-```{r}
+```{r, include=FALSE}
 #BSS for Pri
 nb_varno_pri <- nb_varno_sec <- 
   data.frame("Selection.method" = c(), "Largest.adjr2" = c(), 
@@ -3832,7 +3832,9 @@ ols_sec<-lm(PREVALENCE~Education+is_special_sch,data=obesity_model_analysis_sec)
 summary(ols_sec)
 nb_varno_sec <- rbind(nb_varno_sec, data.frame(
   "Selection.method" = "Backward Selection", "Largest.adjr2" = res_bwd_sec, "Smallest.bic" = c_bwd_sec))
+```
 
+```{r}
 # Summary of spatial autocorrelation test p-values
 nb_varno_pri %>% gt() %>%
   tab_header(
@@ -3872,7 +3874,7 @@ This is corroborated by the variable analysis where Education and is_special_sch
 
 ### Residual analysis for Primary Schools
 
-```{r}
+```{r, results='hide'}
 # Generating residuals for OLS model
 res_pri = residuals(ols_pri)
 
@@ -3917,7 +3919,7 @@ Evidence of significant spatial autocorrelation in the OLS residuals based on Mo
 
 ### Residual analysis for Secondary Schools
 
-```{r}
+```{r, results='hide'}
 # Generating residuals for OLS model
 res_sec = residuals(ols_sec)
 
