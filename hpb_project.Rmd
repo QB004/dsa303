@@ -3238,7 +3238,7 @@ pri_bivariate_map <-ura_planning_areas_map +
 
 pri_bivariate_map
 
-#note - unable to use 'values' instead of 'pallete' for bivariate_colors because it wasn't preserving the predetermined colors. Instead, it was using it's own color scheme which ruined the bivariate chloropleth map. These maps are still using tmap v3 as a result.
+#note - unable to use 'values' instead of 'palette' for bivariate_colors because it wasn't preserving the predetermined colors. Instead, it was using it's own color scheme which ruined the bivariate chloropleth map. These maps are still using tmap v3 as a result.
 
 
 # Secondary school bivariate map
@@ -3287,7 +3287,7 @@ sec_bivariate_map <-ura_planning_areas_map +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Sports CCAs and Obesity Prevalence by URA Planning Areas (Secondary Schools)")
 
-#note - unable to use 'values' instead of 'pallete' for bivariate_colors because it wasn't preserving the predetermined colors. Instead, it was using it's own color scheme which ruined the bivariate chloropleth map. These maps are still using tmap v3 as a result.
+#note - unable to use 'values' instead of 'palette' for bivariate_colors because it wasn't preserving the predetermined colors. Instead, it was using it's own color scheme which ruined the bivariate chloropleth map. These maps are still using tmap v3 as a result.
 
 sec_bivariate_map
 ```
