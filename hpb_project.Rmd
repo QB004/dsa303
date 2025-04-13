@@ -2549,7 +2549,7 @@ Analysing the spatial descriptive summary measures for education variable, we ob
 
 # Food and Nutrition
 
-```{r, results='hide'}
+```{r}
 #Data transformation
 
 #Hawker Centres
@@ -2620,7 +2620,7 @@ Based on the descriptive maps, we can observe a large number of food outlets con
 Despite these regional differences, the data does not reveal a strong spatial pattern. 
 
 ## Spatial Descriptive Summary Measures of Food
-```{r, results='hide'}
+```{r}
 #Spatial analysis - Secondary school
 obesity_sec_food_coords = st_coordinates(obesity_sec_food)
 
@@ -2750,7 +2750,7 @@ This skew is apparent in areas such as Bukit Merah and Tanglin, where there is a
 
 ## Distance of the nearest food option to each school
 
-```{r, results='hide'}
+```{r}
 #Write function to compute distance to nearest food option, along with outlet_type
 library(geosphere)
 
@@ -2803,7 +2803,7 @@ However, the maximum distance recorded is over 1.1 km. This means that certain s
 
 ## Bivariate Choropleth maps
 
-```{r, results='hide'}
+```{r}
 library(classInt);library(dplyr)
 
 #Select the two variables for the bivariate map
@@ -4206,7 +4206,7 @@ p-value for Global Moran's I test (Primary school): 0.5712 p-value for Global Ge
 
 Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019. 
 
-#### Join count analysis
+#### Joint count analysis
 
 ```{r, results='hide'}
 # Setting an overweight cutoff point
@@ -4224,7 +4224,7 @@ pri_map_z_increase <- ura_regions_map + oso_hist_geom1 %>%
     fill = "z_change_high_increase", 
     size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
-  tm_title("Join count analysis")
+  tm_title("Joint count analysis")
 
 
 # by Primary school - Improving Obesity Levels
@@ -4242,7 +4242,7 @@ pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>%
     fill = "z_change_high_decrease", 
     size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
-  tm_title("Join count analysis")
+  tm_title("Joint count analysis")
 
 
 #Maps:
@@ -4361,8 +4361,8 @@ oso_covid_geom = oso_covid_geom_full %>%
   dplyr::select(c("PT_ID", "SCHOOL", "geometry", "after_covid_change", "before_covid_change"))
 
 
-summary(oso_covid_geom$before_covid_change)
-summary(oso_covid_geom$after_covid_change)
+#summary(oso_covid_geom$before_covid_change)
+#summary(oso_covid_geom$after_covid_change)
 
 #Classify
 oso_covid_geom_classes <- oso_covid_geom %>%
