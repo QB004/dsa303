@@ -2186,6 +2186,8 @@ sec_map <-
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
+The visualisations above show the spatial autocorrelation statistics at the local school level (Local Moran's I Z-Statistic and Local Getis-Ord's G statistics).
+
 As sphere of influence neighbours have subgraphs with just 2 schools, we will not consider more than one lag for our spatial regression model. This is because schools in SOI subgraphs with 2 schools will only have one immediate neighbour each. Thus, we do not implement spatial correlograms for our analysis. 
 
 ### High-High overweight prevalence clusters
@@ -2212,15 +2214,16 @@ hh_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))
   filter(i_ID %in% hh_pri$PT_ID)
 hh_pri_neighbours %>% 
   tm_shape() + tm_lines(lwd = 2) +
-  obesity_pri_sch %>% filter(PT_ID %in% hh_pri_neighbours$j_ID) %>% tm_shape() + tm_symbols(
+  obesity_pri_sch %>% filter(PT_ID %in% hh_pri_neighbours$j_ID) %>% tm_shape() +
+  tm_symbols(
     fill = "PREVALENCE", size = 0.5, 
     fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
     ) + 
   hh_pri %>% tm_shape() + tm_symbols(
-    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, fill.legend = tm_legend(show = F),
+    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, 
+    fill.legend = tm_legend(show = F),
     fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
     ) + 
-  tm_legend(bg.color = "white") +
   tm_title("High-High overweight prevalence clusters (Primary)")
 
 # High-High Secondary school clusters
@@ -2230,7 +2233,7 @@ hh_sec <- obesity_sec_sch %>%
   arrange(desc(LMORANZ)) # no clustering for secondary schools 
 ```
 
-Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value > 0) (we filter for LMORANZ >= 2.576, GO_STAT > 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the visualisation), and their respective SOI neighbours, were identified as High-High overweight prevalence clusters: 
+Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value > 0) (we filter for LMORANZ >= 2.576, GO_STAT > 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the visualisation above), and their respective SOI neighbours, were identified as High-High overweight prevalence clusters: 
 
 -   Northland Primary School (SOI neighbours: Jiemin Primary School, Peiying Primary School, Naval Base Primary School, Huamin Primary School)
 -   Yishun Primary School (SOI neighbours: Xishan Primary School, Ahmad Ibrahim Primary School, Jiemin Primary School)
@@ -2242,7 +2245,9 @@ On the other hand, no secondary schools were identified as High-High overweight 
 
 The Northland Primary School, Yishun Primary School and Peiying Primary School clusters can be considered as one spatial cluster of relatively high overweight prevalence levels, given the common SOI neighbours. Likewise, the Marsiling Primary School and Si Ling Primary School clusters can also be considered as a High-High cluster.
 
-Targeting these 5 identified primary schools for obesity reduction could have potential spillover effects for obesity reduction in neighbouring schools in the cluster as well. 
+These 5 primary schools have high obesity levels and also tend to be surrounded by other schools with similarly high obesity levels.
+
+The implications for policy-makers is that targeting these 5 identified primary schools for obesity reduction could have potential spillover effects for obesity reduction in their neighbouring schools in the cluster as well. This could mean less resources needed to reduce obesity in clusters due to the spillover effects.
 
 ### Low-Low overweight prevalence clusters
 
@@ -2267,15 +2272,16 @@ ll_pri_neighbours <- nb2lines(soi_nb_pri, coords = st_geometry(obesity_pri_sch))
 pri_map <- ll_pri_neighbours %>% 
   # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
   tm_shape() + tm_lines(lwd = 2) +
-  obesity_pri_sch %>% filter(PT_ID %in% ll_pri_neighbours$j_ID) %>% tm_shape() + tm_symbols(
+  obesity_pri_sch %>% filter(PT_ID %in% ll_pri_neighbours$j_ID) %>% tm_shape() + 
+  tm_symbols(
     fill = "PREVALENCE", size = 0.5, 
     fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
     ) + 
   ll_pri %>% tm_shape() + tm_symbols(
-    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, fill.legend = tm_legend(show = F),
+    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, 
+    fill.legend = tm_legend(show = F),
     fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
     ) + 
-  tm_legend(bg.color = "white") +
   tm_title("Low-Low overweight prevalence clusters (Primary)")
 
 # Low-Low Secondary school clusters
@@ -2298,21 +2304,22 @@ ll_sec_neighbours <- nb2lines(soi_nb_sec, coords = st_geometry(obesity_sec_sch))
 sec_map <- ll_sec_neighbours %>% 
   # select(PT_ID, SCHOOL, PREVALENCE, ZONE, CLUSTER, LMORANZ, GO_STAT) %>% 
   tm_shape() + tm_lines(lwd = 2) +
-  obesity_sec_sch %>% filter(PT_ID %in% ll_sec_neighbours$j_ID) %>% tm_shape() + tm_symbols(
+  obesity_sec_sch %>% filter(PT_ID %in% ll_sec_neighbours$j_ID) %>% tm_shape() + 
+  tm_symbols(
     fill = "PREVALENCE", size = 0.5, 
     fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
     ) + 
   ll_sec %>% tm_shape() + tm_symbols(
-    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, fill.legend = tm_legend(show = F),
+    fill = "PREVALENCE", size = 0.5, col = "green", lwd = 2, 
+    fill.legend = tm_legend(show = F),
     fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd")
     ) + 
-  tm_legend(bg.color = "white") +
   tm_title("Low-Low overweight prevalence clusters (Secondary)")
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
-Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value < 0) (we filter for LMORANZ >= 2.576, GO_STAT < 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the visualisation), and their respective SOI neighbours, were identified as Low-Low overweight prevalence clusters:
+Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G (z-value < 0) (we filter for LMORANZ >= 2.576, GO_STAT < 0 to identify high-high clusters and schools with high positive spatial autocorrelation), the following primary schools (circled in green in the visualisation above), and their respective SOI neighbours, were identified as Low-Low overweight prevalence clusters:
 
 -   Henry Park Primary School (SOI neighbours: Pei Tong Primary School, Fairfield Methodist School (Primary), New Town Primary School, Nanyang Primary School, Methodist Girls' School (Primary))
 -   Nanyang Primary School (SOI neighbours: Henry Park Primary School, Raffles Girls' Primary School)
@@ -2325,11 +2332,21 @@ Based on Local Moran's I (at the 1% significance level) and Local Getis-Ord's G 
 
 For primary schools, the Henry Park Primary School and Nanyang Primary School clusters can be considered as one spatial cluster of relatively low overweight prevalence levels, given the common SOI neighbours. For secondary schools, the Hwa Chong Institution and Nanyang Girls' High School cluster can be considered as one spatial cluster of relatively low overweight prevalence levels, given the common SOI neighbours.
 
-Observing these 3 identified primary schools and 2 identified secondary schools for upticks in obesity would be useful to implement obesity mitigation measures on neighbouring schools in the clusters, which may receive spillover effects from obesity increases. 
+These 3 identified primary schools and 2 identified secondary schools have low obesity levels and also tend to be surrounded by other schools with similarly low obesity levels.
+
+The implications for policy-makers is, if upticks in obesity are observed in these 3 identified primary schools and 2 identified secondary schools, it might also be prudent to implement obesity mitigation measures on their neighbouring schools in the clusters, which may receive spillover effects from the obesity spikes.
 
 # Popular School metrics
 
-We obtain a Yes/No binary metric based on the popularity of primary & secondary schools in Singapore, which we dub as the "elite" metric. We derive this using the following methodology: Primary schools: We take the [Phase 2C balloting information](https://www.moe.gov.sg/primary/p1-registration/past-vacancies-and-balloting-data/) from the 2024 Primary 1 Registration Exercise for all 180 primary schools. If the number of applicants in Phase 2C is greater than the number of vacancies, the school is marked as popular (Yes) reflecting oversubscribing due to high demand for the school's coveted vacancies. If the number of applicants in Phase 2C is less than or equal to the number of vacancies, the school is marked as not popular (No). Based on this methodology, there are 82 popular schools (Yes) and 98 non-popular schools (No). Secondary schools: We obtain the [2024 secondary school PSLE cutoff points](https://sgschooling.com/secondary/cop/all.html) from SG Schooling in the IP/PG3 (Express) streams. We take the cutoff point for each secondary school if given as a single value, or the highest value in a given point range, ignoring all secondary criteria for the Mother Tongue Grade (D/M/P) to get data for 138 secondary schools. We then calculate the top quartile of cutoff points, which ends up as 13, and label all secondary schools with cutoff points less than or equal to this value as popular schools (Y) and all other schools as non-popular (N). Using this methodology, we obtain 35 popular schools (Y) and 103 non-popular schools (N). For the secondary schools with no given PSLE cutoff point for 2024, we conduct the following manual adjustments: - School of the Arts, NUS High School and School of Science and Technology: These schools only accept admissions by Direct School Admission, so there is no PSLE cutoff range. From our research, these three schools are prestigious in their unique domains with many applicants each year. As such, we labelled these three schools as popular (Y). - Crest Secondary School, Assumption Pathway School and Northlight School: These schools offer specialised pathways for experiential and hands-on learning, allowing students to graduate with an ITE Skills certificate. As this is a non-mainstream pathway with only PG1/PG2 streams, we labelled these three schools as non-popular (N). In total, we have 144 secondary schools with 38 as popular (Y) and 106 as non-popular (N).
+We obtain a Yes/No binary metric based on the popularity of primary & secondary schools in Singapore, which we dub as the "elite" metric. We derive this using the following methodology: Primary schools: We take the [Phase 2C balloting information](https://www.moe.gov.sg/primary/p1-registration/past-vacancies-and-balloting-data/) from the 2024 Primary 1 Registration Exercise for all 180 primary schools. If the number of applicants in Phase 2C is greater than the number of vacancies, the school is marked as popular (Yes) reflecting oversubscribing due to high demand for the school's coveted vacancies. If the number of applicants in Phase 2C is less than or equal to the number of vacancies, the school is marked as not popular (No). Based on this methodology, there are 82 popular schools (Yes) and 98 non-popular schools (No). 
+
+For Secondary schools, we obtain the [2024 secondary school PSLE cutoff points](https://sgschooling.com/secondary/cop/all.html) from SG Schooling in the IP/PG3 (Express) streams. We take the cutoff point for each secondary school if given as a single value, or the highest value in a given point range, ignoring all secondary criteria for the Mother Tongue Grade (D/M/P) to get data for 138 secondary schools. We then calculate the top quartile of cutoff points, which ends up as 13, and label all secondary schools with cutoff points less than or equal to this value as popular schools (Y) and all other schools as non-popular (N). Using this methodology, we obtain 35 popular schools (Y) and 103 non-popular schools (N). For the secondary schools with no given PSLE cutoff point for 2024, we conduct the following manual adjustments: 
+
+-   School of the Arts, NUS High School and School of Science and Technology: 
+These schools only accept admissions by Direct School Admission, so there is no PSLE cutoff range. From our research, these three schools are prestigious in their unique domains with many applicants each year. As such, we labelled these three schools as popular (Y). 
+
+-   Crest Secondary School, Assumption Pathway School and Northlight School: 
+These schools offer specialised pathways for experiential and hands-on learning, allowing students to graduate with an ITE Skills certificate. As this is a non-mainstream pathway with only PG1/PG2 streams, we labelled these three schools as non-popular (N). In total, we have 144 secondary schools with 38 as popular (Y) and 106 as non-popular (N).
 
 ```{r}
 pri_rankings <- read.csv("DataFiles/pri rankings.csv") %>% 
@@ -2340,18 +2357,19 @@ sec_rankings <- read.csv("DataFiles/sec rankings.csv") %>%
   mutate(School = toupper(School)) %>% 
   rename(is_popular_sch = Quartile.1) %>% 
   select(School, is_popular_sch)
-# obesity_data <- obesity_data %>% 
-#   
-# obesity_data <- obesity_data %>% 
-#   left_join(sec_rankings, by = join_by(SCHOOL == School))
 
 school_rankings <- rbind(pri_rankings, sec_rankings)
 ```
 
 # Education and Income Census data
-Next, we consider the Education and Income statistics from [Singapore Census of Population 2020](https://data.gov.sg/datasets/d_2d6793de474551149c438ba349a108fd/view).
 
-2020 data and bring in two variables: Income: From Table 110 Resident Households by Planning Area of Residence and Monthly Household Income from Work, we sum up the income for each planning area by multiplying the midpoint of a given income range (for example, \$9,000 - \$9,999 would have a midpoint of \$9,500) with the number of residents with that given monthly income range and totalling everything. The only exception to this is the income bracket "\$20,000 and Over", of which we took the midpoint value as \$25,000. We then obtain the mean income per planning area by dividing this totalled income figure by the total number of residents in each planning area (given in the second column of the data table). Education: From Table 100 Resident Population Aged 15 Years and Over by Planning Area of Residence and Highest Qualification Attained, we sum up the number of years of education in each planning area by multiplying the minimum number of years of education completed (No Qualification = 0, Primary = 6, Lower Secondary = 8 [6+2], Secondary = 10 [6+2+2], Post-Secondary (Non-Tertiary) = 12 [6+2+2+2 assuming JC route], Polytechnic Diploma = 13 [6+2+2+3 assuming average Polytechnic diploma as 3 year programme], Professional Qualification and Other Diploma = 15 [6+2+2+2+3 assuming JC then 3 year other diploma], University =16 [6+2+2+2+4 assuming JC then 4 year university degree]) with the number of residents that fall within the relevant maximum education completion category. We then obtain the mean number of years or education per planning area by dividing this totalled education years figure by the total number of residents in each planning area (given in the second column of the data table).
+Next, we consider the Education and Income statistics from [Singapore Census of Population 2020](https://data.gov.sg/datasets/d_2d6793de474551149c438ba349a108fd/view) 2020 data and bring in two variables: 
+
+Income: 
+From Table 110 Resident Households by Planning Area of Residence and Monthly Household Income from Work, we sum up the income for each planning area by multiplying the midpoint of a given income range (for example, \$9,000 - \$9,999 would have a midpoint of \$9,500) with the number of residents with that given monthly income range and totaling everything. The only exception to this is the income bracket "\$20,000 and Over", of which we took the midpoint value as \$25,000. We then obtain the mean income per planning area by dividing this total income figure by the total number of residents in each planning area (given in the second column of the data table). 
+
+Education: 
+From Table 100 Resident Population Aged 15 Years and Over by Planning Area of Residence and Highest Qualification Attained, we sum up the number of years of education in each planning area by multiplying the minimum number of years of education completed (No Qualification = 0, Primary = 6, Lower Secondary = 8 [6+2], Secondary = 10 [6+2+2], Post-Secondary (Non-Tertiary) = 12 [6+2+2+2 assuming JC route], Polytechnic Diploma = 13 [6+2+2+3 assuming average Polytechnic diploma as 3 year programme], Professional Qualification and Other Diploma = 15 [6+2+2+2+3 assuming JC then 3 year other diploma], University =16 [6+2+2+2+4 assuming JC then 4 year university degree]) with the number of residents that fall within the relevant maximum education completion category. We then obtain the mean number of years or education per planning area by dividing this totaled education years figure by the total number of residents in each planning area (given in the second column of the data table).
 
 ## Preliminary Data Manipulation and Visuals
 
@@ -2545,7 +2563,7 @@ macs_full = st_read("DataFiles/mcdonalds_singapore.geojson") %>%
   st_transform(crs = sg_crs) 
 macs = macs_full[,"geometry"] 
 
-  #7-11 Outlets
+#7-11 Outlets
 seven_eleven_full = st_read("DataFiles/711_singapore.geojson") %>%
   st_transform(crs = sg_crs)
 seven_eleven = seven_eleven_full[,"geometry"]
@@ -2594,6 +2612,7 @@ sec_food_map = ura_regions_map +
 
 tmap_arrange(pri_food_map, sec_food_map)
 ```
+
 As a proxy for food options, we use the presence of McDonald's outlets, 7-Eleven stores, and Hawker Centres. These establishments were chosen because they are popular among youths, offer affordable and convenient food options, and are typically located in easily accessible areas. Their widespread presence across Singapore also makes them suitable indicators for analyzing food accessibility in the vicinity of schools.
 
 Based on the descriptive maps, we can observe a large number of food outlets concentrated towards the south. This could be attributed to these schools being located near the Central Business District. The converse is true for schools located in the North, where food options range from 0 to 5. This could be due to lower population density, less commercial development, or more residential zoning in the North. 
@@ -2723,8 +2742,8 @@ pri_food_map_spatial <- ura_planning_areas_map +
     tm_title("Number of Food Outlets for Primary Schools")
 
 tmap_arrange(pri_food_map_spatial, sec_food_map_spatial)
-
 ```
+
 From the spatial distribution maps, we can observe that the weighted SDE for both primary and secondary schools is skewed toward the southwestern region when compared to the unweighted SDE. This suggests that schools in the southwest tend to have a disproportionately higher number of nearby food outlets. 
 
 This skew is apparent in areas such as Bukit Merah and Tanglin, where there is a higher density of food outlets near several schools. For example, Cantonment Primary School has 18 food outlets nearby, which is one of the highest for Primary Schools. For Secondary Schools, School of the Arts has 47 food outlets nearby. Such schools pull the weighted SDE ellipse toward the southwest, as they contribute more significantly to the overall spatial pattern due to their higher food outlet counts.
@@ -2774,14 +2793,13 @@ knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 
 summary(nearest_outlet_distance)
-
 ```
+
 To better understand the accessibility of food options for students, we also analysed the distance from each school to the nearest food outlet, using McDonald’s, 7-Eleven, and Hawker Centres as proxies once again. This captures how close the nearest source of food is and reflects the ease of access of which students can access meals or snacks.
 
 The minimum distance to the nearest food outlet is approximately 29.3 metres. The median distance to the nearest food outlet is 390.3 metres, and the mean distance is 421.7 metres, suggesting that for the average school, the closest food option is likely within a 5 to 10 minute walk. 
 
 However, the maximum distance recorded is over 1.1 km. This means that certain schools, especially those located near the Central Water Catchment area are relatively isolated from fast food options. This disparity in food access is further emphasized by the interquartile range: while 25% of schools have a food outlet within approximately 278 metres, the top 25% must walk more than 539 metres to reach the nearest food option.
-
 
 ## Bivariate Choropleth maps
 
@@ -2894,6 +2912,7 @@ sec_bivariate_food_map <-ura_planning_areas_map +
 sec_bivariate_food_map
 pri_bivariate_food_map
 ```
+
 From the Bivariate Choropleth maps obtained, for Secondary Schools, we observe that Jurong East is of the low distance and high obesity category. On average, there is an obesity prevalence of 0.19, with the average distance to the nearest food option at 313.5m. This places them in the high obesity category.
 
 For Secondary Schools, we observe three regions with the low distance and high obesity category, namely Yishun, Jurong West and Kallang. 
@@ -3018,7 +3037,6 @@ pri_cca_map_sde <- ura_planning_areas_map +
   tm_title("Ratio of Sports CCAs per 100 Students by Primary School")
 
 pri_cca_map_sde
-
 ```
 
 With size representing obesity prevalence in each school, and a red-green colour scale depicting the level of sports participation, it's difficult to initially see any clear spatial patterns.
@@ -3115,8 +3133,6 @@ sec_cca_map_sde <- ura_planning_areas_map +
   tm_title("Ratio of Sports CCAs per 100 Students by Secondary School")
 
 sec_cca_map_sde
-
-
 ```
 
 Regarding secondary schools, it's visually clear that there are fewer schools with a high sports CCA ratio, relative to other schools. This seems to indicate that there are fewer Sports CCAs per 100 students in secondary schools as compared to in primary schools.
@@ -3165,7 +3181,6 @@ combined_cca_avg <- st_join(ura_planning_areas, obesity_joined_school_sports_dat
     geometry = st_union(geometry)
     ) %>%
   filter(!is.na(RATIO_AGG))
-
 ```
 
 Aggregating the sports CCA ratio by URA planning area, we observe no generalised pattern of school sports participation across Singapore. 
@@ -3398,7 +3413,6 @@ sec_dus_map <- ura_planning_areas_map +
   )
 
 sec_dus_map
-
 ```
 
 ## Choosing an Appropriate Data Set
@@ -3530,8 +3544,6 @@ sec_dus_avg_distance_map <- ura_planning_areas_map + sec_dus_avg_distance %>%
   tm_title("Average Distance to Nearest DUS Sports Facility from Secondary Schools")
 
 print(sec_dus_avg_distance_map)
-
-
 ```
 A manually constructed equation is used to find the nearest 3 DUS facilities to each school (in metres)
 
@@ -3579,7 +3591,6 @@ facility_density_map <- ura_planning_areas_map + facility_by_area %>%
 
 
 facility_density_map
-
 ```
 
 This map is a representation of how many DUS facilties are in each URA planning area portrayed as a density per km². 
@@ -3852,7 +3863,6 @@ nb_varno_sec %>% gt() %>%
     columns = c(Largest.adjr2, Smallest.bic),
     decimals = 0
   )
-
 ```
 
 Based on the three types of model selection, We observe that BSS and Backward selection recommend the same model for primary school variables with 4 predictor terms based on smallest BIC criterion. This model was chosen because it has the fewest number of predictors, facilitating simplicity in interpretation.
@@ -4167,8 +4177,6 @@ oso_hist_geom %>%
   filter(z_change <= -1) %>% 
   arrange(desc(z_change)) %>%
   kable()
-
-
 ```
 
 ## Sphere of influence neighbours
@@ -4200,7 +4208,6 @@ soi_lw_B_pri_z <- nb2listw(soi_nb_pri_z, style = "B")
 moran.test(oso_hist_geom$z_change, soi_lw_pri_z)
 moran.plot(oso_hist_geom$z_change, soi_lw_pri_z, main="Moran scatterplot")
 geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
-
 ```
 
 Average number of links (Primary school): 3.094972\
@@ -4300,7 +4307,6 @@ joincount.multi(oso_hist_geom3$z_change_high_decrease,
                 soi_lw_B_pri_z_decrease) 
 joincount.multi(oso_hist_geom1$z_change_high_increase, 
                 soi_lw_B_pri_z_increase) 
-
 ```
 
 To assess whether changes in obesity rates are spatially clustered across schools, we conducted a joint count analysis on schools that experienced extreme changes in obesity levels. Specifically, we looked at schools with a z-score change in obesity of less than -1 (extreme decreases) and greater than +1 (extreme increases).
@@ -4403,11 +4409,14 @@ scatterplot_of_schools <- ggplot(oso_covid_geom_classes, aes(x = before_covid_ch
 
 #Plot of Contingency Table for Primary School Obesity Rates Controlled for COVID
 plotly::ggplotly(scatterplot_of_schools)
-
-
 ```
 
 According to the contingency table, Primary Schools that should be observed include Townsville Primary School, Fuchun Primary School, Farrer Park Primary School and Pioneer Primary School. These schools faced a steep increase in obesity levels post-Covid, compared to before COVID levels. 
 
 Other schools that could be observed include Telok Kurau Primary School, Seng Kang Primary School, Naval Base Primary School, St. Stephen's Primary School, Xinmin Primary School and Singapore Chinese Girls' School. The aforementioned schools had declining obesity levels prior to Covid. However, following the pandemic, these schools faced increasing levels of obesity which is a cause for concern.
 
+# Concluding remarks
+
+From our spatial analysis, we found that there is directional bias for obesity in schools, with the North of Singapore having more schools with higher obesity levels. Our identification of spatial clusters further supported this finding, with evidence of 2 High-High obesity clusters of primary schools in the North. Low-Low obesity clusters were also found towards the Center and South-West of Singapore. Policy-makers can leverage on the spillover effects, between schools in these clusters, to implement obesity reduction or mitigation measures. One limitation of our autocorrelation analysis is that we did not have data to explain why these clusters occur. However, we suspect that social influences and peer pressure has a big part to play in why obesity clusters are observed, as HPB had shared that student profiles in schools in the North are vastly different from other regions, with higher incidences of smoking and bullying for example. Common hangout spots (captured within the sphere of influence definition) may also play into the social influence and spatial dependence between schools in the North.
+
+Including other explanatory variables for obesity (education, income, access to external food options, access to sports opportunities), we built linear regression models with the focus on explaining obesity in schools. 
