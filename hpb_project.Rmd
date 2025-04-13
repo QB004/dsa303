@@ -2549,7 +2549,7 @@ Analysing the spatial descriptive summary measures for education variable, we ob
 
 # Food and Nutrition
 
-```{r, results = FALSE}
+```{r, results='hide'}
 #Data transformation
 
 #Hawker Centres
@@ -2620,7 +2620,7 @@ Based on the descriptive maps, we can observe a large number of food outlets con
 Despite these regional differences, the data does not reveal a strong spatial pattern. 
 
 ## Spatial Descriptive Summary Measures of Food
-```{r}
+```{r, results='hide'}
 #Spatial analysis - Secondary school
 obesity_sec_food_coords = st_coordinates(obesity_sec_food)
 
@@ -2750,7 +2750,7 @@ This skew is apparent in areas such as Bukit Merah and Tanglin, where there is a
 
 ## Distance of the nearest food option to each school
 
-```{r}
+```{r, results='hide'}
 #Write function to compute distance to nearest food option, along with outlet_type
 library(geosphere)
 
@@ -2803,7 +2803,7 @@ However, the maximum distance recorded is over 1.1 km. This means that certain s
 
 ## Bivariate Choropleth maps
 
-```{r}
+```{r, results='hide'}
 library(classInt);library(dplyr)
 
 #Select the two variables for the bivariate map
@@ -4070,7 +4070,7 @@ Using the LR tests, we see the tests with SARAR as alternative hypothesis that t
 
 # Time Series Analysis
 
-```{r}
+```{r, results='hide'}
 library(tidyverse)
 library(imputeTS)  # For interpolation
 library(fpp2)
@@ -4172,7 +4172,7 @@ oso_hist_geom %>%
 
 ## Sphere of influence neighbours
 
-```{r}
+```{r, results='hide'}
 # by Primary schools
 # obesity_pri_sch_jitter <- st_jitter(obesity_pri_sch) 
 del_nb_pri_z <- tri2nb(st_coordinates(oso_hist_geom), 
@@ -4192,7 +4192,7 @@ pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom)
 
 ### Spatial autocorrelation statistics
 
-```{r}
+```{r, results='hide'}
 # by Primary schools
 soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W")
 soi_lw_B_pri_z <- nb2listw(soi_nb_pri_z, style = "B")
@@ -4208,7 +4208,7 @@ Based on the Moran's I and Geary's C tests, there is no significant spatial auto
 
 #### Join count analysis
 
-```{r}
+```{r, results='hide'}
 # Setting an overweight cutoff point
 Z_CHANGE_CUTOFF_INCREASE <- 1 #increase in obesity levels before and after 2019
 Z_CHANGE_CUTOFF_DECREASE <- -1 #decrease in obesity levels before and after 2019
@@ -4253,7 +4253,7 @@ The plots provide a descriptive view of Primary Schools with improving and worse
 
 ## Joint count considering only extremes
 
-```{r}
+```{r, results='hide'}
 #For increases
 del_nb_pri_z_increase <- tri2nb(st_coordinates(oso_hist_geom1), 
                      row.names = oso_hist_geom1$PT_ID) 
@@ -4305,7 +4305,7 @@ To assess whether changes in obesity rates are spatially clustered across school
 The results indicate that there is no statistically significant spatial clustering of schools experiencing either extreme increases or decreases in obesity rates. This means that such schools tend to be spatially isolated from one another, rather than forming contiguous clusters. In other words, a sharp increase or decrease in obesity at one school does not have a spillover effect on nearby schools. 
 
 # Controlling for Effects of COVID
-```{r}
+```{r, results='hide'}
 oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
 
 oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
@@ -4411,3 +4411,5 @@ Other schools that could be observed include Telok Kurau Primary School, Seng Ka
 From our spatial analysis, we found that there is directional bias for obesity in schools, with the North of Singapore having more schools with higher obesity levels. Our identification of spatial clusters further supported this finding, with evidence of 2 High-High obesity clusters of primary schools in the North. Low-Low obesity clusters were also found towards the Center and South-West of Singapore. Policy-makers can leverage on the spillover effects, between schools in these clusters, to implement obesity reduction or mitigation measures. One limitation of our autocorrelation analysis is that we did not have data to explain why these clusters occur. However, we suspect that social influences and peer pressure has a big part to play in why obesity clusters are observed, as HPB had shared that student profiles in schools in the North are vastly different from other regions, with higher incidences of smoking and bullying for example. Common hangout spots (captured within the sphere of influence definition) may also play into the social influence and spatial dependence between schools in the North.
 
 Including other explanatory variables for obesity (education, income, access to external food options, access to sports opportunities), we built linear regression models with the focus on explaining obesity in schools. 
+
+Finally, we explore a time series analysis of obesity prevalence over time. From our first model, we found no spatial autocorrelation of extreme changes in obesity over the long run. Therefore, there were no spatial spillover effects from schools with extreme changes in obesity. In our second model, we controlled for COVID effects. We were able to highlight schools that experienced increasing obesity levels after short term disruptions such as the COVID pandemic. 
