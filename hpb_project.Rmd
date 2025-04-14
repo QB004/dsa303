@@ -2597,22 +2597,22 @@ Analysing the spatial descriptive summary measures for education variable, we ob
 
 # Food and Nutrition
 
-```{r, results = FALSE}
+```{r read_geojson, message=FALSE, warning=FALSE}
 #Data transformation
 
 #Hawker Centres
-hawker_full = st_read("DataFiles/NEAMarketandFoodCentre.geojson") %>%
+hawker_full = suppressMessages(st_read("DataFiles/NEAMarketandFoodCentre.geojson")) %>%
   st_transform(crs = sg_crs)
 hawker = hawker_full["geometry"]
 
 #Fast Food Outlets 
   #Mcdonald's
-macs_full = st_read("DataFiles/mcdonalds_singapore.geojson") %>%
+macs_full = suppressMessages(st_read("DataFiles/mcdonalds_singapore.geojson")) %>%
   st_transform(crs = sg_crs) 
 macs = macs_full[,"geometry"] 
 
 #7-11 Outlets
-seven_eleven_full = st_read("DataFiles/711_singapore.geojson") %>%
+seven_eleven_full = suppressMessages(st_read("DataFiles/711_singapore.geojson")) %>%
   st_transform(crs = sg_crs)
 seven_eleven = seven_eleven_full[,"geometry"]
 
