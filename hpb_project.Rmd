@@ -2108,12 +2108,10 @@ map6 <- tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))) +
   obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) +
   tm_title("k nearest neighbours (Secondary)")
 
-tmap_arrange(map1, map2, map3, map4, map5, map6, nrow = 2)
+tmap_arrange(map1, map2, map3, map4, map5, map6, ncol = 3)
 ```
 
-\
-
-Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. The visualisation above compares the graph-based and distance-based neighbour links for Primary and Secondary schools. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links between schools that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing these long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Thus, Sphere of Influence might more accurately reflect neighbour to neighbour relationships compared to Delauney triangluation.
+Comparing the spatial weights matrices, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. The visualisation above compares the graph-based and distance-based neighbour links for Primary and Secondary schools. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links between schools that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing these long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Thus, Sphere of Influence might more accurately reflect neighbour to neighbour relationships compared to Delauney triangluation.
 
 Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3). Since graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design: that is, if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
 
@@ -3466,8 +3464,6 @@ Maps C1 and C2 display DUS facilities alongside primary and secondary schools re
 
 ## K Nearest Neighbours - Nearest DUS facility to Schools
 
-### 1 neighbour
-
 ```{r}
 
 # Calculate distances
@@ -3642,9 +3638,9 @@ Interestingly, certain regions of interest from the last visual representation a
 
 # Modelling Obesity in Singapore Schools
 
+```{r, include=FALSE}
 ## Joining data variables
 
-```{r, include=FALSE}
 # Selecting relevant columns
 census_merge_data <- census_merge %>% 
   st_drop_geometry() %>% 
@@ -3930,6 +3926,7 @@ This is corroborated by the variable analysis where Education and is_special_sch
 # Generating residuals for OLS model
 res_pri = residuals(ols_pri)
 
+par(mfrow=c(2,2))
 # Plotting residuals on independent variables used in OLS model
 plot(obesity_model_analysis_pri$Education, res_pri, 
      main = "Residual Plot", 
@@ -3955,6 +3952,8 @@ plot(obesity_model_analysis_pri$is_coed_sch, res_pri,
      xlab = "is_coed_sch")
 cor(obesity_model_analysis_pri$is_coed_sch, res_pri)
 
+par(mfrow=c(1,1))
+
 length(ols_pri)
 summary(ols_pri)
 dim(obesity_model_analysis_pri)
@@ -3975,6 +3974,7 @@ Evidence of significant spatial autocorrelation in the OLS residuals based on Mo
 # Generating residuals for OLS model
 res_sec = residuals(ols_sec)
 
+par(mfrow=c(2,2))
 # Plotting residuals on independent variables used in OLS model
 plot(obesity_model_analysis_sec$Education, res_sec, 
      main = "Residual Plot", 
@@ -3987,6 +3987,8 @@ plot(obesity_model_analysis_sec$is_special_sch, res_sec,
      ylab = "Residuals",
      xlab = "is_special_sch")
 cor(obesity_model_analysis_sec$is_special_sch, res_sec)
+
+par(mfrow=c(1,1))
 
 length(ols_sec)
 summary(ols_sec)
@@ -4217,7 +4219,6 @@ This brings us to our conclusion that OLS is the most suitable for modelling obe
 
 # Time Series Analysis
 
-
 ```{r, results='hide', fig.show='hide'}
 library(tidyverse)
 library(imputeTS)  # For interpolation
@@ -4400,7 +4401,7 @@ p-value for Global Geary's C test (Primary school): 0.3879
 
 Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019. 
 
-#### Joint count analysis
+#### Join count analysis
 
 ```{r}
 # Setting an overweight cutoff point
@@ -4445,7 +4446,7 @@ pri_map_z_increase
 ```
 The plots provide a descriptive view of Primary Schools with improving and worsening obesity levels over time. The blue circles represent extreme cases. 
 
-## Joint count considering only extremes
+## Join count considering only extremes
 
 ```{r}
 #For increases
