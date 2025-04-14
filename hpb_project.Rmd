@@ -762,7 +762,11 @@ We recommend skipping to the second last sub-section in this section to examine 
 
 ```{r}
 # initialising empty data frame to collect Moran's I p-values
-nb_pval_pri <- nb_pval_sec <- 
+nb_pval_pri <-
+  data.frame("Neighbour.object" = c(), "Moran.I.p.value" = c(), 
+             "Geary.C.p.value" = c(), "Getis.Ord.G.p.value" = c())
+
+nb_pval_sec <- 
   data.frame("Neighbour.object" = c(), "Moran.I.p.value" = c(), 
              "Geary.C.p.value" = c(), "Getis.Ord.G.p.value" = c())
 ```
@@ -875,27 +879,29 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 
 ```{r}
 # by Primary schools
-(ura_planning_areas_lw_pri <- nb2listw(ura_planning_areas_nb_pri, style = "W"))
+ura_planning_areas_lw_pri <- nb2listw(ura_planning_areas_nb_pri, style = "W")
 ura_planning_areas_lw_B_pri <- nb2listw(ura_planning_areas_nb_pri, style = "B")
 (moran <- moran.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri))
 moran.plot(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri,
-           main="Moran scatterplot")
-(gearyC <- geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri))
-(getisordG <- globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
-             ura_planning_areas_lw_B_pri))
+           main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
+gearyC <- geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri)
+getisordG <- globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
+             ura_planning_areas_lw_B_pri)
 nb_pval_pri <- rbind(nb_pval_pri, data.frame(
   "Neighbour.object" = "Planning Area", "Moran.I.p.value" = moran$p.value,
   "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
-(ura_planning_areas_lw_sec <- nb2listw(ura_planning_areas_nb_sec, style = "W"))
+ura_planning_areas_lw_sec <- nb2listw(ura_planning_areas_nb_sec, style = "W")
 ura_planning_areas_lw_B_sec <- nb2listw(ura_planning_areas_nb_sec, style = "B")
 (moran <- moran.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec))
 moran.plot(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec, 
-           main="Moran scatterplot")
-(gearyC <- geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec))
-(getisordG <- globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
-                           ura_planning_areas_lw_B_sec))
+           main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
+gearyC <- geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec)
+getisordG <- globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
+                           ura_planning_areas_lw_B_sec)
 nb_pval_sec <- rbind(nb_pval_sec, data.frame(
   "Neighbour.object" = "Planning Area", "Moran.I.p.value" = moran$p.value,
   "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
@@ -1121,7 +1127,8 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 (moe_clusters_lw_pri <- nb2listw(moe_clusters_nb_pri, style = "W"))
 moe_clusters_lw_B_pri <- nb2listw(moe_clusters_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri))
-moran.plot(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri, main="Moran scatterplot")
+moran.plot(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_pri))
 (getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, moe_clusters_lw_B_pri))
 nb_pval_pri <- rbind(nb_pval_pri, data.frame(
@@ -1132,7 +1139,8 @@ nb_pval_pri <- rbind(nb_pval_pri, data.frame(
 (moe_clusters_lw_sec <- nb2listw(moe_clusters_nb_sec, style = "W"))
 moe_clusters_lw_B_sec <- nb2listw(moe_clusters_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec))
-moran.plot(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec, main="Moran scatterplot")
+moran.plot(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_sec))
 (getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, moe_clusters_lw_B_sec))
 nb_pval_sec <- rbind(nb_pval_sec, data.frame(
@@ -1264,7 +1272,8 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 (del_lw_pri <- nb2listw(del_nb_pri, style = "W"))
 del_lw_B_pri <- nb2listw(del_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, del_lw_pri))
-moran.plot(obesity_pri_sch$PREVALENCE, del_lw_pri, main="Moran scatterplot")
+moran.plot(obesity_pri_sch$PREVALENCE, del_lw_pri, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_pri_sch$PREVALENCE, del_lw_pri))
 (getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, del_lw_B_pri))
 nb_pval_pri <- rbind(nb_pval_pri, data.frame(
@@ -1275,7 +1284,8 @@ nb_pval_pri <- rbind(nb_pval_pri, data.frame(
 (del_lw_sec <- nb2listw(del_nb_sec, style = "W"))
 del_lw_B_sec <- nb2listw(del_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, del_lw_sec))
-moran.plot(obesity_sec_sch$PREVALENCE, del_lw_sec, main="Moran scatterplot")
+moran.plot(obesity_sec_sch$PREVALENCE, del_lw_sec, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_sec_sch$PREVALENCE, del_lw_sec))
 (getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, del_lw_B_sec))
 nb_pval_sec <- rbind(nb_pval_sec, data.frame(
@@ -1444,7 +1454,8 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 (soi_lw_pri <- nb2listw(soi_nb_pri, style = "W"))
 soi_lw_B_pri <- nb2listw(soi_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, soi_lw_pri))
-moran.plot(obesity_pri_sch$PREVALENCE, soi_lw_pri, main="Moran scatterplot")
+moran.plot(obesity_pri_sch$PREVALENCE, soi_lw_pri, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_pri_sch$PREVALENCE, soi_lw_pri))
 (getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, soi_lw_B_pri))
 nb_pval_pri <- rbind(nb_pval_pri, data.frame(
@@ -1455,7 +1466,8 @@ nb_pval_pri <- rbind(nb_pval_pri, data.frame(
 (soi_lw_sec <- nb2listw(soi_nb_sec, style = "W"))
 soi_lw_B_sec <- nb2listw(soi_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, soi_lw_sec))
-moran.plot(obesity_sec_sch$PREVALENCE, soi_lw_sec, main="Moran scatterplot")
+moran.plot(obesity_sec_sch$PREVALENCE, soi_lw_sec, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_sec_sch$PREVALENCE, soi_lw_sec))
 (getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, soi_lw_B_sec))
 nb_pval_sec <- rbind(nb_pval_sec, data.frame(
@@ -1596,7 +1608,8 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 (knn1_lw_pri <- nb2listw(knn1_nb_pri, style = "W"))
 knn1_lw_B_pri <- nb2listw(knn1_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri))
-moran.plot(obesity_pri_sch$PREVALENCE, knn1_lw_pri, main="Moran scatterplot")
+moran.plot(obesity_pri_sch$PREVALENCE, knn1_lw_pri, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_pri_sch$PREVALENCE, knn1_lw_pri))
 (getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, knn1_lw_B_pri))
 nb_pval_pri <- rbind(nb_pval_pri, data.frame(
@@ -1607,7 +1620,8 @@ nb_pval_pri <- rbind(nb_pval_pri, data.frame(
 (knn1_lw_sec <- nb2listw(knn1_nb_sec, style = "W"))
 knn1_lw_B_sec <- nb2listw(knn1_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec))
-moran.plot(obesity_sec_sch$PREVALENCE, knn1_lw_sec, main="Moran scatterplot")
+moran.plot(obesity_sec_sch$PREVALENCE, knn1_lw_sec, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_sec_sch$PREVALENCE, knn1_lw_sec))
 (getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, knn1_lw_B_sec))
 nb_pval_sec <- rbind(nb_pval_sec, data.frame(
@@ -1737,7 +1751,8 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 (knn2_lw_pri <- nb2listw(knn2_nb_pri, style = "W"))
 knn2_lw_B_pri <- nb2listw(knn2_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri))
-moran.plot(obesity_pri_sch$PREVALENCE, knn2_lw_pri, main="Moran scatterplot")
+moran.plot(obesity_pri_sch$PREVALENCE, knn2_lw_pri, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_pri_sch$PREVALENCE, knn2_lw_pri))
 (getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, knn2_lw_B_pri))
 nb_pval_pri <- rbind(nb_pval_pri, data.frame(
@@ -1748,7 +1763,8 @@ nb_pval_pri <- rbind(nb_pval_pri, data.frame(
 (knn2_lw_sec <- nb2listw(knn2_nb_sec, style = "W"))
 knn2_lw_B_sec <- nb2listw(knn2_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec))
-moran.plot(obesity_sec_sch$PREVALENCE, knn2_lw_sec, main="Moran scatterplot")
+moran.plot(obesity_sec_sch$PREVALENCE, knn2_lw_sec, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_sec_sch$PREVALENCE, knn2_lw_sec))
 (getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, knn2_lw_B_sec))
 nb_pval_sec <- rbind(nb_pval_sec, data.frame(
@@ -1878,7 +1894,8 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 (knn3_lw_pri <- nb2listw(knn3_nb_pri, style = "W"))
 knn3_lw_B_pri <- nb2listw(knn3_nb_pri, style = "B")
 (moran <- moran.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri))
-moran.plot(obesity_pri_sch$PREVALENCE, knn3_lw_pri, main="Moran scatterplot")
+moran.plot(obesity_pri_sch$PREVALENCE, knn3_lw_pri, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_pri_sch$PREVALENCE, knn3_lw_pri))
 (getisordG <- globalG.test(obesity_pri_sch$PREVALENCE, knn3_lw_B_pri))
 nb_pval_pri <- rbind(nb_pval_pri, data.frame(
@@ -1889,7 +1906,8 @@ nb_pval_pri <- rbind(nb_pval_pri, data.frame(
 (knn3_lw_sec <- nb2listw(knn3_nb_sec, style = "W"))
 knn3_lw_B_sec <- nb2listw(knn3_nb_sec, style = "B")
 (moran <- moran.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec))
-moran.plot(obesity_sec_sch$PREVALENCE, knn3_lw_sec, main="Moran scatterplot")
+moran.plot(obesity_sec_sch$PREVALENCE, knn3_lw_sec, main="Moran scatterplot", 
+           xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
 (gearyC <- geary.test(obesity_sec_sch$PREVALENCE, knn3_lw_sec))
 (getisordG <- globalG.test(obesity_sec_sch$PREVALENCE, knn3_lw_B_sec))
 nb_pval_sec <- rbind(nb_pval_sec, data.frame(
