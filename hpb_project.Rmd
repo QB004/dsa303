@@ -217,12 +217,6 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
 
 We first visualised the spread of HMSP Tiers, school zones and school clusters in Singapore to gain an initial intuition of the dataset that HPB provided.
 
-```{r}
-datatable(obesity_data_sf_2023_OSO, options = list(pageLength = 10))
-```
-
-You may use the datatable above to further explore the data and variables provided.
-
 ## Obesity Box plots
 ### Obesity by School Level
 
@@ -2117,6 +2111,8 @@ map6 <- tm_shape(nb2lines(knn3_nb_sec, coords = st_geometry(obesity_sec_sch))) +
 tmap_arrange(map1, map2, map3, map4, map5, map6, nrow = 2)
 ```
 
+\
+
 Of the spatial weights matrices examined, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. The visualisation above compares the graph-based and distance-based neighbour links for Primary and Secondary schools. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links between schools that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing these long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Thus, Sphere of Influence might more accurately reflect neighbour to neighbour relationships compared to Delauney triangluation.
 
 Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3). Since graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design: that is, if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
@@ -2180,7 +2176,7 @@ jc_sec$Category <- rownames(jc_pri)
 jc_sec[, c("Category", "Joincount", "Expected", "Variance", "z-value")] %>% gt() %>% 
   tab_header(
     title = "Join count analysis (SOI)",
-    subtitle = "Primary schools"
+    subtitle = "Secondary schools"
   ) %>%
   fmt_number(
     columns = c("Expected", "Variance", "z-value"),
