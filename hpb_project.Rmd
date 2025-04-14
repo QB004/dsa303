@@ -362,6 +362,8 @@ ggplot(obesity_data_sf_2023_OSO, aes(x = PREVALENCE, fill = special, color = spe
   theme_minimal()
 ```
 
+Schools with specialised programmes tend to have lower rates of obesity.
+
 # Spatial Overview of Childhood Obesity
 
 The following sections provide us with a spatial overview of childhood obesity in Singapore schools. We provide spatial descriptive summary measures, particularly spatial measures of central tendency (mean, median) and dispersion (standard deviation distance and standard deviation ellipse)
@@ -585,11 +587,13 @@ cat("The angle of rotation is", pri_sch_sde$ATTRIBUTES[,10], "(primary schools).
 cat("The angle of rotation is", sec_sch_sde$ATTRIBUTES[,10], "(secondary schools).") # theta = 92.3718
 ```
 
-For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance (black circle) spans the North-South length of Singapore. The standard deviation ellipse (blue dashed ellipse) also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
+For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance (black circle) spans the North-South length of Singapore. The standard deviation ellipse (blue dashed ellipse) also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools). This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
 
-When we consider the weighted standard deviational ellipse (accounting for obesity in schools) (red dashed ellipse), we observe a directional bias towards the North and North-West directions. This suggests that schools towards the North and North-West of the spatial mean have higher overweight prevalence levels. This observation corresponds with what HPB had observed, that schools nearer to Singapore's Northern border (near the causeway to Malaysia) tended to have higher obesity rates. 
+When we consider the weighted standard deviational ellipse (accounting for obesity in schools) (red dashed ellipse), we observe a directional bias towards the North and North-West directions. This suggests that schools towards the North and North-West of the spatial mean have higher overweight prevalence levels. This observation corresponds with what HPB had observed, that schools nearer to Singapore's Northern border (near the causeway to Malaysia) tend to have higher obesity rates. 
 
-With a visual glance of the overweight prevalence map, one might also notice lower overweight prevalence levels in the South and Central regions of Singapore. Thus, this indication of a directional bias motivates us to examine spatial clusters of obesity as well as propose spatial models for childhood obesity in Singapore.
+With a visual glance of the overweight prevalence map, one might also notice lower overweight prevalence levels in the South and Central regions of Singapore. 
+
+The indication of a directional bias motivates us to examine spatial clusters of obesity as well as propose spatial models for childhood obesity in Singapore.
 
 ## Obesity prevalence by region
 
@@ -744,9 +748,9 @@ The rationale behind examining obesity by administrative regions is to allow HPB
 
 # Spatial Clustering of Obesity
 
-Given the evidence of a directional bias of overweight prevalence in Singapore schools, we now consider whether there are spatial relationships for overweight prevalence in schools. Importantly, we want to identify if there are any spatial clusters of schools. Spatial clusters may be clusters of schools that have low overweight prevalence or high overweight prevalence.
+Given the evidence of a directional bias of overweight prevalence in Singapore schools, we now consider whether there are spatial relationships for overweight prevalence in schools. Importantly, we want to identify if there are any spatial clusters of schools. Spatial clusters may be a group of neighbours schools that have similarly low overweight prevalence, or a group of neighbours schools that have similarly high overweight prevalence.
 
-Positive spatial autocorrelation would mean that there is a spillover effect of overweight prevalence for schools in a specific cluster. These clusters would share similar local factors, making it easier to target specific schools. HPB could then target one or a few schools in a high overweight cluster and rely on spillover effects (e.g. peer pressure, social influence, changing attitudes) to bring down obesity in these clusters. Likewise, rising overweight prevalence observed in a school that is part of a low overweight cluster might be forewarn a spike in overweight prevalence in that cluster.
+Positive spatial autocorrelation would mean that there is a spillover effect of overweight prevalence for schools in a specific cluster. These clusters would share similar local factors, making it easier to target specific schools. HPB could then target one or a few schools in a high overweight cluster and rely on spillover effects (e.g. peer pressure, social influence, changing attitudes) to bring down obesity in these clusters. Likewise, rising overweight prevalence observed in a school that is part of a low overweight cluster might suggest a spike in overweight prevalence in that cluster.
 
 To consider spatial clustering of obesity in schools, we need to define how schools are connected spatially (which school is considered a neighbour to which school). We analysed spatial autocorrelation for neighbouring administrative regions (URA regions, planning areas, subzones, MOE clusters), graph neighbours (Delauney triangulation, Sphere of influence), and nearest neighbours (nearest 1, 2 and 3 neighbours) in next few sub-sections. We then chose the best neighbour classification (spatial weights matrix) to support our analysis. The accompanying maps for each section provide a visualisation of each neighbour list object.
 
@@ -1016,7 +1020,7 @@ par(mfrow=c(1,1))
 
 ### Contiguous neighbours by URA subzones
 
-There are 323 URA subzones in Singapore, of which 115 contain primary schools, and 100 contain secondary schools. As there were are many non-contiguous subzones, we do not run our we do not run our spatial autocorrelation statistics here.
+There are 323 URA subzones in Singapore, of which 115 contain primary schools, and 100 contain secondary schools. As there were are many non-contiguous subzones, we do not run our spatial autocorrelation statistics here.
 
 ```{r}
 tmap_mode("plot")
@@ -1867,7 +1871,7 @@ knn3_nb_pri <- obesity_pri_sch %>%
   knearneigh(k = 3) %>% 
   knn2nb(row.names = obesity_pri_sch$PT_ID) # nearest neighbour
 pri_map <- sg_map + tm_shape(nb2lines(knn3_nb_pri, coords = st_geometry(obesity_pri_sch))) +
-  tm_lines(lwd = 1) + obesity_sec_sch %>% tm_shape() + tm_symbols(size = 0.25) + 
+  tm_lines(lwd = 1) + obesity_pri_sch %>% tm_shape() + tm_symbols(size = 0.25) + 
   tm_title("k = 3 nearest neighbour (Primary)")
 
 # by Secondary schools
@@ -2033,9 +2037,9 @@ There is strong evidence of spatial clustering of obesity, in primary schools, o
 
 As the p-values for Moran’s I test are sufficiently small (p-values < 0.01) for most of the spatial weight matrices, we can reject the null hypothesis at the 1% significance level. There is sufficient evidence to suggest highly significant positive spatial autocorrelation for primary schools under all configurations except for social neighbours (MOE clusters).
 
-Using Geary’s C test, we can reject the null hypothesis at the 1% significance level for most spatial weight matrices, further supporting the presence of spatial dependence and reinforcing the finding of clustering (with the exception of social neighbours and k = 1 nearest neighbours). 
+Using Geary’s C test, we can reject the null hypothesis at the 1% significance level for most spatial weight matrices, further supporting the presence of spatial dependence and reinforcing the finding of clustering, with the exception of social neighbours (MOE clusters) and k = 1 nearest neighbours. 
 
-Getis-Ord’s G test results are less consistent. We can reject the null hypothesis at the 1% significance level only for some spatial weight matrices. Some configurations (Delaunay triangulation, Sphere of Influence, and k = 2, 3 nearest neighbours) continue to suggest moderately significant (p-values < 0.10) clustering of obesity in Primary schools.
+Getis-Ord’s G test results are less consistent. We do not reject the null hypothesis at the 1% significance level for all spatial weight matrices. We reject the null hypothesis at the 10% significance level for all spatial weight matrices except Planning Area. Some configurations (Delaunay triangulation, Sphere of Influence, and k = 1, 2, 3 nearest neighbours) continue to suggest moderately significant (p-values < 0.10) clustering of obesity in Primary schools.
 
 **Weak evidence of positive spatial autocorrelation for Secondary Schools**
 
@@ -2044,14 +2048,15 @@ The evidence for spatial clustering is weaker for secondary schools.
 Using the Moran’s I test, we reject the null hypothesis at the 1% significance level for most spatial weight matrices. There is sufficient evidence to indicate highly significant (p-values < 0.01) positive spatial autocorrelation for primary schools under all configurations except for contiguous neighbours (Planning Areas) and social neighbours (MOE clusters).
 
 Geary’s C test further supports the presence of spatial dependence at the 1% significance level, but with the exception of contiguous neighbours, social neighbours and k = 2 nearest neighbours. 
-
 However, using Getis-Ord’s G test, we do not reject the null hypothesis at the 1% significance level (and also the 10% significiance level) for all spatial weight matrices.
 
 **Further conclusions**
 
 There is strong spatial clustering of obesity among primary schools across Singapore, suggesting that spatial factors and neighbourhood effects significantly influence childhood obesity rates. In contrast, secondary schools exhibit weaker and less consistent spatial clustering, implying that obesity prevalence may be more influenced by non-spatial factors. We will consider both non-spatial and spatial models later. 
 
-The insignificant results for social neighbours (primary and secondary schools) indicates that there is insufficient evidence to suggest that "social distance" might lead to spatial clustering of obesity in schools. From a policy perspective, administrators of MOE clusters do not influence obesity in schools, through MOE cluster specific policies or programmes for example. This could be due to MOE's macro approach to administrating policies across all schools in Singapore. Evidently, MOE works with HPB to implement the HMSP nationwide.
+The insignificant results for social neighbours (for both primary and secondary schools) indicates that there is insufficient evidence to suggest that "social distance" might lead to spatial clustering of obesity in schools. From a policy perspective, administrators of MOE clusters do not influence obesity in schools, through MOE cluster specific policies or programmes for example. This could be due to MOE's macro approach to administrating policies across all schools in Singapore. Evidently, MOE works with HPB to implement the HMSP nationwide.
+
+The insignificant results for contiguous neighbours (for only secondary schools) indicates that there is insufficient evidence to suggest that planning area specific factors might lead to spatial clustering of obesity in schools. Schools in different planning areas are unlikely to affect each other due to the distance apart and different residential, commercial, business and recreational areas that students may go to (shopping malls, parks, etc.).
 
 From a policy perspective, targeted interventions in primary school clusters could be more effective in leveraging spillover effects.
 
@@ -2113,17 +2118,15 @@ tmap_arrange(map1, map2, map3, map4, map5, map6, ncol = 3)
 
 Comparing the spatial weights matrices, the graph-based and distance-based neighbours had the most consistent results for the global autocorrelation tests used. The visualisation above compares the graph-based and distance-based neighbour links for Primary and Secondary schools. Focusing on the graph-based neighbours, Delauney triangulation had neighbour links between schools that were relatively far apart. Sphere of Influence graphs had an advantage in thinning down the triangulation and removing these long links, ensuring that schools along the edges of Singapore are not indicated as neighbours when they were in fact quite far apart geographically. Thus, Sphere of Influence might more accurately reflect neighbour to neighbour relationships compared to Delauney triangluation.
 
-Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3). Since graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design: that is, if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model spillover effects.
+Sphere of Influence and k = 3 nearest neighbours also share similar neighbour to neighbour links and similar average number of links (~3). Since graphs-based spatial weights matrices like SOI neighbours are [symmetric](https://cran.r-project.org/web/packages/spdep/vignettes/nb.html#Creating_Graph-Based_Neighbours) by design: that is, if i is a neighbour of j, then j is a neighbour of i. K nearest neighbours spatial weights matrices may not be symmetric as one school's nearest neighbour may have a different nearest neighbour. The symmetric property for SOI may be more desirable to model obesity spillover effects between schools.
 
 As such, we determined that Sphere of Influence was the best choice to model neighbour links.
 
 Next, we use local autocorrelation statistics to identify spatial clusters:
 
-Local Moran's I, returned as a z-score, is used to identify the degree to which one areal unit is autocorrelated relative to it’s neighbour. 
-
-Local Getis-Ord's G, returned as a z-score, suggests a high-high overweight prevalence clusters or hot spot for positive z-values, and low-low overweight prevalence clusters or cold spots for negative z-values.
-
-We will use Local Moran's I to identify schools with high positive spatial autocorrelation, and Local Getis-Ord's G to identify the high-high overweight prevalence clusters.
+-   Local Moran's I, returned as a z-score, is used to identify the degree to which one areal unit is autocorrelated relative to it’s neighbour. 
+-   Local Getis-Ord's G, returned as a z-score, suggests a high-high overweight prevalence clusters or hot spot for positive z-values, and low-low overweight prevalence clusters or cold spots for negative z-values.
+-   We will use Local Moran's I to identify schools with high positive spatial autocorrelation, and Local Getis-Ord's G to identify the high-high overweight prevalence clusters.
 
 **SOI Spatial autocorrelation statistics**
 
@@ -2146,9 +2149,8 @@ pri_map <- obesity_pri_sch %>%
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis (Primary)")
 
-jc_pri <- joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, soi_lw_B_pri) %>% as.data.frame()
-jc_pri$Category <- rownames(jc_pri)
-jc_pri[, c("Category", "Joincount", "Expected", "Variance", "z-value")] %>% gt() %>% 
+jc_pri <- joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, soi_lw_B_pri)
+jc_pri %>% as.data.frame() %>% gt(rownames_to_stub = TRUE) %>% 
   tab_header(
     title = "Join count analysis (SOI)",
     subtitle = "Primary schools"
@@ -2169,9 +2171,8 @@ sec_map <- obesity_sec_sch %>%
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis (Secondary)")
 
-jc_sec <- joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, soi_lw_B_sec) %>% as.data.frame()
-jc_sec$Category <- rownames(jc_pri)
-jc_sec[, c("Category", "Joincount", "Expected", "Variance", "z-value")] %>% gt() %>% 
+jc_sec <- joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, soi_lw_B_sec)
+jc_sec %>% as.data.frame() %>% gt(rownames_to_stub = TRUE) %>% 
   tab_header(
     title = "Join count analysis (SOI)",
     subtitle = "Secondary schools"
@@ -2184,7 +2185,7 @@ jc_sec[, c("Category", "Joincount", "Expected", "Variance", "z-value")] %>% gt()
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
 
-For robustness, we defined high obesity schools as schools with above average OSO levels (separately for primary and secondary schools) for a join count analysis for Sphere of Influence neighbours. For primary schools, we reject the null hypothesis at the 5% significance level (z=2.1763), but not at the 1% significance level previously used for Local Moran's I test. For secondary schools, we do not reject the null hypothesis at the 5% significance level (z=0.5217). The join count analysis suggests clustering of primary schools with above average obesity levels, but not for secondary schools.
+For robustness, we defined high obesity schools as schools with above average OSO levels (separately for primary and secondary schools) for a join count analysis for Sphere of Influence neighbours. For primary schools, we reject the null hypothesis at the 5% significance level (z = 2.1763), but not at the 1% significance level previously used for Local Moran's I test. For secondary schools, we do not reject the null hypothesis at the 5% significance level (z = 0.5217). The join count analysis suggests clustering of primary schools with above average obesity levels, but not for secondary schools.
 
 ```{r}
 #### Local Moran's I statistics
@@ -3745,7 +3746,9 @@ corrplot.mixed(rmat_sec, upper = "pie", number.cex=0.75, tl.cex = 0.75,
 
 We used pairwise complete observations as the sports_cca_per_100 had many missing rows.
 
-**For Primary Schools** Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
+**For Primary Schools** 
+
+Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
 
 -   Number of food outlets within a 1km radius of school (num_food_outlets),
 -   Government school status (is_govt_sch),
@@ -3765,7 +3768,9 @@ Furthermore, there is a negative linear relationship between overweight prevalen
 -   GEP school status (is_gifted_sch),
 -   Special school status: SAP or GEP (is_special_sch).
 
-**For Secondary Schools** Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
+**For Secondary Schools** 
+
+Based on the sign of the correlation coefficient values, we can observe a positive linear relationship between overweight prevalence (PREVALENCE) and the
 
 -   Government school status (is_govt_sch),
 -   Co-ed school status (is_coed_sch),
@@ -4004,9 +4009,8 @@ No evidence of significant spatial autocorrelation in the OLS residuals based on
 
 ## Generating Spatial Models and Spatial Tests
 
-### Spatial Models (Primary Schools)
-
 ```{r,results='hide'}
+## Primary Schools
 # Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
 pri_sar <- spautolm(
   formula = PREVALENCE ~ 1, data = obesity_model_analysis_pri, listw = soi_lw_pri)
@@ -4028,6 +4032,37 @@ pri_sarar <- sacsarlm(
 summary(pri_sarar) 
 # Rho: 0.29499, p-value: 0.11725; Lambda: -0.21663, p-value: 0.16879
 ```
+
+```{r,results='hide'}
+## Secondary Schools
+# Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
+sec_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_sec, 
+                    listw = soi_lw_sec)
+summary(sec_sar) # Lambda: 0.27535, p-value: 0.0018312 
+
+sec_slm <- lagsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch, 
+  data = obesity_model_analysis_sec, listw = soi_lw_sec)
+summary(sec_slm) # Rho: 0.13841, p-value: 0.082856
+
+sec_sem <- errorsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
+  data = obesity_model_analysis_sec, listw = soi_lw_sec)
+summary(sec_sem) # Lambda: 0.1602, p-value: 0.083578
+
+sec_sarar <- sacsarlm(
+  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
+  data = obesity_model_analysis_sec, listw = soi_lw_sec)
+summary(sec_sarar) 
+# Rho: 0.076366, p-value: 0.63869; Lambda: 0.084001, p-value: 0.65265
+```
+
+Next, we consider the 4 spatial models to see whether spatial relationships should be considered for our model: 
+
+-   Pure Spatial AutoRegressive Model (SAR)
+-   Spatial Lag Model (SLM)
+-   Spatial Error Model (SEM) 
+-   Spatial AutoRegressive-AutoRegressive Model (SARAR)
 
 ### Spatial Tests for model comparison (Primary Schools)
 
@@ -4114,31 +4149,6 @@ nb_abic_pri %>% gt() %>%
 Using the LR tests, we see the tests with SARAR as alternative hypothesis that the large p-values for both tests mean SLM and SEM are more suitable than SARAR. The extremely small p-value for the test between SAR and SLM indicates the alternative SLM is more suitable than SAR. For the tests with OLS as the null, we see that when SLM is the alternative the p-value is small (0.0497) which is sufficient evidence at 5% significance level that the alternative SLM is more suitable. On the other hand, when SEM is the alternative, the p-value is much larger (0.1725), so there is insufficient evidence at 5% significance level to reject OLS. This is further supported by the LM test results, where adjRSlag has a much smaller p-value of 0.1187 as compared to adjRSerr p-value of 0.5148. This suggests the SLM is more suitable than SEM, though the significance of SLM relative to OLS may be difficult to determine at 5% significance level from this test alone. Finally, considering the AIC and BIC values, we see pri_slm has a marginally smaller AIC value than SEM and OLS. 
 
 This brings us to our conclusion that SLM is the most suitable spatial model for modelling obesity prevalence in primary schools. This is supported by our prior spatial analysis, where we recognised both high-obesity & low-obesity clustering being observed for several primary schools. Logically, this also makes sense since the student residences for primary schools tend to be more concentrated within the same neighbourhood due to the nature of primary school slot allocation in Singapore.
-
-### Spatial Models (Secondary Schools)
-
-```{r,results='hide'}
-# Generating 4 spatial models for consideration: SAR, SLM, SEM, SARAR
-sec_sar <- spautolm(formula = PREVALENCE ~ 1, data = obesity_model_analysis_sec, 
-                    listw = soi_lw_sec)
-summary(sec_sar) # Lambda: 0.27535, p-value: 0.0018312 
-
-sec_slm <- lagsarlm(
-  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch, 
-  data = obesity_model_analysis_sec, listw = soi_lw_sec)
-summary(sec_slm) # Rho: 0.13841, p-value: 0.082856
-
-sec_sem <- errorsarlm(
-  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
-  data = obesity_model_analysis_sec, listw = soi_lw_sec)
-summary(sec_sem) # Lambda: 0.1602, p-value: 0.083578
-
-sec_sarar <- sacsarlm(
-  formula = PREVALENCE ~ Education + is_popular_sch + is_govt_sch + is_coed_sch,
-  data = obesity_model_analysis_sec, listw = soi_lw_sec)
-summary(sec_sarar) 
-# Rho: 0.076366, p-value: 0.63869; Lambda: 0.084001, p-value: 0.65265
-```
 
 ### Spatial Tests for model comparison (Secondary Schools)
 
@@ -4400,7 +4410,7 @@ p-value for Global Geary's C test (Primary school): 0.3879
 
 Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019. 
 
-#### Join count analysis
+### Join count analysis
 
 ```{r}
 # Setting an overweight cutoff point
@@ -4418,7 +4428,7 @@ pri_map_z_increase <- ura_regions_map + oso_hist_geom1 %>%
     fill = "z_change_high_increase", 
     size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
-  tm_title("Joint count analysis")
+  tm_title("Join count analysis")
 
 
 # by Primary school - Improving Obesity Levels
@@ -4436,7 +4446,7 @@ pri_map_z_decrease1 <- ura_regions_map + oso_hist_geom3 %>%
     fill = "z_change_high_decrease", 
     size = "z_change", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
-  tm_title("Joint count analysis")
+  tm_title("Join count analysis")
 
 
 #Maps:
@@ -4445,7 +4455,7 @@ pri_map_z_increase
 ```
 The plots provide a descriptive view of Primary Schools with improving and worsening obesity levels over time. The blue circles represent extreme cases. 
 
-## Join count considering only extremes
+### Join count considering only extremes
 
 ```{r}
 #For increases
@@ -4487,7 +4497,7 @@ soi_lw_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "W")
 soi_lw_B_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "B")
 
 
-#Joint count analysis
+#Join count analysis
 
 jc_decrease <- joincount.multi(oso_hist_geom3$z_change_high_decrease, soi_lw_B_pri_z_decrease)
 jc_increase <- joincount.multi(oso_hist_geom1$z_change_high_increase, soi_lw_B_pri_z_increase)
@@ -4516,7 +4526,7 @@ gt_decrease
 gt_increase
 ```
 
-To assess whether changes in obesity rates are spatially clustered across schools, we conducted a joint count analysis on schools that experienced extreme changes in obesity levels. Specifically, we looked at schools with a z-score change in obesity of less than -1 (extreme decreases) and greater than +1 (extreme increases).
+To assess whether changes in obesity rates are spatially clustered across schools, we conducted a join count analysis on schools that experienced extreme changes in obesity levels. Specifically, we looked at schools with a z-score change in obesity of less than -1 (extreme decreases) and greater than +1 (extreme increases).
 
 The results indicate that there is no statistically significant spatial clustering of schools experiencing either extreme increases or decreases in obesity rates. This means that such schools tend to be spatially isolated from one another, rather than forming contiguous clusters. In other words, a sharp increase or decrease in obesity at one school does not have a spillover effect on nearby schools. 
 
@@ -4657,8 +4667,8 @@ Other schools that could be observed include Telok Kurau Primary School, Seng Ka
 
 # Concluding remarks
 
-From our spatial analysis, we found that there is directional bias for obesity in schools, with the North of Singapore having more schools with higher obesity levels. Our identification of spatial clusters further supported this finding, with evidence of 2 High-High obesity clusters of primary schools in the North. Low-Low obesity clusters were also found towards the Center and South-West of Singapore. Policy-makers can leverage on the spillover effects, between schools in these clusters, to implement obesity reduction or mitigation measures. One limitation of our autocorrelation analysis is that we did not have data to explain why these clusters occur. However, we suspect that social influences and peer pressure has a big part to play in why obesity clusters are observed, as HPB had shared that student profiles in schools in the North are vastly different from other regions, with higher incidences of smoking and bullying for example. Common hangout spots (captured within the sphere of influence definition) may also play into the social influence and spatial dependence between schools in the North.
+From our spatial analysis, we found that there is directional bias for obesity in schools, with the North of Singapore having more schools with higher obesity levels. Our identification of spatial clusters further supported this finding, with evidence of 2 High-High obesity clusters of primary schools in the North. Low-Low obesity clusters were also found towards the Center and South-West of Singapore. Policy-makers can leverage on the spillover effects, between schools in these clusters, to implement obesity reduction or mitigation measures. One limitation of our autocorrelation analysis is that we did not have data to explain why these clusters occur. However, we suspect that social influences and peer pressure has a big part to play, as HPB had shared that student profiles in schools in the North are vastly different from other regions, with higher incidences of smoking and bullying for example. Common hangout spots (captured within the sphere of influence definition), like shopping malls or parks, may also play into the social influence and spatial dependence between schools in the North.
 
 Including other explanatory variables for obesity (education, income, access to external food options, access to sports opportunities), we built linear regression models with the focus on explaining obesity in schools. We found the variable Education (parental education in cumulative years) to be common to both models, which marked it as a possible significant factor for future targeting. Following which, we compared the generated best linear models with spatial models for both primary & secondary schools. For primary schools, we found SLM to be the best model, corroborating our earlier analysis on the existence of High-High and Low-Low obesity spatial clusters of primary schools in Singapore. For secondary schools, we found OLS prevailed as the best model, which could be attributed to higher dispersion of secondary school student residences so spatial effects were far less significant. 
 
-Finally, we explore a time series analysis of obesity prevalence over time. From our first model, we found no spatial autocorrelation of extreme changes in obesity over the long run. Therefore, there were no spatial spillover effects from schools with extreme changes in obesity. In our second model, we controlled for COVID effects. We were able to highlight schools that experienced increasing obesity levels after short term disruptions such as the COVID pandemic. 
+Finally, we explored a time series analysis of obesity prevalence over time. From our first model, we found no spatial autocorrelation of extreme changes in obesity over the long run. Therefore, there were no spatial spillover effects from schools with extreme changes in obesity. In our second model, we controlled for COVID effects. We were able to highlight schools that experienced increasing obesity levels after short-term disruptions caused by the COVID pandemic and Circuit Breaker that led to a period of home-based learning.
