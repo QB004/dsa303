@@ -2598,6 +2598,7 @@ Analysing the spatial descriptive summary measures for education variable, we ob
 # Food and Nutrition
 
 ```{r read_geojson, message=FALSE, warning=FALSE}
+
 #Data transformation
 
 #Hawker Centres
@@ -2608,7 +2609,7 @@ hawker = hawker_full["geometry"]
 #Fast Food Outlets 
   #Mcdonald's
 macs_full = suppressMessages(st_read("DataFiles/mcdonalds_singapore.geojson")) %>%
-  st_transform(crs = sg_crs) 
+  st_transform(crs = sg_crs)
 macs = macs_full[,"geometry"] 
 
 #7-11 Outlets
@@ -2621,9 +2622,7 @@ seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
 macs_sf = mutate(macs, outlet = "mcdonalds")
 hawker_sf = mutate(hawker, outlet = "hawker")
 food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
-```
 
-```{r}
 #Primary school analysis
 obesity_pri_food = obesity_pri_sch 
 pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
@@ -2842,7 +2841,6 @@ coords_dist <- st_coordinates(food_combined_sf)
 knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 
-summary(nearest_outlet_distance)
 ```
 
 To better understand the accessibility of food options for students, we also analysed the distance from each school to the nearest food outlet, using McDonald’s, 7-Eleven, and Hawker Centres as proxies once again. This captures how close the nearest source of food is and reflects the ease of access of which students can access meals or snacks.
@@ -4215,7 +4213,8 @@ This brings us to our conclusion that OLS is the most suitable for modelling obe
 
 # Time Series Analysis
 
-```{r, results='hide'}
+
+```{r}
 library(tidyverse)
 library(imputeTS)  # For interpolation
 library(fpp2)
@@ -4302,18 +4301,33 @@ ura_regions_map +
   tm_title("Map of Z-score Change for Primary Schools")
 
 # Schools which saw a 1 standard deviation increase in OSO levels
-oso_hist_geom %>% 
+oso_increase_gt <- oso_hist_geom %>% 
   st_drop_geometry() %>% 
   filter(z_change >= 1) %>% 
-  arrange(desc(z_change)) # 10 schools identified
+  arrange(desc(z_change)) %>%
+  gt() %>%
+  tab_header(
+    title = "Schools with ≥ 1 SD Increase in OSO Levels"
+  )
+
+oso_increase_gt
   
 # Schools which saw a 1 standard deviation decrease in OSO levels
-oso_hist_geom %>% 
+oso_decrease_gt <- oso_hist_geom %>% 
   st_drop_geometry() %>% 
   filter(z_change <= -1) %>% 
-  arrange(desc(z_change)) %>%
-  kable()
+  arrange(z_change) %>%  # ascending since they're negative
+  gt() %>%
+  tab_header(
+    title = "Schools with ≥ 1 SD Decrease in OSO Levels"
+  )
+oso_decrease_gt
+
 ```
+A histogram plot of the data shows that the data is normally distributed.
+For the first model, we interpolated the data to obtain the missing years between 2016 to 2023. We used a smoothing spline to do this, and subsequently calculated the mean Z-score before 2019 and after 2019. 2019 was used as the baseline for the midpoint in the data. 
+
+We then obtained schools with a more than 1 Standard Deviation increase and decrease in OSO levels over time. 
 
 ## Sphere of influence neighbours
 
@@ -4337,23 +4351,50 @@ pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom)
 
 ### Spatial autocorrelation statistics
 
-```{r, results='hide'}
+```{r}
 # by Primary schools
 soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W")
 soi_lw_B_pri_z <- nb2listw(soi_nb_pri_z, style = "B")
-moran.test(oso_hist_geom$z_change, soi_lw_pri_z)
 moran.plot(oso_hist_geom$z_change, soi_lw_pri_z, main="Moran scatterplot")
-geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
+
+moran_result <- moran.test(oso_hist_geom$z_change, soi_lw_pri_z)
+geary_result <- geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
+
+moran_df <- data.frame(
+  Test = "Moran's I",
+  Statistic = moran_result$statistic,
+  P_Value = moran_result$p.value
+)
+
+geary_df <- data.frame(
+  Test = "Geary's C",
+  Statistic = geary_result$statistic,
+  P_Value = geary_result$p.value
+)
+
+# Combine and format
+bind_rows(moran_df, geary_df) %>%
+  gt() %>%
+  tab_header(
+    title = "Spatial Autocorrelation Tests",
+    subtitle = "Z-Change in OSO Levels (Primary Schools)"
+  ) %>%
+  fmt_number(
+    columns = c(Statistic, P_Value),
+    decimals = 4
+  )
+
 ```
 
 Average number of links (Primary school): 3.094972\
-p-value for Global Moran's I test (Primary school): 0.5712 p-value for Global Geary's C test (Primary school): 0.3879
+p-value for Global Moran's I test (Primary school): 0.5712\ 
+p-value for Global Geary's C test (Primary school): 0.3879
 
 Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019. 
 
 #### Joint count analysis
 
-```{r, results='hide'}
+```{r}
 # Setting an overweight cutoff point
 Z_CHANGE_CUTOFF_INCREASE <- 1 #increase in obesity levels before and after 2019
 Z_CHANGE_CUTOFF_DECREASE <- -1 #decrease in obesity levels before and after 2019
@@ -4398,7 +4439,7 @@ The plots provide a descriptive view of Primary Schools with improving and worse
 
 ## Joint count considering only extremes
 
-```{r, results='hide'}
+```{r}
 #For increases
 del_nb_pri_z_increase <- tri2nb(st_coordinates(oso_hist_geom1), 
                      row.names = oso_hist_geom1$PT_ID) 
@@ -4438,11 +4479,33 @@ soi_lw_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "W")
 soi_lw_B_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "B")
 
 
-#Join count analysis
-joincount.multi(oso_hist_geom3$z_change_high_decrease, 
-                soi_lw_B_pri_z_decrease) 
-joincount.multi(oso_hist_geom1$z_change_high_increase, 
-                soi_lw_B_pri_z_increase) 
+#Joint count analysis
+
+jc_decrease <- joincount.multi(oso_hist_geom3$z_change_high_decrease, soi_lw_B_pri_z_decrease)
+jc_increase <- joincount.multi(oso_hist_geom1$z_change_high_increase, soi_lw_B_pri_z_increase)
+
+jc_decrease_df <- as.data.frame(jc_decrease)
+jc_increase_df <- as.data.frame(jc_increase)
+
+jc_decrease_df <- jc_decrease_df %>% mutate(across(where(is.numeric), ~round(., 4)))
+jc_increase_df <- jc_increase_df %>% mutate(across(where(is.numeric), ~round(., 4)))
+
+gt_decrease <- jc_decrease_df %>%
+  gt(rownames_to_stub = TRUE) %>%
+  tab_header(
+    title = "Join Count Test – High Decrease",
+    subtitle = "Primary Schools"
+  )
+
+gt_increase <- jc_increase_df %>%
+  gt(rownames_to_stub = TRUE) %>%
+  tab_header(
+    title = "Join Count Test – High Increase",
+    subtitle = "Primary Schools"
+  )
+
+gt_decrease
+gt_increase
 ```
 
 To assess whether changes in obesity rates are spatially clustered across schools, we conducted a joint count analysis on schools that experienced extreme changes in obesity levels. Specifically, we looked at schools with a z-score change in obesity of less than -1 (extreme decreases) and greater than +1 (extreme increases).
@@ -4450,7 +4513,7 @@ To assess whether changes in obesity rates are spatially clustered across school
 The results indicate that there is no statistically significant spatial clustering of schools experiencing either extreme increases or decreases in obesity rates. This means that such schools tend to be spatially isolated from one another, rather than forming contiguous clusters. In other words, a sharp increase or decrease in obesity at one school does not have a spillover effect on nearby schools. 
 
 # Controlling for Effects of COVID
-```{r, results='hide'}
+```{r}
 oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
 
 oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
@@ -4506,8 +4569,41 @@ oso_covid_geom = oso_covid_geom_full %>%
   dplyr::select(c("PT_ID", "SCHOOL", "geometry", "after_covid_change", "before_covid_change"))
 
 
-#summary(oso_covid_geom$before_covid_change)
-#summary(oso_covid_geom$after_covid_change)
+before_summary = summary(oso_covid_geom$before_covid_change)
+after_summary = summary(oso_covid_geom$after_covid_change)
+
+before_summary_df <- data.frame(
+  Statistic = names(before_summary),
+  Value = as.numeric(before_summary)
+)
+
+before_summary_df %>%
+  gt() %>%
+  tab_header(
+    title = "Summary of Obesity Changes Before COVID",
+    subtitle = "Primary schools"
+  ) %>%
+  fmt_number(
+    columns = Value,
+    decimals = 4
+  )
+
+after_summary_df <- data.frame(
+  Statistic = names(after_summary),
+  Value = as.numeric(after_summary)
+)
+
+after_summary_df %>%
+  gt() %>%
+  tab_header(
+    title = "Summary of Obesity Changes After COVID",
+    subtitle = "Primary schools"
+  ) %>%
+  fmt_number(
+    columns = Value,
+    decimals = 4
+  )
+
 
 #Classify
 oso_covid_geom_classes <- oso_covid_geom %>%
