@@ -877,31 +877,31 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 
 **Spatial autocorrelation statistics**
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 # by Primary schools
-ura_planning_areas_lw_pri <- nb2listw(ura_planning_areas_nb_pri, style = "W")
+(ura_planning_areas_lw_pri <- nb2listw(ura_planning_areas_nb_pri, style = "W"))
 ura_planning_areas_lw_B_pri <- nb2listw(ura_planning_areas_nb_pri, style = "B")
 (moran <- moran.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri))
 moran.plot(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri,
            main="Moran scatterplot", 
            xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
-gearyC <- geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri)
-getisordG <- globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
-             ura_planning_areas_lw_B_pri)
+(gearyC <- geary.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE, ura_planning_areas_lw_pri))
+(getisordG <- globalG.test(obesity_ura_planning_areas_pri$PREVALENCE_AGGREGATE,
+             ura_planning_areas_lw_B_pri))
 nb_pval_pri <- rbind(nb_pval_pri, data.frame(
   "Neighbour.object" = "Planning Area", "Moran.I.p.value" = moran$p.value,
   "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
 
 # by Secondary schools
-ura_planning_areas_lw_sec <- nb2listw(ura_planning_areas_nb_sec, style = "W")
+(ura_planning_areas_lw_sec <- nb2listw(ura_planning_areas_nb_sec, style = "W"))
 ura_planning_areas_lw_B_sec <- nb2listw(ura_planning_areas_nb_sec, style = "B")
 (moran <- moran.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec))
 moran.plot(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec, 
            main="Moran scatterplot", 
            xlab="Overweight prevalence", ylab="Spatially lagged Overweight prevalence")
-gearyC <- geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec)
-getisordG <- globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
-                           ura_planning_areas_lw_B_sec)
+(gearyC <- geary.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE, ura_planning_areas_lw_sec))
+(getisordG <- globalG.test(obesity_ura_planning_areas_sec$PREVALENCE_AGGREGATE,
+                           ura_planning_areas_lw_B_sec))
 nb_pval_sec <- rbind(nb_pval_sec, data.frame(
   "Neighbour.object" = "Planning Area", "Moran.I.p.value" = moran$p.value,
   "Geary.C.p.value" = gearyC$p.value, "Getis.Ord.G.p.value" = getisordG$p.value[[1]]))
@@ -1122,7 +1122,7 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 
 **Spatial autocorrelation statistics**
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 # by Primary schools
 (moe_clusters_lw_pri <- nb2listw(moe_clusters_nb_pri, style = "W"))
 moe_clusters_lw_B_pri <- nb2listw(moe_clusters_nb_pri, style = "B")
@@ -1267,7 +1267,7 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 
 **Spatial autocorrelation statistics**
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 # by Primary schools
 (del_lw_pri <- nb2listw(del_nb_pri, style = "W"))
 del_lw_B_pri <- nb2listw(del_nb_pri, style = "B")
@@ -1449,7 +1449,7 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 
 **Spatial autocorrelation statistics**
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 # by Primary schools
 (soi_lw_pri <- nb2listw(soi_nb_pri, style = "W"))
 soi_lw_B_pri <- nb2listw(soi_nb_pri, style = "B")
@@ -1603,7 +1603,7 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 
 **Spatial autocorrelation statistics**
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 # by Primary schools
 (knn1_lw_pri <- nb2listw(knn1_nb_pri, style = "W"))
 knn1_lw_B_pri <- nb2listw(knn1_nb_pri, style = "B")
@@ -1746,7 +1746,7 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 
 **Spatial autocorrelation statistics**
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 # by Primary schools
 (knn2_lw_pri <- nb2listw(knn2_nb_pri, style = "W"))
 knn2_lw_B_pri <- nb2listw(knn2_nb_pri, style = "B")
@@ -1889,7 +1889,7 @@ tmap_arrange(pri_map, sec_map, nrow = 1)
 
 **Spatial autocorrelation statistics**
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 # by Primary schools
 (knn3_lw_pri <- nb2listw(knn3_nb_pri, style = "W"))
 knn3_lw_B_pri <- nb2listw(knn3_nb_pri, style = "B")
@@ -2006,7 +2006,7 @@ tmap_arrange(pri_map, sec_map)
 ## Conclusions on spatial clustering analysis of obesity
 
 ```{r}
-# Summary of spatial autocorrelation test p-values
+# Summary of all spatial autocorrelation test p-values
 nb_pval_pri %>% gt() %>%
   tab_header(
     title = "Spatial autocorrelation statistics p-values",
@@ -2151,8 +2151,18 @@ pri_map <- obesity_pri_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis (Primary)")
-print("Join count analysis for Primary Schools (SOI)")
-joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, soi_lw_B_pri)
+
+jc_pri <- joincount.multi(obesity_pri_sch$HIGH_PREVALENCE, soi_lw_B_pri) %>% as.data.frame()
+jc_pri$Category <- rownames(jc_pri)
+jc_pri[, c("Category", "Joincount", "Expected", "Variance", "z-value")] %>% gt() %>% 
+  tab_header(
+    title = "Join count analysis (SOI)",
+    subtitle = "Primary schools"
+  ) %>%
+  fmt_number(
+    columns = c("Expected", "Variance", "z-value"),
+    decimals = 4
+  )
 
 # by Secondary school
 obesity_sec_sch$HIGH_PREVALENCE <- 
@@ -2164,8 +2174,18 @@ sec_map <- obesity_sec_sch %>%
     size = "PREVALENCE", size.scale = tm_scale_continuous(values.scale = 0.8),
     size.legend = tm_legend_hide()) +
   tm_title("Join count analysis (Secondary)")
-print("Join count analysis for Secondary Schools (SOI)")
-joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, soi_lw_B_sec)
+
+jc_sec <- joincount.multi(obesity_sec_sch$HIGH_PREVALENCE, soi_lw_B_sec) %>% as.data.frame()
+jc_sec$Category <- rownames(jc_pri)
+jc_sec[, c("Category", "Joincount", "Expected", "Variance", "z-value")] %>% gt() %>% 
+  tab_header(
+    title = "Join count analysis (SOI)",
+    subtitle = "Primary schools"
+  ) %>%
+  fmt_number(
+    columns = c("Expected", "Variance", "z-value"),
+    decimals = 4
+  )
 
 tmap_arrange(pri_map, sec_map, nrow = 1)
 ```
@@ -2577,11 +2597,11 @@ education_map <- ura_planning_areas_map +
 print(education_map)
 ```
 
-Analysing the spatial descriptive summary measures for education variable, we observe all spatial measures (spatial mean, spatial median, SDD, SDE and weighted SDE) are directionally skewed towards the southeast, though much more skewed towards the south than the eastern direction. Visually comparing with the spatial descriptive measures for the income variable, the spatial mean and median are in approximately the same location (within the same planning area at least) while the SDE and weighted SDE for the education variable are slightly less skewed towards the south than the income variable. This could be because of the nature of the variable since income ranges (max-min = \$8,000) have a much larger spread than education years (max - min = 4 years). This matches the observation that most of the planning areas with best educated residents are concentrated in the south, with planning areas in the east having more years of education than planning areas in the west. The weighted SDE (red dotted line) being more skewed towards the south than the SDE (black dotted line) further reflects this spatial pattern, although there appears to be less of a southbound skewing effect for the education variable than the income variable.
+Analysing the spatial descriptive summary measures for education variable, we observe all spatial measures (spatial mean, spatial median, SDD, SDE and weighted SDE) are directionally skewed towards the southeast, though much more skewed towards the south than the eastern direction. Visually comparing with the spatial descriptive measures for the income variable, the spatial mean and median are in approximately the same location (within the same planning area at least) while the SDE and weighted SDE for the education variable are slightly less skewed towards the south than the income variable. This could be because of the nature of the variable since income ranges (max – min = \$8,000) have a much larger spread than education years (max – min = 4 years). This matches the observation that most of the planning areas with best educated residents are concentrated in the south, with planning areas in the east having more years of education than planning areas in the west. The weighted SDE (red dotted line) being more skewed towards the south than the SDE (black dotted line) further reflects this spatial pattern, although there appears to be less of a southbound skewing effect for the education variable than the income variable.
 
 # Food and Nutrition
 
-```{r}
+```{r, results = FALSE}
 #Data transformation
 
 #Hawker Centres
@@ -2605,7 +2625,9 @@ seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
 macs_sf = mutate(macs, outlet = "mcdonalds")
 hawker_sf = mutate(hawker, outlet = "hawker")
 food = rbind(seven_eleven_sf, macs_sf, hawker_sf)
+```
 
+```{r}
 #Primary school analysis
 obesity_pri_food = obesity_pri_sch 
 pri_schools_buffer1 <- st_buffer(obesity_pri_food, dist = 1000) %>% st_geometry()
