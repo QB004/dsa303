@@ -3974,7 +3974,7 @@ Evidence of significant spatial autocorrelation in the OLS residuals based on Mo
 # Generating residuals for OLS model
 res_sec = residuals(ols_sec)
 
-par(mfrow=c(2,2))
+par(mfrow=c(1,2))
 # Plotting residuals on independent variables used in OLS model
 plot(obesity_model_analysis_sec$Education, res_sec, 
      main = "Residual Plot", 
