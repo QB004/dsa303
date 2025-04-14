@@ -25,8 +25,7 @@ knitr::opts_chunk$set(message = FALSE)
 
 ```{r}
 start.time = Sys.time()
-pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", "gt", "broom",
-         "tidyverse", "sf", "tmap", "aspace", "spdep", "corrplot", "readxl", "spatialreg")
+pkgs = c("dplyr", "ggplot2", "tidyr", "readr", "crayon", "tibble", "knitr", "gt", "broom", "DT", "tidyverse", "sf", "tmap", "aspace", "spdep", "corrplot", "readxl", "spatialreg")
 invisible(lapply(pkgs, function(pkg) {
   suppressPackageStartupMessages(library(pkg, character.only = TRUE))
 }))
@@ -93,17 +92,17 @@ obesity_data <- obesity_data %>%
     by = join_by(PT_ID))
 ```
 
-The [Urban Redevelopment Authority (URA) Master Plan 2014 Subzone Boundary (No Sea)](https://data.gov.sg/collections/1707/view) dataset to serve as our base geometry map of Singapore. To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Singapore into regions, planning areas and subzones. This would aid our investigation of the regional patterns of childhood obesity.
+We used the [Urban Redevelopment Authority (URA) Master Plan 2014 Subzone Boundary (No Sea)](https://data.gov.sg/collections/1707/view) dataset to serve as our base geometry map of Singapore. To facilitate urban planning, the Urban Redevelopment Authority (URA) divides Singapore into regions, planning areas and subzones. This would aid our investigation of the regional patterns of childhood obesity.
 
-The coordinate reference system of the URA boundary data was extracted and stored for consistency across our spatial datasets. ([SVY21](https://app.sla.gov.sg/sirent/About/PlaneCoordinateSystem): based on the Transverse Mercator projection from geographical coordinates referenced to the WGS 84 ellipsoid) For further details on the SVY21 CRS, please view the linked Singapore Land Authority (SLA) website .
+The coordinate reference system of the URA boundary data was extracted and stored for consistency across our spatial datasets ([SVY21](https://app.sla.gov.sg/sirent/About/PlaneCoordinateSystem): based on the Transverse Mercator projection from geographical coordinates referenced to the WGS 84 ellipsoid). For further details on the SVY21 CRS, please view the linked Singapore Land Authority (SLA) website .
 
 Next, we imported the cleaned obesity and Healthy Meals in Schools Programme (HMSP) datasets provided by the Health Promotion Board (HPB). This data consists of yearly student obesity counts by schools, and HMSP Tiers and Scores for school canteen stalls. 
 
-The [General Information of Schools](https://data.gov.sg/datasets/d_688b934f82c1059ed0a6993d2a829089/view) dataset contains key information for primary, secondary and pre-university schools, like whether they were government or co-ed schools or had special programmes (SAP, gifted, IP, etc.). These variables would add further nuance to our analysis.
+The [General Information of Schools](https://data.gov.sg/datasets/d_688b934f82c1059ed0a6993d2a829089/view) dataset contains key information for primary, secondary and pre-university schools, such as whether they were government or co-ed schools or had special programmes (SAP, gifted, IP, etc.). These variables would add further nuance to our analysis.
 
-Past year enrolment data was also joined with our obesity datasets. School enrolment data was only provided for 2024, whereas obesity counts were provided from 2016 to 2023 (excluding 2021). Given Singapore's low birthrates and the shrinking student population over the years, an obesity prevalence measure would be inaccurate if solely calculated using 2024 enrolment data. Past year enrollment data was thus estimated using yearly intake data (for Primary schools only, due to intake data availability), e.g. the 2023 enrolment data in any school was estimated by removing the net intake in 2024, where the net intake = no. of students entering Primary 1 - no. of students graduating from Primary 6 (estimated from the P1 intake from 6 years ago).
+Past year enrolment data was also joined with our obesity datasets. School enrolment data was only provided for 2024, whereas obesity counts were provided from 2016 to 2023 (excluding 2021). Given Singapore's low birthrates and the shrinking student population over the years, an obesity prevalence measure would be inaccurate if solely calculated using 2024 enrolment data. Past year enrolment data was thus estimated using yearly intake data (for Primary schools only, due to intake data availability), e.g. the 2023 enrolment data in any school was estimated by removing the net intake in 2024, where the net intake = no. of students entering Primary 1 – no. of students graduating from Primary 6 (estimated from the P1 intake from 6 years ago).
 
-All datasets with coordinate geometries were transformed into a spatial object using the st_as_sf() function, with longitude and latitude as coordinates, and reprojected to match the CRS of the URA boundary data. Spatial validity was checked and made valid using st_make_valid() to ensure topological correctness. Finally, the CRS units for each dataset were checked to confirm uniformity, ensuring accurate spatial mapping and analysis. These steps were essential for integrating multiple data sources within a consistent spatial framework, allowing for precise geographic visualisation and interpretation of childhood obesity patterns in Singapore.
+All datasets with coordinate geometries were transformed into a spatial object using the st_as_sf() function, with longitude and latitude as coordinates, and reprojected to match the SVY21 CRS of the URA boundary data. Spatial validity was checked and made valid using st_make_valid() to ensure topological correctness. Finally, the CRS units for each dataset were checked to confirm uniformity, ensuring accurate spatial mapping and analysis. These steps were essential for integrating multiple data sources within a consistent spatial framework, allowing for precise geographic visualisation and interpretation of childhood obesity patterns in Singapore.
 
 ## Additional data transformations
 
@@ -181,24 +180,28 @@ For our analysis of childhood obesity levels in Primary and Secondary Schools in
 
 For our post-Covid analysis of childhood obesity levels in Singapore schools, the time series data consisting of obesity prevalence for all years will be used to present the effect that the COVID-19 pandemic and Circuit Breaker had on obesity levels (for Primary schools, due to intake data availability).
 
-In addition to the prior data cleaning done by Professor Liu, we decided to remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we remove "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. Schools with no recorded obesity data in 2023 were also removed (only "TANJONG KATONG GIRLS' SCHOOL").
+In addition to the prior data cleaning done by Professor Liu, we decided to remove "FUCHUN SECONDARY SCHOOL" as the enrolment data may be inaccurate due to school mergers. For our analysis for 2023, we removed "TANGLIN SECONDARY SCHOOL" and "GUANGYANG PRIMARY SCHOOL" as these schools have merged and no longer have overweight counts. Schools with no recorded obesity data in 2023 were also removed (only "TANJONG KATONG GIRLS' SCHOOL").
 
 # Exploratory Data Analysis 
 
-```{r, results = FALSE}
+```{r}
 tmap_mode("plot")
 
-a <- tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
-  tm_shape(hmsp_data_sf) +
+a <- tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() + tm_shape(hmsp_data_sf) + 
   tm_symbols(size = 0.4, fill = "HMSP_Tier", 
-             fill.scale = tm_scale(values = "brewer.set1"), 
-             fill.legend = tm_legend(title = "HMSP Tiers", bg.color = "white"))
+             fill.scale = tm_scale(values = "brewer.set1"),
+             fill.legend = tm_legend(
+               title = "HMSP Tiers", bg.color = "white", 
+               position = tm_pos_in(pos.h="right", pos.v="bottom")
+               ))
 
-b <- tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
-  tm_shape(hmsp_data_sf) +
+b <- tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() + tm_shape(hmsp_data_sf) + 
   tm_symbols(size = 0.4, fill = "ZONE", 
-             fill.scale = tm_scale(values = "brewer.set1"), 
-             fill.legend = tm_legend(title = "School zones", bg.color = "white"))
+             fill.scale = tm_scale(values = "brewer.set1"),
+             fill.legend = tm_legend(
+               title = "School zones", bg.color = "white", 
+               position = tm_pos_in(pos.h = "right", pos.v = "bottom")
+               ))
 
 tmap_arrange(a, b, nrow = 1)
 
@@ -206,9 +209,19 @@ tm_shape(sg_ura_boundaries) + tm_fill() + tm_borders() +
   tm_shape(hmsp_data_sf) +
   tm_symbols(size = 0.3, fill = "CLUSTER", 
              fill.scale = tm_scale(values = "brewer.set1"), 
-             fill.legend = tm_legend(title = "School clusters")) +
-  tm_facets_wrap(by = "ZONE")
+             fill.legend = tm_legend(
+               title = "School clusters", bg.color = "white", 
+               position = tm_pos_out(cell.h = "right"))) +
+  tm_facets_wrap(by = "ZONE", nrow = 2)
 ```
+
+We first visualised the spread of HMSP Tiers, school zones and school clusters in Singapore to gain an initial intuition of the dataset that HPB provided.
+
+```{r}
+datatable(obesity_data_sf_2023_OSO, options = list(pageLength = 10))
+```
+
+You may use the datatable above to further explore the data and variables provided.
 
 ## Obesity Box plots
 ### Obesity by School Level
@@ -410,8 +423,6 @@ moe_clusters_map <- tm_shape(moe_clusters, name = "MOE clusters") + tm_polygons(
 
 ## Obesity prevalence overview map
 
-The following map is an overview of overweight prevalence in Singapore schools. You may use the different layers provided in the map to view the individual school data against URA regions, planning areas and subzones, or MOE zones and clusters. Note that MOE zones and clusters have overlapping areas.
-
 ```{r}
 tmap_mode("view")
 
@@ -420,7 +431,7 @@ school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prev
   tm_symbols(
     size = 0.5, shape = "LEVEL", fill = "PREVALENCE", 
     shape.legend = tm_legend(title = "Educational level"), 
-    fill.scale = tm_scale(breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30), values = "brewer.yl_or_rd"), 
+    fill.scale = tm_scale(breaks = seq(0, 0.3, 0.05), values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
       title = "Overweight prevalence by school",
       position = c("TOP", "LEFT"), item.height = 0.5, item.width = 2.1)
@@ -430,6 +441,8 @@ school_obesity_map <- tm_shape(obesity_data_sf_2023_OSO, name = "Overweight prev
 ura_regions_map + ura_planning_areas_map + ura_subzones_map + moe_zones_map + moe_clusters_map + school_obesity_map +
   tm_title("Overview of overweight prevalence in Singapore schools")
 ```
+
+The map above is an overview of overweight prevalence in Singapore schools. You may use the different layers provided in the map to view the individual school data against URA regions, planning areas and subzones, or MOE zones and clusters. Note that MOE zones and clusters have overlapping areas. The lighter yellow symbols represent schools with relatively lower obesity levels, while darker red symbols represent schools with relatively higher obesity levels. The circle symbols represent primary schools, while the square symbols represent secondary schools.
 
 ## Spatial Descriptive Measures by educational level
 
@@ -461,7 +474,6 @@ pri_sch_sdd_line <- pri_sch_sdd$LOCATIONS %>%
   st_cast("LINESTRING")
 
 pri_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_pri_sch))
-cat("The angle of rotation is", pri_sch_sde$ATTRIBUTES[,10], "(primary schools).") # theta = 92.55625
 pri_sch_sde_line <- pri_sch_sde$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
@@ -483,7 +495,7 @@ pri_sch_map <-
     size.legend = tm_legend_hide(),
     fill = "PREVALENCE", 
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30), 
+      breaks = seq(0, 0.3, 0.05), 
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
@@ -496,14 +508,13 @@ pri_sch_map <-
 
 pri_sch_map_summ <- pri_sch_map +
   tm_shape(pri_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
-  tm_shape(pri_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+  tm_shape(pri_sch_sde_line, name = "SDE") + tm_lines(col = "blue", lwd = 2, lty = 3) +
   tm_shape(pri_sch_sde_weighted_line, name = "weighted SDE") + 
   tm_lines(col = "red", lwd = 2, lty = 3) +
-  tm_shape(pri_sch_mean_median, name = "Summary measures") + 
-  tm_dots(size = 0.5, shape = "id", fill = "white", shape.legend = tm_legend("Summary measures")) + 
-  tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
-  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
-  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  tm_shape(pri_sch_mean_median, name = "Spatial central tendency") + 
+  tm_dots(size = 0.5, shape = "id", fill = "white", shape.legend = tm_legend("Spatial central tendency")) + 
+  tm_add_legend(labels=c("weighted SDE", "SDE", "SDD"), type="lines", 
+                col=c("red", "blue", "black"), title="Spatial variation", lty=c(3,3,1), lwd=2) +
   tm_title("Overweight prevalence in Primary Schools")
 
 ### by Secondary School
@@ -527,7 +538,6 @@ sec_sch_sdd_line <- sec_sch_sdd$LOCATIONS %>%
   st_cast("LINESTRING")
 
 sec_sch_sde <- calc_sde(id = 4, points = st_coordinates(obesity_sec_sch))
-cat("The angle of rotation is", sec_sch_sde$ATTRIBUTES[,10], "(secondary schools).") # theta = 92.3718
 sec_sch_sde_line <- sec_sch_sde$LOCATIONS %>% 
   st_as_sf(coords = c("x", "y"), crs = sg_crs) %>% 
   st_combine() %>% 
@@ -550,7 +560,7 @@ sec_sch_map <-
     size.legend = tm_legend_hide(),
     fill = "PREVALENCE", 
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = seq(0, 0.3, 0.05),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
@@ -562,22 +572,26 @@ sec_sch_map <-
 
 sec_sch_map_summ <- sec_sch_map +
   tm_shape(sec_sch_sdd_line, name = "SDD") + tm_lines(lwd = 2, lty = 1) +
-  tm_shape(sec_sch_sde_line, name = "SDE") + tm_lines(lwd = 2, lty = 3) +
+  tm_shape(sec_sch_sde_line, name = "SDE") + tm_lines(col = "blue", lwd = 2, lty = 3) +
   tm_shape(sec_sch_sde_weighted_line, name = "weighted SDE") + 
   tm_lines(col = "red", lwd = 2, lty = 3) +
-  tm_shape(sec_sch_mean_median, name = "Summary measures") + tm_dots(
+  tm_shape(sec_sch_mean_median, name = "Spatial central tendency") + tm_dots(
     size = 0.5, shape = "id", fill = "white", 
-    shape.legend = tm_legend("Summary measures")
+    shape.legend = tm_legend("Spatial central tendency")
     ) + 
-  tm_add_legend(type = "lines", labels = "weighted SDE", lty = 3, col = "red") +
-  tm_add_legend(type = "lines", labels = "SDE", lty = 3) +
-  tm_add_legend(type = "lines", labels = "SDD", lty = 1) +
+  tm_add_legend(labels=c("weighted SDE", "SDE", "SDD"), type="lines", 
+                col=c("red", "blue", "black"), title="Spatial variation", lty=c(3,3,1), lwd=2) +
   tm_title("Overweight prevalence in Secondary Schools")
 
-tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 1)
+tmap_arrange(pri_sch_map_summ, sec_sch_map_summ, nrow = 2)
 ```
 
-For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance (black circle) spans the North-South length of Singapore. The standard deviation ellipse (black dashed ellipse) also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
+```{r, results = FALSE}
+cat("The angle of rotation is", pri_sch_sde$ATTRIBUTES[,10], "(primary schools).", "\n") # theta = 92.55625
+cat("The angle of rotation is", sec_sch_sde$ATTRIBUTES[,10], "(secondary schools).") # theta = 92.3718
+```
+
+For both primary and secondary schools, we observe that the spatial mean and median lie close to middle of Singapore, while the standard deviation distance (black circle) spans the North-South length of Singapore. The standard deviation ellipse (blue dashed ellipse) also generally follows the shape of Singapore: longer along its major axis and shorter along its minor axis, with a angle of rotation close to 90 degrees (92.6 degrees for primary schools, 92.4 degrees for secondary schools. This is what we would expect as schools are spread across Singapore evenly. This is with the exception of no schools in industrial zones, military areas or airports in the extreme East and West parts of Singapore, as well as no schools within the Bukit Timah Nature Reserve in the centre of Singapore. 
 
 When we consider the weighted standard deviational ellipse (accounting for obesity in schools) (red dashed ellipse), we observe a directional bias towards the North and North-West directions. This suggests that schools towards the North and North-West of the spatial mean have higher overweight prevalence levels. This observation corresponds with what HPB had observed, that schools nearer to Singapore's Northern border (near the causeway to Malaysia) tended to have higher obesity rates. 
 
@@ -608,7 +622,7 @@ ura_regions_map + obesity_ura_regions %>%
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = seq(0, 0.3, 0.05),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
@@ -634,7 +648,7 @@ ura_planning_areas_map + obesity_ura_planning_areas %>%
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = seq(0, 0.3, 0.05),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
@@ -660,7 +674,7 @@ ura_subzones_map + obesity_ura_subzones %>%
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = seq(0, 0.3, 0.05),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
@@ -683,13 +697,13 @@ obesity_moe_zones <-
     geometry = st_union(geometry)
     )
 
-sg_map + moe_zones_map + obesity_moe_zones %>% 
+moe_zones_map + obesity_moe_zones %>% 
   tm_shape(name = "Overweight prevalence") +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill_alpha = 0.95,
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = seq(0, 0.3, 0.05),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
@@ -717,7 +731,7 @@ moe_clusters_map + obesity_moe_clusters %>%
     fill = "PREVALENCE_AGGREGATE",
     fill_alpha = 0.95,
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = seq(0, 0.3, 0.05),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend(
@@ -815,7 +829,7 @@ pri_map <- ura_planning_areas_map + obesity_ura_planning_areas_pri %>% tm_shape(
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = seq(0, 0.3, 0.05),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend_hide()
@@ -844,7 +858,7 @@ sec_map <- ura_planning_areas_map +
   tm_polygons(
     fill = "PREVALENCE_AGGREGATE",
     fill.scale = tm_scale(
-      breaks = c(0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30),
+      breaks = seq(0, 0.3, 0.05),
       values = "brewer.yl_or_rd"
       ), 
     fill.legend = tm_legend_hide()
@@ -2549,23 +2563,22 @@ Analysing the spatial descriptive summary measures for education variable, we ob
 
 # Food and Nutrition
 
-```{r read_geojson, message=FALSE, warning=FALSE}
-
+```{r}
 #Data transformation
 
 #Hawker Centres
-hawker_full = suppressMessages(st_read("DataFiles/NEAMarketandFoodCentre.geojson")) %>%
+hawker_full = st_read("DataFiles/NEAMarketandFoodCentre.geojson") %>%
   st_transform(crs = sg_crs)
 hawker = hawker_full["geometry"]
 
 #Fast Food Outlets 
   #Mcdonald's
-macs_full = suppressMessages(st_read("DataFiles/mcdonalds_singapore.geojson")) %>%
-  st_transform(crs = sg_crs)
+macs_full = st_read("DataFiles/mcdonalds_singapore.geojson") %>%
+  st_transform(crs = sg_crs) 
 macs = macs_full[,"geometry"] 
 
 #7-11 Outlets
-seven_eleven_full = suppressMessages(st_read("DataFiles/711_singapore.geojson")) %>%
+seven_eleven_full = st_read("DataFiles/711_singapore.geojson") %>%
   st_transform(crs = sg_crs)
 seven_eleven = seven_eleven_full[,"geometry"]
 
@@ -2793,6 +2806,7 @@ coords_dist <- st_coordinates(food_combined_sf)
 knn_nb_sec_sch_food <- knn2nb(knearneigh(coords_dist, k = 3))
 wts_sec_sch_food <- nb2listw(knn_nb_sec_sch_food, style = "W")
 
+summary(nearest_outlet_distance)
 ```
 
 To better understand the accessibility of food options for students, we also analysed the distance from each school to the nearest food outlet, using McDonald’s, 7-Eleven, and Hawker Centres as proxies once again. This captures how close the nearest source of food is and reflects the ease of access of which students can access meals or snacks.
@@ -4165,7 +4179,7 @@ This brings us to our conclusion that OLS is the most suitable for modelling obe
 
 # Time Series Analysis
 
-```{r}
+```{r, results='hide'}
 library(tidyverse)
 library(imputeTS)  # For interpolation
 library(fpp2)
@@ -4252,33 +4266,18 @@ ura_regions_map +
   tm_title("Map of Z-score Change for Primary Schools")
 
 # Schools which saw a 1 standard deviation increase in OSO levels
-oso_increase_gt <- oso_hist_geom %>% 
+oso_hist_geom %>% 
   st_drop_geometry() %>% 
   filter(z_change >= 1) %>% 
-  arrange(desc(z_change)) %>%
-  gt() %>%
-  tab_header(
-    title = "Schools with ≥ 1 SD Increase in OSO Levels"
-  )
-
-oso_increase_gt
+  arrange(desc(z_change)) # 10 schools identified
   
 # Schools which saw a 1 standard deviation decrease in OSO levels
-oso_decrease_gt <- oso_hist_geom %>% 
+oso_hist_geom %>% 
   st_drop_geometry() %>% 
   filter(z_change <= -1) %>% 
-  arrange(z_change) %>%  # ascending since they're negative
-  gt() %>%
-  tab_header(
-    title = "Schools with ≥ 1 SD Decrease in OSO Levels"
-  )
-oso_decrease_gt
-
+  arrange(desc(z_change)) %>%
+  kable()
 ```
-A histogram plot of the data shows that the data is normally distributed.
-For the first model, we interpolated the data to obtain the missing years between 2016 to 2023. We used a smoothing spline to do this, and subsequently calculated the mean Z-score before 2019 and after 2019. 2019 was used as the baseline for the midpoint in the data. 
-
-We then obtained schools with a more than 1 Standard Deviation increase and decrease in OSO levels over time. 
 
 ## Sphere of influence neighbours
 
@@ -4302,50 +4301,23 @@ pri_map_z <- tm_shape(nb2lines(soi_nb_pri_z, coords = st_geometry(oso_hist_geom)
 
 ### Spatial autocorrelation statistics
 
-```{r}
+```{r, results='hide'}
 # by Primary schools
 soi_lw_pri_z <- nb2listw(soi_nb_pri_z, style = "W")
 soi_lw_B_pri_z <- nb2listw(soi_nb_pri_z, style = "B")
+moran.test(oso_hist_geom$z_change, soi_lw_pri_z)
 moran.plot(oso_hist_geom$z_change, soi_lw_pri_z, main="Moran scatterplot")
-
-moran_result <- moran.test(oso_hist_geom$z_change, soi_lw_pri_z)
-geary_result <- geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
-
-moran_df <- data.frame(
-  Test = "Moran's I",
-  Statistic = moran_result$statistic,
-  P_Value = moran_result$p.value
-)
-
-geary_df <- data.frame(
-  Test = "Geary's C",
-  Statistic = geary_result$statistic,
-  P_Value = geary_result$p.value
-)
-
-# Combine and format
-bind_rows(moran_df, geary_df) %>%
-  gt() %>%
-  tab_header(
-    title = "Spatial Autocorrelation Tests",
-    subtitle = "Z-Change in OSO Levels (Primary Schools)"
-  ) %>%
-  fmt_number(
-    columns = c(Statistic, P_Value),
-    decimals = 4
-  )
-
+geary.test(oso_hist_geom$z_change, soi_lw_pri_z)
 ```
 
 Average number of links (Primary school): 3.094972\
-p-value for Global Moran's I test (Primary school): 0.5712\ 
-p-value for Global Geary's C test (Primary school): 0.3879
+p-value for Global Moran's I test (Primary school): 0.5712 p-value for Global Geary's C test (Primary school): 0.3879
 
 Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019. 
 
 #### Joint count analysis
 
-```{r}
+```{r, results='hide'}
 # Setting an overweight cutoff point
 Z_CHANGE_CUTOFF_INCREASE <- 1 #increase in obesity levels before and after 2019
 Z_CHANGE_CUTOFF_DECREASE <- -1 #decrease in obesity levels before and after 2019
@@ -4390,7 +4362,7 @@ The plots provide a descriptive view of Primary Schools with improving and worse
 
 ## Joint count considering only extremes
 
-```{r}
+```{r, results='hide'}
 #For increases
 del_nb_pri_z_increase <- tri2nb(st_coordinates(oso_hist_geom1), 
                      row.names = oso_hist_geom1$PT_ID) 
@@ -4430,33 +4402,11 @@ soi_lw_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "W")
 soi_lw_B_pri_z_decrease <- nb2listw(soi_nb_pri_z_decrease, style = "B")
 
 
-#Joint count analysis
-
-jc_decrease <- joincount.multi(oso_hist_geom3$z_change_high_decrease, soi_lw_B_pri_z_decrease)
-jc_increase <- joincount.multi(oso_hist_geom1$z_change_high_increase, soi_lw_B_pri_z_increase)
-
-jc_decrease_df <- as.data.frame(jc_decrease)
-jc_increase_df <- as.data.frame(jc_increase)
-
-jc_decrease_df <- jc_decrease_df %>% mutate(across(where(is.numeric), ~round(., 4)))
-jc_increase_df <- jc_increase_df %>% mutate(across(where(is.numeric), ~round(., 4)))
-
-gt_decrease <- jc_decrease_df %>%
-  gt(rownames_to_stub = TRUE) %>%
-  tab_header(
-    title = "Join Count Test – High Decrease",
-    subtitle = "Primary Schools"
-  )
-
-gt_increase <- jc_increase_df %>%
-  gt(rownames_to_stub = TRUE) %>%
-  tab_header(
-    title = "Join Count Test – High Increase",
-    subtitle = "Primary Schools"
-  )
-
-gt_decrease
-gt_increase
+#Join count analysis
+joincount.multi(oso_hist_geom3$z_change_high_decrease, 
+                soi_lw_B_pri_z_decrease) 
+joincount.multi(oso_hist_geom1$z_change_high_increase, 
+                soi_lw_B_pri_z_increase) 
 ```
 
 To assess whether changes in obesity rates are spatially clustered across schools, we conducted a joint count analysis on schools that experienced extreme changes in obesity levels. Specifically, we looked at schools with a z-score change in obesity of less than -1 (extreme decreases) and greater than +1 (extreme increases).
@@ -4464,7 +4414,7 @@ To assess whether changes in obesity rates are spatially clustered across school
 The results indicate that there is no statistically significant spatial clustering of schools experiencing either extreme increases or decreases in obesity rates. This means that such schools tend to be spatially isolated from one another, rather than forming contiguous clusters. In other words, a sharp increase or decrease in obesity at one school does not have a spillover effect on nearby schools. 
 
 # Controlling for Effects of COVID
-```{r}
+```{r, results='hide'}
 oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
 
 oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
@@ -4520,41 +4470,8 @@ oso_covid_geom = oso_covid_geom_full %>%
   dplyr::select(c("PT_ID", "SCHOOL", "geometry", "after_covid_change", "before_covid_change"))
 
 
-before_summary = summary(oso_covid_geom$before_covid_change)
-after_summary = summary(oso_covid_geom$after_covid_change)
-
-before_summary_df <- data.frame(
-  Statistic = names(before_summary),
-  Value = as.numeric(before_summary)
-)
-
-before_summary_df %>%
-  gt() %>%
-  tab_header(
-    title = "Summary of Obesity Changes Before COVID",
-    subtitle = "Primary schools"
-  ) %>%
-  fmt_number(
-    columns = Value,
-    decimals = 4
-  )
-
-after_summary_df <- data.frame(
-  Statistic = names(after_summary),
-  Value = as.numeric(after_summary)
-)
-
-after_summary_df %>%
-  gt() %>%
-  tab_header(
-    title = "Summary of Obesity Changes After COVID",
-    subtitle = "Primary schools"
-  ) %>%
-  fmt_number(
-    columns = Value,
-    decimals = 4
-  )
-
+#summary(oso_covid_geom$before_covid_change)
+#summary(oso_covid_geom$after_covid_change)
 
 #Classify
 oso_covid_geom_classes <- oso_covid_geom %>%
