@@ -2597,7 +2597,7 @@ Analysing the spatial descriptive summary measures for education variable, we ob
 
 # Food and Nutrition
 
-```{r read_geojson, message=FALSE, warning=FALSE}
+```{r, results='hide', fig.show='hide'}
 
 #Data transformation
 
@@ -2616,6 +2616,10 @@ macs = macs_full[,"geometry"]
 seven_eleven_full = suppressMessages(st_read("DataFiles/711_singapore.geojson")) %>%
   st_transform(crs = sg_crs)
 seven_eleven = seven_eleven_full[,"geometry"]
+
+```
+
+```{r}
 
 #Combine data into single SF object
 seven_eleven_sf = mutate(seven_eleven, outlet = "7-11")
@@ -4214,7 +4218,7 @@ This brings us to our conclusion that OLS is the most suitable for modelling obe
 # Time Series Analysis
 
 
-```{r}
+```{r, results='hide', fig.show='hide'}
 library(tidyverse)
 library(imputeTS)  # For interpolation
 library(fpp2)
@@ -4227,6 +4231,10 @@ library(readxl)
 library(dplyr)
 
 oso_pri_hist = read_excel("DataFiles/oso_primary.xlsx")
+
+```
+
+```{r}
 
 oso_pri_hist_years = oso_pri_hist[, c(1,2, 18, 20, 22, 24, 26, 28)] %>%
   drop_na()
