@@ -2903,7 +2903,7 @@ bivariate_colors <- c(
 
 pri_bivariate_food_map <-ura_planning_areas_map +
   tm_shape(pri_bc_food) +
-  tm_polygons(fill = "bivariate_class", fill.scale = tm_scale(bivariate_colors), fill.legend = tm_legend("Bivariate Categories (Food - Obesity)")) +
+  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, fill.legend = tm_legend("Bivariate Categories (Food - Obesity)")) +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Distance to the Nearest Food Option and Obesity Prevalence by URA Planning Areas (Primary Schools)")
 
@@ -2955,7 +2955,7 @@ bivariate_colors <- c(
 
 sec_bivariate_food_map <-ura_planning_areas_map +
   tm_shape(sec_bc_food) +
-  tm_polygons(fill = "bivariate_class", fill.scale = tm_scale(bivariate_colors), fill.legend = tm_legend("Bivariate Categories (Food - Obesity)")) +
+  tm_polygons(fill = "bivariate_class", palette = bivariate_colors, fill.legend = tm_legend("Bivariate Categories (Food - Obesity)")) +
   tm_layout(legend.position = c("right", "bottom")) +
   tm_title("Bivariate Map of Distance to the Nearest Food Option and Obesity Prevalence by URA Planning Areas (Secondary Schools)")
 
