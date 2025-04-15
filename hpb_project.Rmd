@@ -3619,7 +3619,7 @@ facility_density_map <- ura_planning_areas_map + facility_by_area %>%
   tm_shape(name = "DUS Sports Facility Density by URA Planning Area") +
   tm_polygons(
     fill = "facility_density",
-    fill.scale = tm_scale(values = "brewer.rd_yl_gn"), 
+    fill.scale = tm_scale(values = "brewer.yl_or_rd"), 
     fill.legend = tm_legend(
       title = "DUS Facilities per km²",
       orientation = "landscape", 
