@@ -4405,7 +4405,9 @@ bind_rows(moran_df, geary_df) %>%
 ```
 
 Average number of links (Primary school): 3.094972\
+
 p-value for Global Moran's I test (Primary school): 0.5712\ 
+
 p-value for Global Geary's C test (Primary school): 0.3879
 
 Based on the Moran's I and Geary's C tests, there is no significant spatial autocorrelation in Z-score change between Primary Schools. This suggests that the incidence of obesity prevalence when normalized does not affect neighbouring schools before and after 2019. 
